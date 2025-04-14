@@ -1,0 +1,24 @@
+{
+  "name": "api",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "start": "bun run src/index.ts",
+    "dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up",
+    "dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
+    "dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata && rm -rf \"${ZERO_REPLICA_FILE}\"*"
+  },
+  "dependencies": {
+    "@types/bun": "^1.2.9",
+    "dotenv": "^16.5.0",
+    "drizzle-orm": "^0.41.0",
+    "hono": "^4.7.6",
+    "nanoid": "^5.1.5",
+    "pg": "^8.14.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.12",
+    "drizzle-kit": "^0.30.6",
+    "tsx": "^4.19.3"
+  }
+}
