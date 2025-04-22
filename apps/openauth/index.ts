@@ -64,7 +64,7 @@ export default issuer({
 		},
 	}),
 	subjects,
-	storage: MemoryStorage({ persist: "./persist.json" }),
+	storage: MemoryStorage(),
 	providers: {
 		github: GithubProvider({
 			clientID: getEnvOrThrow("GITHUB_CLIENT_ID"),
