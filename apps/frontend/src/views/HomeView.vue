@@ -47,9 +47,8 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
       Sign in with Github
     </UButton>
     <UButton icon="mdi:plus" color="neutral" @click="addRepo" class="self-end">
-        Add repo
+      Add repo
     </UButton>
-    {{ repos }}
     <ItemList :data="repos" :columns="columns" @select="onSelect" :ui="{tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset', tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline'}" />
   </Col>
 </template>
