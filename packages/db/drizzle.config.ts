@@ -11,7 +11,7 @@ function getEnvOrThrow(key: string): string {
 
 export default defineConfig({
 	out: "./drizzle",
-	schema: "./src/db/schema.ts",
+	schema: "./src/schema.ts",
 	dialect: "postgresql",
 	dbCredentials: {
 		url: getEnvOrThrow("DATABASE_URL"),
