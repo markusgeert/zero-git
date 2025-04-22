@@ -2,11 +2,11 @@
   "name": "@zero-git/zero",
   "type": "module",
   "scripts": {
-    "prebuild": "drizzle-zero generate -c drizzle-zero.config.ts -o zero-schema.gen.ts",
+    "prebuild": "drizzle-zero generate -c src/drizzle-zero.config.ts -o src/zero-schema.gen.ts",
     "build": "tsc"
   },
   "exports": {
-    ".": "./zero-schema.ts"
+    ".": "./src/zero-schema.ts"
   },
   "dependencies": {
     "@rocicorp/zero": "^0.18.2025040300",

@@ -1,7 +1,7 @@
 {
 	"name": "@zero-git/db",
 	"type": "module",
-	"main": "index.ts",
+	"main": "src/index.ts",
 	"dependencies": {
 		"drizzle-orm": "^0.41.0"
 	},

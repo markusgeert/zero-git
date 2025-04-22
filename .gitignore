@@ -20,6 +20,7 @@ node_modules
 .classpath
 *.launch
 .settings/
+.zed
 
 # Temp
 gitignore
