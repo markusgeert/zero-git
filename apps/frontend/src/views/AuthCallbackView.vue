@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/authStore";
 import { useRouteHash } from "@vueuse/router";
 import { watch } from "vue";
-import { useAuthStore } from "@/stores/authStore";
 
 const authStore = useAuthStore();
 

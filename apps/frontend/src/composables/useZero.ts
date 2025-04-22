@@ -1,7 +1,7 @@
+import { useAuthStore } from "@/stores/authStore";
 import { Zero } from "@rocicorp/zero";
 import { createMutators, schema } from "@zero-git/zero";
 import { computed } from "vue";
-import { useAuthStore } from "@/stores/authStore";
 
 export function useZero() {
 	const authStore = useAuthStore();

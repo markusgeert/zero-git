@@ -1,10 +1,10 @@
 import {
 	ANYONE_CAN,
-	definePermissions,
 	type PermissionsConfig,
+	definePermissions,
 } from "@rocicorp/zero";
 import type { AuthData } from "@zero-git/auth";
-import { createMutators, type Mutators } from "./mutators.js";
+import { type Mutators, createMutators } from "./mutators.js";
 import { type Schema, schema } from "./zero-schema.gen.js";
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
@@ -12,6 +12,12 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 		usersTable: {
 			row: {
 				select: ANYONE_CAN,
+			},
+		},
+		reposTable: {
+			row: {
+				select: ANYONE_CAN,
+				insert: ANYONE_CAN,
 			},
 		},
 	} satisfies PermissionsConfig<AuthData, Schema>;

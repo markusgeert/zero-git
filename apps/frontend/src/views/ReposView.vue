@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useZero } from "@/composables/useZero";
 import type { TableColumn } from "@nuxt/ui";
 import { h, resolveComponent } from "vue";
 import { useQuery } from "zero-vue";
-import { useZero } from "@/composables/useZero";
 
 const z = useZero();
 const { data: repos } = useQuery(z.value.query.reposTable, {

@@ -1,5 +1,5 @@
 import type { Transaction } from "@rocicorp/zero";
-import { type AuthData, assert, must } from "@zero-git/auth";
+import { assert, type AuthData, must } from "@zero-git/auth";
 import type { Schema } from "./zero-schema.js";
 
 export function assertIsLoggedIn(

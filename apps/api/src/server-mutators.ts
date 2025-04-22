@@ -1,6 +1,6 @@
 import type { CustomMutatorDefs } from "@rocicorp/zero";
 import type { AuthData } from "@zero-git/auth";
-import { createMutators, type Schema } from "@zero-git/zero";
+import { type Schema, createMutators } from "@zero-git/zero";
 
 export type PostCommitTask = () => Promise<void>;
 

@@ -1,13 +1,12 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
-import { cors } from "hono/cors";
 import "dotenv/config";
 import { createClient } from "@openauthjs/openauth/client";
 import type { ReadonlyJSONValue } from "@rocicorp/zero";
-import { connectionProvider, PushProcessor } from "@rocicorp/zero/pg";
+import { PushProcessor, connectionProvider } from "@rocicorp/zero/pg";
 import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
-import { schema } from "@zero-git/db";
+import { githubEventsTable, schema } from "@zero-git/db";
 import { schema as zeroSchema } from "@zero-git/zero";
 import { type } from "arktype";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -16,7 +15,7 @@ import { backOff } from "exponential-backoff";
 // import { nanoid } from "nanoid";
 import { jwtVerify } from "jose";
 import postgres from "postgres";
-import { createServerMutators, type PostCommitTask } from "./server-mutators";
+import { type PostCommitTask, createServerMutators } from "./server-mutators";
 
 function getEnvOrThrow(key: string): string {
 	const value = process.env[key];
@@ -47,22 +46,12 @@ const db = await backOff(async () =>
 );
 await migrate(db, { migrationsFolder: "../../packages/db/drizzle" });
 
-// Store webhooks in memory
-const receivedWebhooks: unknown[] = [];
-
 const client = createClient({
 	clientID: "lambda-api",
 	issuer: getEnvOrThrow("OPENAUTH_ISSUER_URL"),
 });
 
 export const api = new Hono()
-	.use(
-		cors({
-			origin: "http://localhost:5174",
-			allowHeaders: ["Origin", "Content-Type", "Authorization"],
-			credentials: true,
-		}),
-	)
 	.get("/", async (c) => {
 		const access = getCookie(c, "access_token");
 		const refresh = getCookie(c, "refresh_token");
@@ -84,22 +73,21 @@ export const api = new Hono()
 		const { url } = await client.authorize(`${origin}/callback`, "code");
 		return c.redirect(url, 302);
 	})
-	// GitHub Webhook Receiver
-	.post("/webhook", async (c) => {
+	.post("/github/event", async (c) => {
 		const payload = await c.req.json();
 
-		receivedWebhooks.push({
-			headers: Object.fromEntries(c.req.raw.headers.entries()),
-			body: payload,
-			timestamp: new Date().toISOString(),
+		await db.insert(githubEventsTable).values({
+			id: payload.id,
+			type: payload.type,
+			actorId: payload.actor.id,
+			repoId: payload.repo.id,
+			orgId: payload.org.id,
+			isPublic: payload.public,
+			content: payload,
+			createdAt: payload.created_at,
 		});
 
-		return c.text("Webhook received");
-	})
-
-	// List all received webhooks
-	.get("/webhooks", (c) => {
-		return c.json(receivedWebhooks);
+		return c.status(200);
 	})
 
 	.post("/push", async (c) => {
