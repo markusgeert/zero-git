@@ -8,8 +8,10 @@
 	},
 	"dependencies": {
 		"@openauthjs/openauth": "^0.4.3",
+		"@zero-git/auth": "workspace:*",
+		"@zero-git/db": "workspace:*",
 		"arktype": "^2.1.19",
-		"drizzle-orm": "^0.41.0",
+		"drizzle-orm": "^0.42.0",
 		"nanoid": "^5.1.5",
 		"octokit": "^4.1.3"
 	},

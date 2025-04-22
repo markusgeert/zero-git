@@ -1,17 +1,14 @@
 import { issuer } from "@openauthjs/openauth";
-import { CodeProvider } from "@openauthjs/openauth/provider/code";
 import { GithubProvider } from "@openauthjs/openauth/provider/github";
 import { MemoryStorage } from "@openauthjs/openauth/storage/memory";
-import { CodeUI } from "@openauthjs/openauth/ui/code";
 import { Select } from "@openauthjs/openauth/ui/select";
 import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme";
+import { subjects } from "@zero-git/auth";
 import { schema, usersTable } from "@zero-git/db";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { nanoid } from "nanoid";
 import { Octokit } from "octokit";
-import { subjects } from "./subjects.ts";
 
 function getEnvOrThrow(key: string): string {
 	const value = process.env[key];
@@ -67,7 +64,7 @@ export default issuer({
 		},
 	}),
 	subjects,
-	storage: MemoryStorage(),
+	storage: MemoryStorage({ persist: "./persist.json" }),
 	providers: {
 		github: GithubProvider({
 			clientID: getEnvOrThrow("GITHUB_CLIENT_ID"),

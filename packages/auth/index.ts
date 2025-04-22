@@ -1,3 +1,4 @@
+import { createSubjects } from "@openauthjs/openauth/subject";
 import { type } from "arktype";
 
 /** The contents of the JWT */
@@ -10,6 +11,13 @@ export const AuthDataSchema = type({
 });
 
 export type AuthData = typeof AuthDataSchema.infer;
+
+export const subjects = createSubjects({
+	user: type({
+		id: "string",
+		email: "string",
+	}),
+});
 
 export function assert(x: unknown, message?: string): asserts x {
 	if (!x) throw new Error(message);
