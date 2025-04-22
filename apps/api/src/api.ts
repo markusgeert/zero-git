@@ -25,7 +25,7 @@ function getEnvOrThrow(key: string): string {
 export const api = new Hono();
 
 const db = drizzle(getEnvOrThrow("DATABASE_URL"), { schema });
-await migrate(db, { migrationsFolder: "./drizzle" });
+await migrate(db, { migrationsFolder: "../../packages/db/drizzle" });
 
 // Store webhooks in memory
 const receivedWebhooks: unknown[] = [];
