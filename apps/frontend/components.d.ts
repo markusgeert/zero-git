@@ -19,9 +19,11 @@ declare module 'vue' {
     Row: typeof import('./src/components/Row.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     UApp: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
+    UAvatar: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Avatar.vue')['default']
+    UBadge: typeof import("./../../node_modules/@nuxt/ui/dist/runtime/components/Badge.vue")["default"]
     UButton: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
-    UIcon: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/vue/components/Icon.vue')['default']
     ULinkBase: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue')['default']
+    UTable: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

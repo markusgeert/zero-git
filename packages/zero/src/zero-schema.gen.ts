@@ -17,89 +17,93 @@
  */
 
 export type Schema = {
-	readonly tables: {
-		usersTable: {
-			name: "usersTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly email: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly githubAvatarUrl: {
-					type: "string";
-					customType: string;
-					optional: true;
-				};
-			};
-		};
-		reposTable: {
-			name: "reposTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly visibility: {
-					optional: false;
-					type: "string";
-					customType: "public" | "private";
-				};
-			};
-		};
-	};
-	readonly relationships: {};
+  readonly tables: {
+    usersTable: {
+      name: "usersTable";
+      primaryKey: any;
+      columns: {
+        readonly id: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly email: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly githubAvatarUrl: {
+          type: "string";
+          customType: string;
+          optional: true;
+        };
+      };
+    };
+    reposTable: {
+      name: "reposTable";
+      primaryKey: any;
+      columns: {
+        readonly id: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly visibility: {
+          optional: false;
+          type: "string";
+          customType: "public" | "private";
+        };
+      };
+    };
+  };
+  readonly relationships: {};
 };
 
 export const schema = {
-	tables: {
-		reposTable: {
-			name: "reposTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				visibility: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "repos",
-		},
-		usersTable: {
-			name: "usersTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				email: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				githubAvatarUrl: {
-					type: "string",
-					optional: true,
-					customType: null as unknown,
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "users",
-		},
-	},
-	relationships: {},
+  "tables": {
+    "reposTable": {
+      "name": "reposTable",
+      "columns": {
+        "id": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "visibility": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        }
+      },
+      "primaryKey": [
+        "id"
+      ],
+      "serverName": "repos"
+    },
+    "usersTable": {
+      "name": "usersTable",
+      "columns": {
+        "id": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "email": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "githubAvatarUrl": {
+          "type": "string",
+          "optional": true,
+          "customType": null as unknown
+        }
+      },
+      "primaryKey": [
+        "id"
+      ],
+      "serverName": "users"
+    }
+  },
+  "relationships": {}
 } as Schema;

@@ -9,8 +9,6 @@ export function useZero() {
 	const z = computed(() => {
 		const authData = authStore.jwt;
 
-		console.log("new zero");
-
 		return new Zero({
 			schema,
 			mutators: createMutators(authData),
@@ -18,7 +16,7 @@ export function useZero() {
 			server: import.meta.env.VITE_ZERO_CACHE_URL,
 			auth: (error?: "invalid-token") => {
 				if (error === "invalid-token") {
-					authStore.auth();
+					authStore.logout();
 					return undefined;
 				}
 				return authStore.rawJwt;
