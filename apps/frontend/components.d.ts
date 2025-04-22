@@ -9,34 +9,18 @@ export {};
 declare module "vue" {
 	export interface GlobalComponents {
 		Col: typeof import("./src/components/Col.vue")["default"];
-		IconCommunity: typeof import(
-			"./src/components/icons/IconCommunity.vue",
-		)["default"];
-		IconDocumentation: typeof import(
-			"./src/components/icons/IconDocumentation.vue",
-		)["default"];
-		IconEcosystem: typeof import(
-			"./src/components/icons/IconEcosystem.vue",
-		)["default"];
-		IconSupport: typeof import(
-			"./src/components/icons/IconSupport.vue",
-		)["default"];
-		IconTooling: typeof import(
-			"./src/components/icons/IconTooling.vue",
-		)["default"];
+		IconCommunity: typeof import("./src/components/icons/IconCommunity.vue")["default"];
+		IconDocumentation: typeof import("./src/components/icons/IconDocumentation.vue")["default"];
+		IconEcosystem: typeof import("./src/components/icons/IconEcosystem.vue")["default"];
+		IconSupport: typeof import("./src/components/icons/IconSupport.vue")["default"];
+		IconTooling: typeof import("./src/components/icons/IconTooling.vue")["default"];
 		RouterLink: typeof import("vue-router")["RouterLink"];
 		RouterView: typeof import("vue-router")["RouterView"];
 		Row: typeof import("./src/components/Row.vue")["default"];
 		TheWelcome: typeof import("./src/components/TheWelcome.vue")["default"];
-		UApp: typeof import(
-			"./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue",
-		)["default"];
-		UButton: typeof import(
-			"./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue",
-		)["default"];
-		ULinkBase: typeof import(
-			"./../../node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue",
-		)["default"];
+		UApp: typeof import("./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue")["default"];
+		UButton: typeof import("./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue")["default"];
+		ULinkBase: typeof import("./../../node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue")["default"];
 		WelcomeItem: typeof import("./src/components/WelcomeItem.vue")["default"];
 	}
 }

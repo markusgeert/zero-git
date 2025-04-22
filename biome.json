@@ -7,12 +7,7 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": [
-			"dist",
-			"packages/zero/src/zero-schema.gen.ts",
-			"apps/frontend/components.d.ts",
-			"apps/frontend/auto-imports.d.ts"
-		]
+		"ignore": ["dist"]
 	},
 	"overrides": [
 		{
@@ -25,7 +20,9 @@
 				"enabled": false
 			},
 			"formatter": {
-				"enabled": true
+				"lineWidth": 160,
+				"enabled": true,
+				"formatWithErrors": true
 			}
 		}
 	],
