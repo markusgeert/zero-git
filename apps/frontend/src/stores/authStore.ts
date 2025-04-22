@@ -73,7 +73,7 @@ export const useAuthStore = defineStore("auth", () => {
 		localStorage.removeItem("refresh");
 		cookies.remove("jwt");
 
-		window.location.replace("/");
+		// window.location.replace("/");
 	}
 
 	return {

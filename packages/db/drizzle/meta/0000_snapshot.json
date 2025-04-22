@@ -1,9 +1,71 @@
 {
-	"id": "afa4e3d3-0495-4262-b17b-955c77807e84",
+	"id": "b32ef805-1467-4322-8d60-ec34ca22a5a6",
 	"prevId": "00000000-0000-0000-0000-000000000000",
 	"version": "7",
 	"dialect": "postgresql",
 	"tables": {
+		"public.github_events": {
+			"name": "github_events",
+			"schema": "",
+			"columns": {
+				"id": {
+					"name": "id",
+					"type": "text",
+					"primaryKey": true,
+					"notNull": true
+				},
+				"type": {
+					"name": "type",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"actor_id": {
+					"name": "actor_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"repo_id": {
+					"name": "repo_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"org_id": {
+					"name": "org_id",
+					"type": "text",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"is_public": {
+					"name": "is_public",
+					"type": "boolean",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"content": {
+					"name": "content",
+					"type": "jsonb",
+					"primaryKey": false,
+					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				}
+			},
+			"indexes": {},
+			"foreignKeys": {},
+			"compositePrimaryKeys": {},
+			"uniqueConstraints": {},
+			"policies": {},
+			"checkConstraints": {},
+			"isRLSEnabled": false
+		},
 		"public.repos": {
 			"name": "repos",
 			"schema": "",
@@ -19,6 +81,20 @@
 					"type": "text",
 					"primaryKey": false,
 					"notNull": true
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"modified_at": {
+					"name": "modified_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
 				}
 			},
 			"indexes": {},
@@ -45,29 +121,43 @@
 					"primaryKey": false,
 					"notNull": true
 				},
-				"githubId": {
-					"name": "githubId",
+				"github_id": {
+					"name": "github_id",
 					"type": "integer",
 					"primaryKey": false,
 					"notNull": false
 				},
-				"githubEmail": {
-					"name": "githubEmail",
+				"github_email": {
+					"name": "github_email",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
-				"githubAvatarUrl": {
-					"name": "githubAvatarUrl",
+				"github_avatar_url": {
+					"name": "github_avatar_url",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": false
 				},
-				"githubName": {
-					"name": "githubName",
+				"github_name": {
+					"name": "github_name",
 					"type": "text",
 					"primaryKey": false,
 					"notNull": false
+				},
+				"created_at": {
+					"name": "created_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
+				},
+				"modified_at": {
+					"name": "modified_at",
+					"type": "timestamp with time zone",
+					"primaryKey": false,
+					"notNull": true,
+					"default": "now()"
 				}
 			},
 			"indexes": {},

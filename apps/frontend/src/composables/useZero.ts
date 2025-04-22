@@ -16,7 +16,7 @@ export function useZero() {
 			server: import.meta.env.VITE_ZERO_CACHE_URL,
 			auth: (error?: "invalid-token") => {
 				if (error === "invalid-token") {
-					authStore.logout();
+					authStore.$reset();
 					return undefined;
 				}
 				return authStore.rawJwt;

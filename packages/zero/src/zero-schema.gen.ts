@@ -16,246 +16,252 @@
  * ------------------------------------------------------------
  */
 
-import type { ReadonlyJSONValue } from "@rocicorp/zero";
+import type { ReadonlyJSONValue } from '@rocicorp/zero';
 
 export type Simplify<T> = T & {};
 export type Schema = {
-	readonly tables: {
-		usersTable: {
-			name: "usersTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly email: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly githubAvatarUrl: {
-					type: "string";
-					customType: string;
-					optional: true;
-					serverName: string;
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-				readonly modifiedAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-		reposTable: {
-			name: "reposTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly visibility: {
-					optional: false;
-					type: "string";
-					customType: "public" | "private";
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-				readonly modifiedAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-		githubEventsTable: {
-			name: "githubEventsTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly type: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly actorId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly repoId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly orgId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly isPublic: {
-					optional: false;
-					type: "boolean";
-					customType: boolean;
-					serverName: string;
-				};
-				readonly content: {
-					optional: false;
-					type: "json";
-					customType: ReadonlyJSONValue;
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-	};
-	readonly relationships: {};
+  readonly tables: {
+    usersTable: {
+      name: "usersTable";
+      primaryKey: any;
+      columns: {
+        readonly id: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly email: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly githubAvatarUrl: {
+          type: "string";
+          customType: string;
+          optional: true;
+          serverName: string;
+        };
+        readonly createdAt: {
+          type: "number";
+          customType: number;
+          optional: true;
+          serverName: string;
+        };
+        readonly modifiedAt: {
+          type: "number";
+          customType: number;
+          optional: true;
+          serverName: string;
+        };
+      };
+    };
+    reposTable: {
+      name: "reposTable";
+      primaryKey: any;
+      columns: {
+        readonly id: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly visibility: {
+          optional: false;
+          type: "string";
+          customType: "public" | "private";
+        };
+        readonly createdAt: {
+          type: "number";
+          customType: number;
+          optional: true;
+          serverName: string;
+        };
+        readonly modifiedAt: {
+          type: "number";
+          customType: number;
+          optional: true;
+          serverName: string;
+        };
+      };
+    };
+    githubEventsTable: {
+      name: "githubEventsTable";
+      primaryKey: any;
+      columns: {
+        readonly id: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly type: {
+          optional: false;
+          type: "string";
+          customType: string;
+        };
+        readonly actorId: {
+          optional: false;
+          type: "string";
+          customType: string;
+          serverName: string;
+        };
+        readonly repoId: {
+          optional: false;
+          type: "string";
+          customType: string;
+          serverName: string;
+        };
+        readonly orgId: {
+          optional: false;
+          type: "string";
+          customType: string;
+          serverName: string;
+        };
+        readonly isPublic: {
+          optional: false;
+          type: "boolean";
+          customType: boolean;
+          serverName: string;
+        };
+        readonly content: {
+          optional: false;
+          type: "json";
+          customType: ReadonlyJSONValue;
+        };
+        readonly createdAt: {
+          type: "number";
+          customType: number;
+          optional: true;
+          serverName: string;
+        };
+      };
+    };
+  };
+  readonly relationships: {};
 };
 
 export const schema = {
-	tables: {
-		githubEventsTable: {
-			name: "githubEventsTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				type: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				actorId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-					serverName: "actor_id",
-				},
-				repoId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-					serverName: "repo_id",
-				},
-				orgId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-					serverName: "org_id",
-				},
-				isPublic: {
-					type: "boolean",
-					optional: false,
-					customType: null as unknown,
-					serverName: "is_public",
-				},
-				content: {
-					type: "json",
-					optional: false,
-					customType: null as unknown,
-				},
-				createdAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown,
-					serverName: "created_at",
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "github_events",
-		},
-		reposTable: {
-			name: "reposTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				visibility: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				createdAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown,
-					serverName: "created_at",
-				},
-				modifiedAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown,
-					serverName: "modified_at",
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "repos",
-		},
-		usersTable: {
-			name: "usersTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				email: {
-					type: "string",
-					optional: false,
-					customType: null as unknown,
-				},
-				githubAvatarUrl: {
-					type: "string",
-					optional: true,
-					customType: null as unknown,
-					serverName: "github_avatar_url",
-				},
-				createdAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown,
-					serverName: "created_at",
-				},
-				modifiedAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown,
-					serverName: "modified_at",
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "users",
-		},
-	},
-	relationships: {},
+  "tables": {
+    "githubEventsTable": {
+      "name": "githubEventsTable",
+      "columns": {
+        "id": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "type": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "actorId": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown,
+          "serverName": "actor_id"
+        },
+        "repoId": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown,
+          "serverName": "repo_id"
+        },
+        "orgId": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown,
+          "serverName": "org_id"
+        },
+        "isPublic": {
+          "type": "boolean",
+          "optional": false,
+          "customType": null as unknown,
+          "serverName": "is_public"
+        },
+        "content": {
+          "type": "json",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "createdAt": {
+          "type": "number",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "created_at"
+        }
+      },
+      "primaryKey": [
+        "id"
+      ],
+      "serverName": "github_events"
+    },
+    "reposTable": {
+      "name": "reposTable",
+      "columns": {
+        "id": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "visibility": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "createdAt": {
+          "type": "number",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "created_at"
+        },
+        "modifiedAt": {
+          "type": "number",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "modified_at"
+        }
+      },
+      "primaryKey": [
+        "id"
+      ],
+      "serverName": "repos"
+    },
+    "usersTable": {
+      "name": "usersTable",
+      "columns": {
+        "id": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "email": {
+          "type": "string",
+          "optional": false,
+          "customType": null as unknown
+        },
+        "githubAvatarUrl": {
+          "type": "string",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "github_avatar_url"
+        },
+        "createdAt": {
+          "type": "number",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "created_at"
+        },
+        "modifiedAt": {
+          "type": "number",
+          "optional": true,
+          "customType": null as unknown,
+          "serverName": "modified_at"
+        }
+      },
+      "primaryKey": [
+        "id"
+      ],
+      "serverName": "users"
+    }
+  },
+  "relationships": {}
 } as Schema;

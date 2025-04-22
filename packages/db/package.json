@@ -7,7 +7,8 @@
 		"postdev": "bun run dev:db-down",
 		"dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up",
 		"dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
-		"dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata && rm -rf \"${ZERO_REPLICA_FILE}\"*",
+		"dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata",
+		"db:regen": "drizzle-kit drop && drizzle-kit generate",
 		"db:gen": "drizzle-kit generate"
 	},
 	"peerDependencies": {

@@ -7,15 +7,15 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": ["dist"]
+		"ignore": [
+			"dist",
+			"apps/frontend/components.d.ts",
+			"apps/frontend/auto-imports.d.ts"
+		]
 	},
 	"overrides": [
 		{
-			"include": [
-				"packages/zero/src/zero-schema.gen.ts",
-				"apps/frontend/components.d.ts",
-				"apps/frontend/auto-imports.d.ts"
-			],
+			"include": ["packages/zero/src/zero-schema.gen.ts"],
 			"linter": {
 				"enabled": false
 			},
