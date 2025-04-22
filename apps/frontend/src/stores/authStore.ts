@@ -1,124 +1,89 @@
 import { createClient } from "@openauthjs/openauth/client";
+import { useCookies } from "@vueuse/integrations/useCookies";
+import type { AuthData } from "@zero-git/auth";
 import { defineStore } from "pinia";
-import { ref, watchEffect } from "vue";
+import { computed } from "vue";
 
 const client = createClient({
 	clientID: import.meta.env.VITE_OPENAUTH_CLIENT_ID,
 	issuer: import.meta.env.VITE_OPENAUTH_ISSUER_URL,
 });
 
+const cookies = useCookies();
 export const useAuthStore = defineStore("auth", () => {
-	const initializing = ref(true);
-	const loaded = ref(false);
-	const loggedIn = ref(false);
-	const token = ref<string | undefined>(undefined);
-	const userId = ref<string | undefined>();
-
-	watchEffect(() => {
-		const hash = new URLSearchParams(location.search.slice(1));
-		const code = hash.get("code");
-		const state = hash.get("state");
-
-		if (!initializing) {
-			return;
-		}
-
-		initializing.value = false;
-
-		if (code && state) {
-			callback(code, state);
-			return;
-		}
-
-		auth();
+	const rawJwt = computed<string | undefined>(() => {
+		return cookies.get("jwt");
 	});
+	const jwt = computed<AuthData | undefined>(() =>
+		rawJwt.value ? JSON.parse(atob(rawJwt.value.split(".")[1])) : undefined,
+	);
 
 	async function auth() {
-		const token = await refreshTokens();
-
-		if (token) {
-			await user();
-		}
-
-		loaded.value = true;
+		await refreshTokens();
 	}
 
 	async function refreshTokens() {
 		const refresh = localStorage.getItem("refresh");
 		if (!refresh) return;
+
 		const next = await client.refresh(refresh, {
-			access: token.value,
+			access: rawJwt.value,
 		});
 		if (next.err) return;
-		if (!next.tokens) return token.value;
+		if (!next.tokens) return rawJwt.value;
 
 		localStorage.setItem("refresh", next.tokens.refresh);
-		token.value = next.tokens.access;
+		cookies.set("jwt", next.tokens.access, { path: "/" });
 
 		return next.tokens.access;
 	}
 
-	async function getToken() {
-		const token = await refreshTokens();
-
-		if (!token) {
-			await login();
-			return;
-		}
-
-		return token;
-	}
-
 	async function login() {
-		const { challenge, url } = await client.authorize(location.origin, "code", {
-			pkce: true,
-		});
+		const { challenge, url } = await client.authorize(
+			`${window.location.origin}/auth/callback`,
+			"token",
+			{
+				pkce: true,
+			},
+		);
 		sessionStorage.setItem("challenge", JSON.stringify(challenge));
-		location.href = url;
+		window.location.href = url;
 	}
 
-	async function callback(code: string, state: string) {
+	async function callback(hash: string) {
 		const challengeInStore = sessionStorage.getItem("challenge");
 		if (!challengeInStore) {
 			throw new Error("Challenge not found");
 		}
 
-		const challenge = JSON.parse(challengeInStore);
-		if (code) {
-			if (state === challenge.state && challenge.verifier) {
-				const exchanged = await client.exchange(
-					code,
-					location.origin,
-					challenge.verifier,
-				);
-				if (!exchanged.err) {
-					token.value = exchanged.tokens?.access;
-					localStorage.setItem("refresh", exchanged.tokens.refresh);
-				}
-			}
-			window.location.replace("/");
-		}
-	}
+		const params = new URLSearchParams(hash.slice(1));
+		const access_token = params.get("access_token");
+		const refresh_token = params.get("refresh_token");
 
-	async function user() {
-		const res = await fetch("http://localhost:9377/", {
-			headers: {
-				Authorization: `Bearer ${token.value}`,
-			},
-		});
-
-		if (res.ok) {
-			userId.value = await res.text();
-			loggedIn.value = true;
+		if (!access_token || !refresh_token) {
+			throw new Error("Access token or refresh token not found");
 		}
+
+		localStorage.setItem("refresh", refresh_token);
+		cookies.set("jwt", access_token, { path: "/" });
+		window.location.replace("/");
 	}
 
 	function logout() {
 		localStorage.removeItem("refresh");
-		token.value = undefined;
+		cookies.remove("jwt");
 
 		window.location.replace("/");
 	}
 
-	return { login, logout, userId, loaded, loggedIn, getToken };
+	return {
+		login,
+		logout,
+
+		callback,
+		auth,
+
+		rawJwt,
+		jwt,
+	};
 });

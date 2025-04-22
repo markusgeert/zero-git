@@ -1,9 +1,13 @@
 {
 	"name": "@zero-git/api",
 	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
 	"scripts": {
-		"dev": "PORT=9377 bun --watch src/index.ts",
-		"start": "bun run src/index.ts"
+		"dev": "PORT=9377 bun run --watch src/index.ts",
+		"start": "bun run src/index.ts",
+		"build": "bun build src/index.ts --target=bun"
 	},
 	"dependencies": {
 		"@types/bun": "^1.2.9",

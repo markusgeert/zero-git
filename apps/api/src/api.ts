@@ -1,5 +1,6 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
+import { cors } from "hono/cors";
 import "dotenv/config";
 import { createClient } from "@openauthjs/openauth/client";
 import type { ReadonlyJSONValue } from "@rocicorp/zero";
@@ -55,6 +56,13 @@ const client = createClient({
 });
 
 export const api = new Hono()
+	.use(
+		cors({
+			origin: "http://localhost:5174",
+			allowHeaders: ["Origin", "Content-Type", "Authorization"],
+			credentials: true,
+		}),
+	)
 	.get("/", async (c) => {
 		const access = getCookie(c, "access_token");
 		const refresh = getCookie(c, "refresh_token");
