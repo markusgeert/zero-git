@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@zero-git/frontend",
   "private": true,
   "type": "module",
   "scripts": {
@@ -9,6 +9,10 @@
     "serve": "vite preview",
     "test": "vitest"
   },
+  "dependencies": {
+    "solid-js": "^1.9.5",
+    "@zero-git/zero": "workspace:*"
+  },
   "devDependencies": {
     "@solidjs/testing-library": "^0.8.10",
     "@testing-library/jest-dom": "^6.6.3",
@@ -17,8 +21,5 @@
     "vite": "^6.0.0",
     "vite-plugin-solid": "2.11.2",
     "vitest": "^3.0.0"
-  },
-  "dependencies": {
-    "solid-js": "^1.9.5"
   }
 }

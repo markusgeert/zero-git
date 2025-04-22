@@ -1,24 +1,25 @@
 {
-  "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
-  "tasks": {
-    "start": {
-      "dependsOn": ["build"],
-      "cache": true,
-      "persistent": true
-    },
-    "build": {
-      "dependsOn": ["^build"],
-      "cache": true,
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    }
-  }
+	"$schema": "https://turbo.build/schema.json",
+	"ui": "tui",
+	"tasks": {
+		"start": {
+			"dependsOn": ["build"],
+			"cache": true,
+			"persistent": true
+		},
+		"build": {
+			"dependsOn": ["^build"],
+			"cache": true,
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"]
+		},
+		"dev": {
+			"cache": false,
+			"persistent": true
+		},
+		"//#format-and-lint": {},
+		"//#format-and-lint:fix": {
+			"cache": false
+		}
+	}
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@zero-git/zero",
+  "type": "module",
+  "scripts": {
+    "prebuild": "drizzle-zero generate -c drizzle-zero.config.ts -o zero-schema.gen.ts",
+    "build": "tsc"
+  },
+  "exports": {
+    ".": "./zero-schema.ts"
+  },
+  "dependencies": {
+    "@rocicorp/zero": "^0.18.2025040300",
+    "@zero-git/auth": "workspace:*"
+  },
+  "devDependencies": {
+    "@zero-git/db": "workspace:*",
+    "@zero-git/typescript-config": "workspace:*",
+    "drizzle-zero": "^0.8.5",
+    "typescript": "^5.8.3"
+  }
+}

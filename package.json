@@ -1,31 +1,30 @@
 {
-  "name": "zero-git",
-  "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "scripts": {
-    "build": "turbo run build",
-    "clean": "turbo run clean",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "test": "turbo run test",
-    "check-types": "turbo run check-types"
-  },
-  "dependencies": {
-    "@rocicorp/zero": "^0.18.2025040300"
-  },
-  "devDependencies": {
-    "turbo": "^2.5.0"
-  },
-  "packageManager": "bun@1.2.8",
-  "engines": {
-    "node": ">=22"
-  },
-  "trustedDependencies": [
-    "@rocicorp/zero-sqlite3",
-    "esbuild",
-    "protobufjs"
-  ]
+	"name": "zero-git",
+	"private": true,
+	"workspaces": ["apps/*", "packages/*"],
+	"scripts": {
+		"build": "turbo run build",
+		"clean": "turbo run clean",
+		"dev": "turbo run dev",
+		"lint": "turbo run lint",
+		"test": "turbo run test",
+		"check-types": "turbo run check-types",
+		"format-and-lint": "biome check .",
+		"format-and-lint:fix": "biome check . --write"
+	},
+	"dependencies": {
+		"@openauthjs/openauth": "^0.4.3",
+		"@rocicorp/zero": "^0.18.2025040300",
+		"arktype": "^2.1.19"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"drizzle-zero": "^0.8.5",
+		"turbo": "^2.5.0"
+	},
+	"packageManager": "bun@1.2.8",
+	"engines": {
+		"node": ">=22"
+	},
+	"trustedDependencies": ["@rocicorp/zero-sqlite3", "esbuild", "protobufjs"]
 }
