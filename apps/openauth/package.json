@@ -1,22 +1,22 @@
 {
-  "name": "@zero-git/openauth",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "scripts": {
-    "dev": "PORT=9378 bun run --hot index.ts"
-  },
-  "dependencies": {
-    "@openauthjs/openauth": "^0.4.3",
-    "arktype": "^2.1.19",
-    "drizzle-orm": "^0.41.0",
-    "nanoid": "^5.1.5",
-    "octokit": "^4.1.3"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  }
+	"name": "@zero-git/openauth",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "PORT=9378 bun run --hot index.ts"
+	},
+	"dependencies": {
+		"@openauthjs/openauth": "^0.4.3",
+		"arktype": "^2.1.19",
+		"drizzle-orm": "^0.41.0",
+		"nanoid": "^5.1.5",
+		"octokit": "^4.1.3"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
 }

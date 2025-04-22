@@ -3,7 +3,7 @@ import type {
   Transaction,
   UpdateValue,
 } from "@rocicorp/zero";
-import type { Schema } from "./zero-schema.js";
+import type { Schema } from "../zero-schema.js";
 import type { AuthData } from "@zero-git/auth";
 import { assertIsLoggedIn } from "./auth.js";
 

@@ -1,7 +1,10 @@
 {
 	"name": "zero-git",
 	"private": true,
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"build": "turbo run build",
 		"clean": "turbo run clean",
@@ -10,7 +13,8 @@
 		"test": "turbo run test",
 		"check-types": "turbo run check-types",
 		"format-and-lint": "biome check .",
-		"format-and-lint:fix": "biome check . --write"
+		"format-and-lint:fix": "bun run fix",
+		"fix": "biome check . --write"
 	},
 	"dependencies": {
 		"@openauthjs/openauth": "^0.4.3",
@@ -18,7 +22,7 @@
 		"arktype": "^2.1.19"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "^2.0.0-beta.1",
 		"drizzle-zero": "^0.8.5",
 		"turbo": "^2.5.0"
 	},
@@ -26,5 +30,9 @@
 	"engines": {
 		"node": ">=22"
 	},
-	"trustedDependencies": ["@rocicorp/zero-sqlite3", "esbuild", "protobufjs"]
+	"trustedDependencies": [
+		"@rocicorp/zero-sqlite3",
+		"esbuild",
+		"protobufjs"
+	]
 }

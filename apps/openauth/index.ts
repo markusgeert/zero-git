@@ -3,6 +3,8 @@ import { CodeProvider } from "@openauthjs/openauth/provider/code";
 import { GithubProvider } from "@openauthjs/openauth/provider/github";
 import { MemoryStorage } from "@openauthjs/openauth/storage/memory";
 import { CodeUI } from "@openauthjs/openauth/ui/code";
+import { Select } from "@openauthjs/openauth/ui/select";
+import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme";
 import { schema, usersTable } from "@zero-git/db";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -58,6 +60,12 @@ async function createNewUser(
 }
 
 export default issuer({
+	theme: THEME_OPENAUTH,
+	select: Select({
+		providers: {
+			github: { hide: false },
+		},
+	}),
 	subjects,
 	storage: MemoryStorage(),
 	providers: {
@@ -74,29 +82,28 @@ export default issuer({
 			});
 
 			const { data } = await octokit.rest.users.getAuthenticated();
-			const {
-				id: githubId,
-				email: githubEmail,
-				avatar_url: githubAvatarUrl,
-				name,
-			} = data;
-
-			if (!githubEmail) {
-				throw new Error("Email not found");
-			}
+			const { id: githubId, avatar_url: githubAvatarUrl, name } = data;
 
 			let user = await getUserByGithubId(githubId);
 			if (!user) {
-				user = await getUserByGithubEmail(githubEmail);
-			}
+				const { data: emails } =
+					await octokit.rest.users.listEmailsForAuthenticatedUser();
+				const githubEmail = emails.find(
+					(email) => email.primary && email.verified,
+				)?.email;
+				if (!githubEmail) {
+					throw new Error("No verified, primary email found");
+				}
 
-			if (!user) {
-				user = await createNewUser(
-					githubId,
-					githubEmail,
-					githubAvatarUrl,
-					name,
-				);
+				user = await getUserByGithubEmail(githubEmail);
+				if (!user) {
+					user = await createNewUser(
+						githubId,
+						githubEmail,
+						githubAvatarUrl,
+						name,
+					);
+				}
 			}
 
 			if (!user) {
