@@ -3,6 +3,7 @@ import { useZero } from "@/composables/useZero";
 import { useAuthStore } from "@/stores/authStore";
 import type { TableColumn, TableRow } from "@nuxt/ui";
 import { nanoid } from "nanoid";
+import { ref } from "vue";
 import { useQuery } from "zero-vue";
 
 const authStore = useAuthStore();
@@ -38,7 +39,7 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
       icon="mdi:logout"
       color="neutral"
       variant="outline"
-        class="self-end"
+      class="self-end"
       @click="authStore.logout"
     >
       Log out
@@ -50,9 +51,6 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
         Add repo
     </UButton>
     {{ repos }}
-    <span v-for="repo in repos">
-      {{ repo.id }}
-    </span>
-    <!-- <UTable :data="repos" :columns class="flex-1"         @select="onSelect" /> -->
+    <ItemList :data="repos" :columns="columns" @select="onSelect" />
   </Col>
 </template>

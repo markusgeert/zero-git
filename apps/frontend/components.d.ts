@@ -14,6 +14,7 @@ declare module 'vue' {
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
     IconSupport: typeof import('./src/components/icons/IconSupport.vue')['default']
     IconTooling: typeof import('./src/components/icons/IconTooling.vue')['default']
+    ItemList: typeof import('./src/components/ItemList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Row: typeof import('./src/components/Row.vue')['default']
@@ -21,6 +22,7 @@ declare module 'vue' {
     UApp: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UButton: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     ULinkBase: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue')['default']
+    UTable: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

@@ -76,6 +76,12 @@ export const useAuthStore = defineStore("auth", () => {
 		// window.location.replace("/");
 	}
 
+	function $reset() {
+		localStorage.removeItem("refresh");
+		cookies.remove("jwt");
+		sessionStorage.removeItem("challenge");
+	}
+
 	return {
 		login,
 		logout,
@@ -85,5 +91,7 @@ export const useAuthStore = defineStore("auth", () => {
 
 		rawJwt,
 		jwt,
+
+		$reset,
 	};
 });
