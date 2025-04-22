@@ -15,7 +15,10 @@
 	},
 	"overrides": [
 		{
-			"include": ["packages/zero/src/zero-schema.gen.ts"],
+			"include": [
+				"packages/zero/src/zero-schema.gen.ts",
+				"apps/frontend/src/components/ItemList.vue"
+			],
 			"linter": {
 				"enabled": false
 			},

@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/block-tag-newline -->
 <script lang="ts">
-import type { Ref } from "vue";
-import type { VariantProps } from "tailwind-variants";
 import type { AppConfig } from "@nuxt/schema";
+import { useLocale } from "@nuxt/ui/runtime/composables/useLocale.js";
+import { tv } from "@nuxt/ui/runtime/utils/tv.js";
 import type { RowData } from "@tanstack/table-core";
 import type {
 	CellContext,
@@ -36,11 +36,10 @@ import type {
 	VisibilityOptions,
 	VisibilityState,
 } from "@tanstack/vue-table";
+import type { VariantProps } from "tailwind-variants";
+import type { Ref } from "vue";
 import _appConfig from "#build/app.config";
 import theme from "#build/ui/table";
-import { useLocale } from "@nuxt/ui/runtime/composables/useLocale.js";
-import { tv } from "@nuxt/ui/runtime/utils/tv.js";
-import { vElementHover } from "@vueuse/components";
 
 declare module "@tanstack/table-core" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,15 +64,7 @@ export type TableData = RowData;
 export type TableColumn<T extends TableData, D = unknown> = ColumnDef<T, D>;
 
 export interface TableOptions<T extends TableData>
-	extends Omit<
-		CoreOptions<T>,
-		| "data"
-		| "columns"
-		| "getCoreRowModel"
-		| "state"
-		| "onStateChange"
-		| "renderFallbackValue"
-	> {
+	extends Omit<CoreOptions<T>, "data" | "columns" | "getCoreRowModel" | "state" | "onStateChange" | "renderFallbackValue"> {
 	state?: CoreOptions<T>["state"];
 	onStateChange?: CoreOptions<T>["onStateChange"];
 	renderFallbackValue?: CoreOptions<T>["renderFallbackValue"];
@@ -117,10 +108,7 @@ export interface TableProps<T extends TableData> extends TableOptions<T> {
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-filtering#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-filtering)
 	 */
-	columnFiltersOptions?: Omit<
-		ColumnFiltersOptions<T>,
-		"getFilteredRowModel" | "onColumnFiltersChange"
-	>;
+	columnFiltersOptions?: Omit<ColumnFiltersOptions<T>, "getFilteredRowModel" | "onColumnFiltersChange">;
 	/**
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-pinning#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-pinning)
@@ -130,10 +118,7 @@ export interface TableProps<T extends TableData> extends TableOptions<T> {
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-sizing#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-sizing)
 	 */
-	columnSizingOptions?: Omit<
-		ColumnSizingOptions,
-		"onColumnSizingChange" | "onColumnSizingInfoChange"
-	>;
+	columnSizingOptions?: Omit<ColumnSizingOptions, "onColumnSizingChange" | "onColumnSizingInfoChange">;
 	/**
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/column-visibility#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/column-visibility)
@@ -143,10 +128,7 @@ export interface TableProps<T extends TableData> extends TableOptions<T> {
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/sorting#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/sorting)
 	 */
-	sortingOptions?: Omit<
-		SortingOptions<T>,
-		"getSortedRowModel" | "onSortingChange"
-	>;
+	sortingOptions?: Omit<SortingOptions<T>, "getSortedRowModel" | "onSortingChange">;
 	/**
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/grouping#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/grouping)
@@ -156,10 +138,7 @@ export interface TableProps<T extends TableData> extends TableOptions<T> {
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/expanding#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/expanding)
 	 */
-	expandedOptions?: Omit<
-		ExpandedOptions<T>,
-		"getExpandedRowModel" | "onExpandedChange"
-	>;
+	expandedOptions?: Omit<ExpandedOptions<T>, "getExpandedRowModel" | "onExpandedChange">;
 	/**
 	 * @link [API Docs](https://tanstack.com/table/v8/docs/api/features/row-selection#table-options)
 	 * @link [Guide](https://tanstack.com/table/v8/docs/guide/row-selection)
@@ -185,22 +164,10 @@ export interface TableProps<T extends TableData> extends TableOptions<T> {
 	ui?: Partial<typeof table.slots>;
 }
 
-type DynamicHeaderSlots<T, K = keyof T> = Record<
-	string,
-	(props: HeaderContext<T, unknown>) => any
-> &
-	Record<
-		`${K extends string ? K : never}-header`,
-		(props: HeaderContext<T, unknown>) => any
-	>;
-type DynamicCellSlots<T, K = keyof T> = Record<
-	string,
-	(props: CellContext<T, unknown>) => any
-> &
-	Record<
-		`${K extends string ? K : never}-cell`,
-		(props: CellContext<T, unknown>) => any
-	>;
+type DynamicHeaderSlots<T, K = keyof T> = Record<string, (props: HeaderContext<T, unknown>) => any> &
+	Record<`${K extends string ? K : never}-header`, (props: HeaderContext<T, unknown>) => any>;
+type DynamicCellSlots<T, K = keyof T> = Record<string, (props: CellContext<T, unknown>) => any> &
+	Record<`${K extends string ? K : never}-cell`, (props: CellContext<T, unknown>) => any>;
 
 export type TableSlots<T> = {
 	expanded: (props: { row: Row<T> }) => any;
@@ -212,7 +179,7 @@ export type TableSlots<T> = {
 </script>
 
 <script setup lang="ts" generic="T extends TableData">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { Primitive } from 'reka-ui'
 import { upperFirst } from 'scule'
 import { FlexRender, getCoreRowModel, getFilteredRowModel, getSortedRowModel, getExpandedRowModel, useVueTable } from '@tanstack/vue-table'
@@ -332,33 +299,57 @@ defineShortcuts({
 	ArrowUp: up,
 	j: down,
 	ArrowDown: down,
+    Escape: () => {
+        hoveredRow.value = null
+    },
 });
 
-const hoveredRow = ref<T | null>(null);
+const hoveredRow = ref<{row: TableRow<T>, kind: 'hover' | 'focus'} | null>(null);
+
+watch(hoveredRow, (newVal) => {
+    if (newVal) {
+        document.querySelector(`[data-list-key="${newVal.row.original.id}"]`)?.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest'
+        });
+    }
+});
 
 function up() {
+    const rows = tableApi.getRowModel().rows
     if (!hoveredRow.value) {
-        hoveredRow.value = data.value[0];
+        hoveredRow.value = {row: rows[0], kind: 'focus'};
         return;
     }
 
-    const elBeforeCurrentHover = data.value.findIndex((row) => row.id === hoveredRow.value?.id) - 1;
-    hoveredRow.value = data.value[Math.max(elBeforeCurrentHover, 0)];
+
+    const elBeforeCurrentHover = rows.findIndex((row) => row.id === hoveredRow.value?.row.id) - 1;
+    hoveredRow.value = {row: rows[Math.max(elBeforeCurrentHover, 0)], kind: 'focus'};
 }
 
 function down() {
+    const rows = tableApi.getRowModel().rows
     if (!hoveredRow.value) {
-        hoveredRow.value = data.value[0];
+        hoveredRow.value = {row: rows[0], kind: 'focus'};
         return;
     }
 
-    const elAfterCurrentHover = data.value.findIndex((row) => row.id === hoveredRow.value?.id) + 1;
-    hoveredRow.value = data.value[Math.min(elAfterCurrentHover, data.value.length - 1)];
+    const elAfterCurrentHover = rows.findIndex((row) => row.id === hoveredRow.value?.row.id) + 1;
+    hoveredRow.value = {row: rows[Math.min(elAfterCurrentHover, rows.length - 1)], kind: 'focus'};
 }
 
 
-function handleRowHover(row: T) {
-    hoveredRow.value = row;
+function handleRowHover(row?: TableRow<T>) {
+    if (!row) {
+        hoveredRow.value = null
+        return
+    }
+
+    if (hoveredRow.value && hoveredRow.value.row?.id === row.id) {
+        return
+    }
+
+    hoveredRow.value = { row, kind: 'hover'};
 }
 
 function handleRowSelect(row: TableRow<T>, e: Event) {
@@ -384,7 +375,6 @@ defineExpose({
 
 <template>
   <Primitive :as="as" :class="ui.root({ class: [props.class, props.ui?.root] })">
-        {{ hoveredRow }}
     <table :class="ui.base({ class: [props.ui?.base] })">
       <caption v-if="caption || !!slots.caption" :class="ui.caption({ class: [props.ui?.caption] })">
         <slot name="caption">
@@ -407,18 +397,23 @@ defineExpose({
         </tr>
       </thead>
 
-      <tbody :class="ui.tbody({ class: [props.ui?.tbody] })">
+      <tbody :class="ui.tbody({ class: [props.ui?.tbody] })"
+              @mouseleave="handleRowHover()"
+            >
         <template v-if="tableApi.getRowModel().rows?.length">
           <template v-for="row in tableApi.getRowModel().rows" :key="row.id">
             <tr
               :data-selected="row.getIsSelected()"
               :data-selectable="!!props.onSelect"
               :data-expanded="row.getIsExpanded()"
+              :data-focused="(hoveredRow && row.original.id === hoveredRow.row.original?.id) ? hoveredRow.kind : undefined"
+              :data-list-key="row.original.id"
               :role="props.onSelect ? 'button' : undefined"
               :tabindex="props.onSelect ? 0 : undefined"
               :class="ui.tr({ class: [props.ui?.tr] })"
-              v-element-hover="() => handleRowHover(row.original)"
+              @mousemove="handleRowHover(row)"
               @click="handleRowSelect(row, $event)"
+              @focus="handleRowHover(row)"
             >
               <td
                 v-for="cell in row.getVisibleCells()"

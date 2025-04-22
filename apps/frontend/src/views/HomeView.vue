@@ -3,7 +3,6 @@ import { useZero } from "@/composables/useZero";
 import { useAuthStore } from "@/stores/authStore";
 import type { TableColumn, TableRow } from "@nuxt/ui";
 import { nanoid } from "nanoid";
-import { ref } from "vue";
 import { useQuery } from "zero-vue";
 
 const authStore = useAuthStore();
@@ -51,6 +50,6 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
         Add repo
     </UButton>
     {{ repos }}
-    <ItemList :data="repos" :columns="columns" @select="onSelect" />
+    <ItemList :data="repos" :columns="columns" @select="onSelect" :ui="{tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset', tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline'}" />
   </Col>
 </template>
