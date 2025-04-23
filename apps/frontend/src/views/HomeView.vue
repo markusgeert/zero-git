@@ -58,6 +58,7 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
 		<ItemList
 			:data="repos"
 			:columns="columns"
+			:get-link="(row) => `/zero/repo/${row.original.id}`"
 			:ui="{
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
