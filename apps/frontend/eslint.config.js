@@ -15,8 +15,8 @@ export default typescriptEslint.config(
 	...pluginVue.configs["flat/recommended"],
 	{
 		rules: {
-			// 'vue/no-unused-vars': 'error'
 			"vue/multi-word-component-names": "off",
+			"no-undef": "off",
 		},
 		languageOptions: {
 			sourceType: "module",

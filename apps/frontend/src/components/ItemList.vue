@@ -1,4 +1,5 @@
-<!-- eslint-disable vue/block-tag-newline -->
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<!-- eslint-disable @typescript-eslint/no-empty-object-type -->
 <script lang="ts">
 import type { AppConfig } from "@nuxt/schema";
 import { useLocale } from "@nuxt/ui/runtime/composables/useLocale.js";
@@ -384,7 +385,7 @@ const tableApi = useVueTable({
 	},
 });
 
-function valueUpdater<T extends Updater<any>>(updaterOrValue: T, ref: Ref) {
+function valueUpdater<T extends Updater<unknown>>(updaterOrValue: T, ref: Ref) {
 	ref.value =
 		typeof updaterOrValue === "function"
 			? updaterOrValue(ref.value)

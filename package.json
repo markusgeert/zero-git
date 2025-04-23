@@ -11,7 +11,7 @@
 		"check-types": "turbo run check-types",
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "bun run fix",
-		"fix": "biome check . --write & cd apps/frontend && bun run fix",
+		"fix": "biome check . --write & cd apps/frontend && bun run fix"
 	},
 	"dependencies": {
 		"@openauthjs/openauth": "^0.4.3",
