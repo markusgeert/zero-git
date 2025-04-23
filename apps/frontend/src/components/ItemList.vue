@@ -294,11 +294,27 @@ function valueUpdater<T extends Updater<any>>(updaterOrValue: T, ref: Ref) {
   ref.value = typeof updaterOrValue === 'function' ? updaterOrValue(ref.value) : updaterOrValue
 }
 
+function getVisibleRowCount() {
+    // Calculate approximate number of rows visible in the viewport
+    // Row height is estimated at 40px, but can be adjusted based on actual UI
+    return Math.floor(window.innerHeight / 40);
+}
+
+function pageUp() {
+    moveSelection('up', getVisibleRowCount());
+}
+
+function pageDown() {
+    moveSelection('down', getVisibleRowCount());
+}
+
 defineShortcuts({
 	k: up,
 	ArrowUp: up,
 	j: down,
 	ArrowDown: down,
+    ctrl_u: pageUp,
+    ctrl_d: pageDown,
     Escape: () => {
         hoveredRow.value = null
     },
@@ -306,16 +322,27 @@ defineShortcuts({
 
 const hoveredRow = ref<{row: TableRow<T>, kind: 'hover' | 'focus'} | null>(null);
 
-watch(hoveredRow, (newVal) => {
+watch(hoveredRow, (newVal, oldVal) => {
     if (newVal) {
-        document.querySelector(`[data-list-key="${newVal.row.original.id}"]`)?.scrollIntoView({
+        // Default scroll behavior
+        let scrollOptions: ScrollIntoViewOptions = {
             block: 'nearest',
             inline: 'nearest'
-        });
+        };
+        
+        // Use center alignment for page up/down navigation
+        if (oldVal && Math.abs(
+            tableApi.getRowModel().rows.findIndex(row => row.id === newVal.row.id) - 
+            tableApi.getRowModel().rows.findIndex(row => row.id === oldVal.row.id)
+        ) > 5) {
+            scrollOptions.block = 'center';
+        }
+        
+        document.querySelector(`[data-list-key="${newVal.row.original.id}"]`)?.scrollIntoView(scrollOptions);
     }
 });
 
-function moveSelection(direction: 'up' | 'down') {
+function moveSelection(direction: 'up' | 'down', amount: number = 1) {
     const rows = tableApi.getRowModel().rows
     if (!hoveredRow.value) {
         hoveredRow.value = {row: rows[0], kind: 'focus'};
@@ -324,8 +351,8 @@ function moveSelection(direction: 'up' | 'down') {
 
     const currentIndex = rows.findIndex((row) => row.id === hoveredRow.value?.row.id);
     const newIndex = direction === 'up' 
-        ? Math.max(currentIndex - 1, 0)
-        : Math.min(currentIndex + 1, rows.length - 1);
+        ? Math.max(currentIndex - amount, 0)
+        : Math.min(currentIndex + amount, rows.length - 1);
     
     hoveredRow.value = {row: rows[newIndex], kind: 'focus'};
 }
