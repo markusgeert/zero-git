@@ -315,27 +315,27 @@ watch(hoveredRow, (newVal) => {
     }
 });
 
-function up() {
+function moveSelection(direction: 'up' | 'down') {
     const rows = tableApi.getRowModel().rows
     if (!hoveredRow.value) {
         hoveredRow.value = {row: rows[0], kind: 'focus'};
         return;
     }
 
+    const currentIndex = rows.findIndex((row) => row.id === hoveredRow.value?.row.id);
+    const newIndex = direction === 'up' 
+        ? Math.max(currentIndex - 1, 0)
+        : Math.min(currentIndex + 1, rows.length - 1);
+    
+    hoveredRow.value = {row: rows[newIndex], kind: 'focus'};
+}
 
-    const elBeforeCurrentHover = rows.findIndex((row) => row.id === hoveredRow.value?.row.id) - 1;
-    hoveredRow.value = {row: rows[Math.max(elBeforeCurrentHover, 0)], kind: 'focus'};
+function up() {
+    moveSelection('up');
 }
 
 function down() {
-    const rows = tableApi.getRowModel().rows
-    if (!hoveredRow.value) {
-        hoveredRow.value = {row: rows[0], kind: 'focus'};
-        return;
-    }
-
-    const elAfterCurrentHover = rows.findIndex((row) => row.id === hoveredRow.value?.row.id) + 1;
-    hoveredRow.value = {row: rows[Math.min(elAfterCurrentHover, rows.length - 1)], kind: 'focus'};
+    moveSelection('down');
 }
 
 
