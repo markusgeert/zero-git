@@ -26,5 +26,5 @@ const UAvatar = resolveComponent("UAvatar");
 </script>
 
 <template>
-  <UTable :data="[...repos]" class="flex-1" />
+	<UTable :data="[...repos]" class="flex-1" />
 </template>

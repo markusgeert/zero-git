@@ -32,23 +32,37 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
 </script>
 
 <template>
-  <Col>
-    <UButton
-      v-if="authStore.jwt"
-      icon="mdi:logout"
-      color="neutral"
-      variant="outline"
-      class="self-end"
-      @click="authStore.logout"
-    >
-      Log out
-    </UButton>
-    <UButton v-else icon="mdi:github" color="neutral" @click="authStore.login" class="self-end">
-      Sign in with Github
-    </UButton>
-    <UButton icon="mdi:plus" color="neutral" @click="addRepo" class="self-end">
-      Add repo
-    </UButton>
-    <ItemList :data="repos" :columns="columns" @select="onSelect" :ui="{tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset', tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline'}" />
-  </Col>
+	<Col>
+		<UButton
+			v-if="authStore.jwt"
+			icon="mdi:logout"
+			color="neutral"
+			variant="outline"
+			class="self-end"
+			@click="authStore.logout"
+		>
+			Log out
+		</UButton>
+		<UButton
+			v-else
+			icon="mdi:github"
+			color="neutral"
+			class="self-end"
+			@click="authStore.login"
+		>
+			Sign in with Github
+		</UButton>
+		<UButton icon="mdi:plus" color="neutral" class="self-end" @click="addRepo">
+			Add repo
+		</UButton>
+		<ItemList
+			:data="repos"
+			:columns="columns"
+			:ui="{
+				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
+				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
+			}"
+			@select="onSelect"
+		/>
+	</Col>
 </template>

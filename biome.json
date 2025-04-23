@@ -7,18 +7,11 @@
 	},
 	"files": {
 		"ignoreUnknown": false,
-		"ignore": [
-			"dist",
-			"apps/frontend/components.d.ts",
-			"apps/frontend/auto-imports.d.ts"
-		]
+		"ignore": ["dist", "apps/frontend"]
 	},
 	"overrides": [
 		{
-			"include": [
-				"packages/zero/src/zero-schema.gen.ts",
-				"apps/frontend/src/components/ItemList.vue"
-			],
+			"include": ["packages/zero/src/zero-schema.gen.ts"],
 			"linter": {
 				"enabled": false
 			},

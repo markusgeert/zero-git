@@ -21,4 +21,6 @@ watch(
 );
 </script>
 
-<template></template>
+<template>
+	<div />
+</template>
