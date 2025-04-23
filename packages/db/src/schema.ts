@@ -25,6 +25,7 @@ export const usersTable = pgTable("users", {
 export const reposTable = pgTable("repos", {
 	id: text().primaryKey(),
 	visibility: text().notNull().$type<"public" | "private">(),
+	stars: integer("stars").default(0).notNull(),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),

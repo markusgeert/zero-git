@@ -479,7 +479,9 @@ function down() {
 
 function handleRowHover(row?: TableRow<T>) {
 	if (!row) {
-		hoveredRow.value = null;
+		if (hoveredRow.value?.kind === "hover") {
+			hoveredRow.value = null;
+		}
 		return;
 	}
 
