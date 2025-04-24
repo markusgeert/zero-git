@@ -14,6 +14,11 @@ const router = createRouter({
 			name: "callback",
 			component: () => import("../views/AuthCallbackView.vue"),
 		},
+		{
+			path: "/repo/:repoId",
+			name: "showRepo",
+			component: () => import("../views/AuthCallbackView.vue"),
+		},
 	],
 });
 

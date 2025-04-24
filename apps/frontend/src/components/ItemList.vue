@@ -424,9 +424,19 @@ const hoveredRow = ref<{ row: TableRow<T>; kind: "hover" | "focus" } | null>(
 );
 
 watch(hoveredRow, (newVal, oldVal) => {
-	if (!newVal || newVal.kind !== "focus") {
+	if (!newVal) {
 		return;
 	}
+
+	document
+		.querySelector(`[data-list-key="${newVal.row.original.id}"]`)
+		?.querySelector("a")
+		?.focus();
+
+	if (newVal.kind !== "focus") {
+		return;
+	}
+
 	// Default scroll behavior
 	let scrollOptions: ScrollIntoViewOptions = {
 		block: "nearest",
@@ -477,7 +487,7 @@ function down() {
 	moveSelection("down");
 }
 
-function handleRowHover(row?: TableRow<T>) {
+function handleRowHover(row?: TableRow<T>, e?: Event) {
 	if (!row) {
 		if (hoveredRow.value?.kind === "hover") {
 			hoveredRow.value = null;
@@ -489,7 +499,7 @@ function handleRowHover(row?: TableRow<T>) {
 		return;
 	}
 
-	hoveredRow.value = { row, kind: "hover" };
+	hoveredRow.value = { row, kind: e?.type === "focus" ? "focus" : "hover" };
 }
 
 function handleRowSelect(row: TableRow<T>, e: Event) {
@@ -573,11 +583,10 @@ defineExpose({
 							"
 							:data-list-key="row.original.id"
 							:role="props.onSelect ? 'button' : undefined"
-							:tabindex="props.onSelect ? 0 : undefined"
+							:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
 							:class="ui.tr({ class: [props.ui?.tr] })"
 							@mousemove="handleRowHover(row)"
 							@click="handleRowSelect(row, $event)"
-							@focus="handleRowHover(row)"
 						>
 							<ItemListCell
 								v-for="cell in row.getVisibleCells()"
@@ -586,38 +595,8 @@ defineExpose({
 								:link="props.getLink?.(row)"
 								:ui="props.ui?.td"
 								:td="ui.td"
+								@focus="handleRowHover(row, $event)"
 							/>
-
-							<!-- <td -->
-							<!-- 	v-for="cell in row.getVisibleCells()" -->
-							<!-- 	:key="cell.id" -->
-							<!-- 	:data-pinned="cell.column.getIsPinned()" -->
-							<!-- 	class="contents" -->
-							<!-- > -->
-							<!-- 	<slot -->
-							<!-- 		:name="`${cell.column.id}-cell`" -->
-							<!-- 		v-bind="cell.getContext()" -->
-							<!-- 	> -->
-							<!-- 		<a -->
-							<!-- 			href="" -->
-							<!-- 			:class=" -->
-							<!-- 				ui.td({ -->
-							<!-- 					class: [ -->
-							<!-- 						'block', -->
-							<!-- 						props.ui?.td, -->
-							<!-- 						cell.column.columnDef.meta?.class?.td, -->
-							<!-- 					], -->
-							<!-- 					pinned: !!cell.column.getIsPinned(), -->
-							<!-- 				}) -->
-							<!-- 			" -->
-							<!-- 		> -->
-							<!-- 			<FlexRender -->
-							<!-- 				:render="cell.column.columnDef.cell" -->
-							<!-- 				:props="cell.getContext()" -->
-							<!-- 			/> -->
-							<!-- 		</a> -->
-							<!-- 	</slot> -->
-							<!-- </td> -->
 						</tr>
 						<tr
 							v-if="row.getIsExpanded()"

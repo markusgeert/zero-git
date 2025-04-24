@@ -10,9 +10,17 @@ const props = defineProps<{
 	td?: unknown;
 }>();
 
+const emit = defineEmits<{
+	focus: [event: Event];
+}>();
+
 const cellClass = computed(() => {
 	return props.td({
-		class: ["block", props.ui, props.cell.column.columnDef.meta?.class?.td],
+		class: [
+			"table-cell",
+			props.ui,
+			props.cell.column.columnDef.meta?.class?.td,
+		],
 		pinned: !!props.cell.column.getIsPinned(),
 	});
 });
@@ -25,7 +33,13 @@ const cellClass = computed(() => {
 		:class="link ? 'contents' : cellClass"
 	>
 		<slot :name="`${cell.column.id}-cell`" v-bind="cell.getContext()">
-			<ULink v-if="link" :to="link" :class="cellClass">
+			<ULink
+				v-if="link"
+				:to="link"
+				:class="cellClass"
+				:tabindex="props.cell.column.getIndex() === 0 ? 0 : -1"
+				@focus="emit('focus', $event)"
+			>
 				<FlexRender
 					:render="cell.column.columnDef.cell"
 					:props="cell.getContext()"
