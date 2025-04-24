@@ -33,10 +33,11 @@ const cellClass = computed(() => {
 		:class="link ? 'contents' : cellClass"
 	>
 		<slot :name="`${cell.column.id}-cell`" v-bind="cell.getContext()">
-			<ULink
+			<a
 				v-if="link"
-				:to="link"
+				:href="link"
 				:class="cellClass"
+				class="hover:text-unset"
 				:tabindex="props.cell.column.getIndex() === 0 ? 0 : -1"
 				@focus="emit('focus', $event)"
 			>
@@ -44,7 +45,7 @@ const cellClass = computed(() => {
 					:render="cell.column.columnDef.cell"
 					:props="cell.getContext()"
 				/>
-			</ULink>
+			</a>
 			<FlexRender
 				v-else
 				:render="cell.column.columnDef.cell"

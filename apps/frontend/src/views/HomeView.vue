@@ -1,21 +1,29 @@
 <script setup lang="ts">
-import { useZero } from "@/composables/useZero";
 import { useAuthStore } from "@/stores/authStore";
 import type { TableColumn, TableRow } from "@nuxt/ui";
 import { nanoid } from "nanoid";
-import { useQuery } from "zero-vue";
+import { faker } from "@faker-js/faker";
+import { useRepoStore, type Repo } from "@/stores/repoStore";
+import { useZero } from "@/composables/useZero";
+import { ref } from "vue";
+
+console.time("HomeView");
 
 const authStore = useAuthStore();
-
-const z = useZero();
-const { data: repos } = useQuery(z.value.query.reposTable);
-
-type Repo = (typeof repos)["value"][0];
+const repoStore = useRepoStore();
 
 const columns: TableColumn<Repo>[] = [
 	{
 		accessorKey: "id",
 		header: "ID",
+	},
+	{
+		accessorKey: "org",
+		header: "Org",
+	},
+	{
+		accessorKey: "name",
+		header: "Repo",
 	},
 	{
 		accessorKey: "visibility",
@@ -24,15 +32,21 @@ const columns: TableColumn<Repo>[] = [
 ];
 
 async function addRepo() {
+	const z = useZero();
 	await z.value.mutate.reposTable.insert({
 		id: nanoid(),
 		visibility: "public",
+		stars: faker.number.int({ min: 0, max: 100 }),
+		org: faker.internet.username(),
+		name: faker.git.branch(),
 	});
 }
 
 function onSelect(row: TableRow<Repo>, e?: Event) {
 	console.log(row, e);
 }
+
+const focusedRow = ref();
 </script>
 
 <template>
@@ -60,9 +74,10 @@ function onSelect(row: TableRow<Repo>, e?: Event) {
 			Add repo
 		</UButton>
 		<ItemList
-			:data="repos"
+			v-model:focused-row="focusedRow"
+			:data="repoStore.repos"
 			:columns="columns"
-			:get-link="(row) => `/repo/${row.original.id}`"
+			:get-link="(r) => repoStore.repoLinks[r.original.id]"
 			:ui="{
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',

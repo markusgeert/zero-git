@@ -11,7 +11,10 @@ CREATE TABLE "github_events" (
 --> statement-breakpoint
 CREATE TABLE "repos" (
 	"id" text PRIMARY KEY NOT NULL,
+	"org" text NOT NULL,
+	"name" text NOT NULL,
 	"visibility" text NOT NULL,
+	"stars" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"modified_at" timestamp with time zone DEFAULT now() NOT NULL
 );

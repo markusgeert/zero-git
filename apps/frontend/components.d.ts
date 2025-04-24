@@ -24,6 +24,7 @@ declare module 'vue' {
     UButton: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     ULink: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/vue/components/Link.vue')['default']
     ULinkBase: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue')['default']
+    UTable: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

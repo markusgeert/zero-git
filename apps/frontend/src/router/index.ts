@@ -19,6 +19,11 @@ const router = createRouter({
 			name: "showRepo",
 			component: () => import("../views/AuthCallbackView.vue"),
 		},
+		{
+			path: "/:org/:repo",
+			name: "repo",
+			component: () => import("../views/RepoView.vue"),
+		},
 	],
 });
 

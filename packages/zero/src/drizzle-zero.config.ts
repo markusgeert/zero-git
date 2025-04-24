@@ -15,6 +15,9 @@ export default drizzleZeroConfig(schema, {
 		},
 		reposTable: {
 			id: true,
+			org: true,
+			name: true,
+			stars: true,
 			visibility: true,
 			createdAt: true,
 			modifiedAt: true,

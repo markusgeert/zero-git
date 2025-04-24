@@ -39,8 +39,12 @@ import type {
 } from "@tanstack/vue-table";
 import type { VariantProps } from "tailwind-variants";
 import type { Ref } from "vue";
+// @ts-expect-error - this currently doesn't resolve to a module
 import _appConfig from "#build/app.config";
-import theme from "#build/ui/table";
+// @ts-expect-error - this currently doesn't resolve to a module
+import _theme from "#build/ui/table";
+import type themeType from "../../../../node_modules/@nuxt/ui/.nuxt/ui/table";
+const theme: typeof themeType = _theme;
 
 declare module "@tanstack/table-core" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -61,7 +65,7 @@ const table = tv({ extend: tv(theme), ...(appConfigTable.ui?.table || {}) });
 type TableVariants = VariantProps<typeof table>;
 
 export type TableRow<T> = Row<T>;
-export type TableData = RowData;
+export type TableData = RowData & { id: string };
 export type TableColumn<T extends TableData, D = unknown> = ColumnDef<T, D>;
 
 export interface TableOptions<T extends TableData>
@@ -213,7 +217,7 @@ export type TableSlots<T> = {
 </script>
 
 <script setup lang="ts" generic="T extends TableData">
-import { computed, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { Primitive } from "reka-ui";
 import { upperFirst } from "scule";
 import {
@@ -284,8 +288,12 @@ const expandedState = defineModel<ExpandedState>("expanded", { default: {} });
 const paginationState = defineModel<PaginationState>("pagination", {
 	default: {},
 });
+const hoveredRow = defineModel<{
+	row: TableRow<T>;
+	kind: "hover" | "focus";
+} | null>("focusedRow");
 
-const tableApi = useVueTable({
+const tableApi = useVueTable<T>({
 	...reactiveOmit(
 		props,
 		"as",
@@ -418,10 +426,6 @@ defineShortcuts({
 		hoveredRow.value = null;
 	},
 });
-
-const hoveredRow = ref<{ row: TableRow<T>; kind: "hover" | "focus" } | null>(
-	null,
-);
 
 watch(hoveredRow, (newVal, oldVal) => {
 	if (!newVal) {
@@ -572,32 +576,36 @@ defineExpose({
 			>
 				<template v-if="tableApi.getRowModel().rows?.length">
 					<template v-for="row in tableApi.getRowModel().rows" :key="row.id">
-						<tr
-							:data-selected="row.getIsSelected()"
-							:data-selectable="!!props.onSelect"
-							:data-expanded="row.getIsExpanded()"
-							:data-focused="
-								hoveredRow && row.original.id === hoveredRow.row.original?.id
-									? hoveredRow.kind
-									: undefined
-							"
-							:data-list-key="row.original.id"
-							:role="props.onSelect ? 'button' : undefined"
-							:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
-							:class="ui.tr({ class: [props.ui?.tr] })"
-							@mousemove="handleRowHover(row)"
-							@click="handleRowSelect(row, $event)"
-						>
-							<ItemListCell
-								v-for="cell in row.getVisibleCells()"
-								:key="cell.id"
-								:cell="cell"
-								:link="props.getLink?.(row)"
-								:ui="props.ui?.td"
-								:td="ui.td"
-								@focus="handleRowHover(row, $event)"
-							/>
-						</tr>
+						<router-link :to="props.getLink?.(row)" class="contents">
+							<tr
+								:data-selected="row.getIsSelected()"
+								:data-selectable="!!props.onSelect"
+								:data-expanded="row.getIsExpanded()"
+								:data-focused="
+									hoveredRow && row.original.id === hoveredRow.row.original?.id
+										? hoveredRow.kind
+										: undefined
+								"
+								:data-id="row.id"
+								:data-list-key="row.original.id"
+								:role="props.onSelect ? 'button' : undefined"
+								:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
+								:class="ui.tr({ class: [props.ui?.tr] })"
+								@hover="handleRowHover(row)"
+								@mousemove="handleRowHover(row)"
+								@click="handleRowSelect(row, $event)"
+							>
+								<ItemListCell
+									v-for="cell in row.getVisibleCells()"
+									:key="cell.id"
+									:cell="cell"
+									:link="props.getLink?.(row)"
+									:ui="props.ui?.td"
+									:td="ui.td"
+									@focus="handleRowHover(row, $event)"
+								/>
+							</tr>
+						</router-link>
 						<tr
 							v-if="row.getIsExpanded()"
 							:class="ui.tr({ class: [props.ui?.tr] })"
