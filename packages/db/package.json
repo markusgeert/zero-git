@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "bun run dev:db-up",
 		"postdev": "bun run dev:db-down",
+		"clean": "bun run dev:db-down && bun run dev:clean && bun run db:regen",
 		"dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up",
 		"dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
 		"dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata",

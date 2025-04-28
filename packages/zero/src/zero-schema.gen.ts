@@ -433,7 +433,7 @@ export type Schema = {
 			tree: [
 				{
 					readonly sourceField: string[];
-					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "sha" | "repoId")[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "sha")[];
 					readonly destSchema: "treesTable";
 					readonly cardinality: "one";
 				},
@@ -457,27 +457,27 @@ export type Schema = {
 			node: [
 				{
 					readonly sourceField: string[];
-					readonly destField: ("mode" | "createdAt" | "modifiedAt" | "orgId" | "sha" | "repoId" | "path" | "type" | "size")[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "sha" | "path" | "mode" | "type" | "size")[];
 					readonly destSchema: "treeNodesTable";
 					readonly cardinality: "one";
 				},
 			];
 		};
 		treesTable: {
+			nodesInTree: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "tree_sha" | "node_sha" | "repoId")[];
+					readonly destSchema: "nodesInTree";
+					readonly cardinality: "many";
+				},
+			];
 			org: [
 				{
 					readonly sourceField: string[];
 					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
 					readonly destSchema: "organizationsTable";
 					readonly cardinality: "one";
-				},
-			];
-			nodesInTree: [
-				{
-					readonly sourceField: string[];
-					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "tree_sha" | "node_sha")[];
-					readonly destSchema: "nodesInTree";
-					readonly cardinality: "many";
 				},
 			];
 			repo: [
@@ -490,20 +490,20 @@ export type Schema = {
 			];
 		};
 		treeNodesTable: {
+			nodesInTree: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "tree_sha" | "node_sha" | "repoId")[];
+					readonly destSchema: "nodesInTree";
+					readonly cardinality: "many";
+				},
+			];
 			org: [
 				{
 					readonly sourceField: string[];
 					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
 					readonly destSchema: "organizationsTable";
 					readonly cardinality: "one";
-				},
-			];
-			nodesInTree: [
-				{
-					readonly sourceField: string[];
-					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "tree_sha" | "node_sha")[];
-					readonly destSchema: "nodesInTree";
-					readonly cardinality: "many";
 				},
 			];
 			repo: [
