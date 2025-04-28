@@ -41,6 +41,7 @@ import type { VariantProps } from "tailwind-variants";
 import type { Ref } from "vue";
 import _appConfig from "#build/app.config";
 import theme from "#build/ui/table";
+import { useWindowVirtualizer } from "@tanstack/vue-virtual";
 
 declare module "@tanstack/table-core" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -213,7 +214,7 @@ export type TableSlots<T> = {
 </script>
 
 <script setup lang="ts" generic="T extends TableData">
-import { computed, watch } from "vue";
+import { computed, onMounted, ref, useTemplateRef, watch } from "vue";
 import { Primitive } from "reka-ui";
 import { upperFirst } from "scule";
 import {
@@ -389,6 +390,7 @@ const tableApi = useVueTable<T>({
 		},
 	},
 });
+const rows = computed(() => tableApi.getRowModel().rows);
 
 function valueUpdater<T extends Updater<unknown>>(updaterOrValue: T, ref: Ref) {
 	ref.value =
@@ -398,9 +400,7 @@ function valueUpdater<T extends Updater<unknown>>(updaterOrValue: T, ref: Ref) {
 }
 
 function getVisibleRowCount() {
-	// Calculate approximate number of rows visible in the viewport
-	// Row height is estimated at 40px, but can be adjusted based on actual UI
-	return Math.floor(window.innerHeight / 40);
+	return Math.floor(window.innerHeight / 52);
 }
 
 function pageUp() {
@@ -419,75 +419,61 @@ defineShortcuts({
 	ctrl_u: pageUp,
 	ctrl_d: pageDown,
 	"g-g": () => setSelection(0),
-	shift_g: () => setSelection(tableApi.getRowModel().rows.length - 1),
+	shift_g: () => setSelection(rows.value.length - 1),
 	Escape: () => {
 		hoveredRow.value = null;
 	},
 });
 
-watch(hoveredRow, (newVal, oldVal) => {
+watch(hoveredRow, (newVal) => {
 	if (!newVal) {
 		return;
 	}
 
-	document
+	let linkToFocus = document
 		.querySelector(`[data-list-key="${newVal.row.original.id}"]`)
-		?.querySelector("a")
-		?.focus();
+		?.querySelector("a");
 
-	if (newVal.kind !== "focus") {
-		return;
+	if (!linkToFocus) {
+		rowVirtualizer.value.scrollToIndex(newVal.row.index, {
+			align: "center",
+			behavior: "auto",
+		});
+	} else {
+		linkToFocus.focus();
+
+		if (newVal.kind === "focus") {
+			linkToFocus.scrollIntoView({
+				block: "nearest",
+				inline: "nearest",
+			});
+		}
 	}
-
-	// Default scroll behavior
-	let scrollOptions: ScrollIntoViewOptions = {
-		block: "nearest",
-		inline: "nearest",
-	};
-
-	// Use center alignment for page up/down navigation
-	if (
-		oldVal &&
-		Math.abs(
-			tableApi.getRowModel().rows.findIndex((row) => row.id === newVal.row.id) -
-				tableApi
-					.getRowModel()
-					.rows.findIndex((row) => row.id === oldVal.row.id),
-		) > 5
-	) {
-		scrollOptions.block = "center";
-	}
-
-	document
-		.querySelector(`[data-list-key="${newVal.row.original.id}"]`)
-		?.scrollIntoView(scrollOptions);
 });
 
 function setSelection(index: number) {
-	const rows = tableApi.getRowModel().rows;
-	if (index < 0 || index >= rows.length) {
+	if (index < 0 || index >= rows.value.length) {
 		return;
 	}
 
-	hoveredRow.value = { row: rows[index], kind: "focus" };
+	hoveredRow.value = { row: rows.value[index], kind: "focus" };
 }
 
 function moveSelection(direction: "up" | "down", amount: number = 1) {
-	const rows = tableApi.getRowModel().rows;
 	if (!hoveredRow.value) {
-		hoveredRow.value = { row: rows[0], kind: "focus" };
+		hoveredRow.value = { row: rows.value[0], kind: "focus" };
 		return;
 	}
 
-	const currentIndex = rows.findIndex(
+	const currentIndex = rows.value.findIndex(
 		(row) => row.id === hoveredRow.value?.row.id,
 	);
 	const newIndex =
 		direction === "up"
 			? Math.max(currentIndex - amount, 0)
-			: Math.min(currentIndex + amount, rows.length - 1);
+			: Math.min(currentIndex + amount, rows.value.length - 1);
 
-	hoveredRow.value = { row: rows[newIndex], kind: "focus" };
+	hoveredRow.value = { row: rows.value[newIndex], kind: "focus" };
 }
 
 function up() {
@@ -533,126 +519,177 @@ defineExpose({
 	tableApi,
 });
 
-// const virtualizer = useVirtualizer(computed(() => ({
-//     count: data.value.length,
-//     estimateSize: () => 40,
-//     overscan: 5,
-//     getItemKey: index => data.value[index].id,
-//     getScrollElement: () => listRef.current,
-// })));
+const parentRef = useTemplateRef("parent");
+const tbodyRef = useTemplateRef("tbody-ref");
+const parentOffsetRef = ref(0);
+
+onMounted(() => {
+	parentOffsetRef.value = parentRef.value?.offsetTop ?? 0;
+});
+
+const rowVirtualizerOptions = computed(() => ({
+	count: rows.value.length,
+	estimateSize: () => 52,
+	overscan: 50,
+	scrollMargin: parentOffsetRef.value,
+}));
+
+// The virtualizer
+const rowVirtualizer = useWindowVirtualizer(rowVirtualizerOptions);
+const virtualRows = computed(() => rowVirtualizer.value.getVirtualItems());
+const totalSize = computed(() => {
+	return rowVirtualizer.value.getTotalSize() + (tbodyRef.value?.offsetTop ?? 0);
+});
+
+const measureElement = (el: HTMLElement) => {
+	if (!el) {
+		return;
+	}
+
+	rowVirtualizer.value.measureElement(el);
+
+	return undefined;
+};
 </script>
 
 <template>
 	<Primitive
+		ref="parent"
 		:as="as"
 		:class="ui.root({ class: [props.class, props.ui?.root] })"
 	>
-		<table :class="ui.base({ class: [props.ui?.base] })">
-			<caption
-				v-if="caption || !!slots.caption"
-				:class="ui.caption({ class: [props.ui?.caption] })"
+		<div :style="{ height: `${totalSize}px` }">
+			<table
+				:class="
+					ui.base({
+						class: [
+							props.ui?.base,
+							'overflow-visible border-separate border-spacing-y-0',
+						],
+					})
+				"
 			>
-				<slot name="caption">
-					{{ caption }}
-				</slot>
-			</caption>
-
-			<thead :class="ui.thead({ class: [props.ui?.thead] })">
-				<tr
-					v-for="headerGroup in tableApi.getHeaderGroups()"
-					:key="headerGroup.id"
-					:class="ui.tr({ class: [props.ui?.tr] })"
+				<caption
+					v-if="caption || !!slots.caption"
+					:class="ui.caption({ class: [props.ui?.caption] })"
 				>
-					<th
-						v-for="header in headerGroup.headers"
-						:key="header.id"
-						:data-pinned="header.column.getIsPinned()"
-						:class="
-							ui.th({
-								class: [props.ui?.th, header.column.columnDef.meta?.class?.th],
-								pinned: !!header.column.getIsPinned(),
-							})
-						"
-					>
-						<slot :name="`${header.id}-header`" v-bind="header.getContext()">
-							<FlexRender
-								v-if="!header.isPlaceholder"
-								:render="header.column.columnDef.header"
-								:props="header.getContext()"
-							/>
-						</slot>
-					</th>
-				</tr>
-			</thead>
+					<slot name="caption">
+						{{ caption }}
+					</slot>
+				</caption>
 
-			<tbody
-				:class="ui.tbody({ class: [props.ui?.tbody] })"
-				@mouseleave="handleRowHover()"
-			>
-				<template v-if="tableApi.getRowModel().rows?.length">
-					<template v-for="row in tableApi.getRowModel().rows" :key="row.id">
-						<tr
-							:data-selected="row.getIsSelected()"
-							:data-selectable="!!props.onSelect"
-							:data-expanded="row.getIsExpanded()"
-							:data-focused="
-								hoveredRow && row.original.id === hoveredRow.row.original?.id
-									? hoveredRow.kind
-									: undefined
+				<thead :class="ui.thead({ class: [props.ui?.thead] })">
+					<tr
+						v-for="headerGroup in tableApi.getHeaderGroups()"
+						:key="headerGroup.id"
+						:class="ui.tr({ class: [props.ui?.tr] })"
+					>
+						<th
+							v-for="header in headerGroup.headers"
+							:key="header.id"
+							:data-pinned="header.column.getIsPinned()"
+							:class="
+								ui.th({
+									class: [
+										props.ui?.th,
+										header.column.columnDef.meta?.class?.th,
+									],
+									pinned: !!header.column.getIsPinned(),
+								})
 							"
-							:data-id="row.id"
-							:data-list-key="row.original.id"
-							:role="props.onSelect ? 'button' : undefined"
-							:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
-							:class="ui.tr({ class: [props.ui?.tr] })"
-							@hover="handleRowHover(row)"
-							@mousemove="handleRowHover(row)"
-							@click="handleRowSelect(row, $event)"
+							:width="header.getSize()"
 						>
-							<ItemListCell
-								v-for="cell in row.getVisibleCells()"
-								:key="cell.id"
-								:cell="cell"
-								:link="props.getLink?.(row)"
-								:ui="props.ui?.td"
-								:td="ui.td"
-								@focus="handleRowHover(row, $event)"
-							/>
-						</tr>
-						<tr
-							v-if="row.getIsExpanded()"
-							:class="ui.tr({ class: [props.ui?.tr] })"
+							<slot :name="`${header.id}-header`" v-bind="header.getContext()">
+								<FlexRender
+									v-if="!header.isPlaceholder"
+									:render="header.column.columnDef.header"
+									:props="header.getContext()"
+								/>
+							</slot>
+						</th>
+					</tr>
+				</thead>
+
+				<tbody
+					ref="tbody-ref"
+					:class="ui.tbody({ class: [props.ui?.tbody] })"
+					@mouseleave="handleRowHover()"
+				>
+					<template v-if="rows?.length">
+						<template
+							v-for="(virtualRow, index) in virtualRows"
+							:key="virtualRow.key"
 						>
-							<td
-								:colspan="row.getAllCells().length"
-								:class="ui.td({ class: [props.ui?.td] })"
+							<tr
+								:ref="measureElement"
+								:data-index="virtualRow.index"
+								:data-selected="rows[virtualRow.index].getIsSelected()"
+								:data-selectable="!!props.onSelect"
+								:data-expanded="rows[virtualRow.index].getIsExpanded()"
+								:data-focused="
+									hoveredRow &&
+									rows[virtualRow.index].original.id ===
+										hoveredRow.row.original?.id
+										? hoveredRow.kind
+										: undefined
+								"
+								:data-id="rows[virtualRow.index].id"
+								:data-list-key="rows[virtualRow.index].original.id"
+								:role="props.onSelect ? 'button' : undefined"
+								:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
+								:class="ui.tr({ class: [props.ui?.tr] })"
+								:style="{
+									transform: `translateY(${virtualRow.start - index * virtualRow.size}px)`,
+								}"
+								@hover="handleRowHover(rows[virtualRow.index])"
+								@mousemove="handleRowHover(rows[virtualRow.index])"
+								@click="handleRowSelect(rows[virtualRow.index], $event)"
 							>
-								<slot name="expanded" :row="row" />
-							</td>
-						</tr>
+								<ItemListCell
+									v-for="cell in rows[virtualRow.index].getVisibleCells()"
+									:key="cell.id"
+									:cell="cell"
+									:link="props.getLink?.(rows[virtualRow.index])"
+									:ui="props.ui?.td"
+									:td="ui.td"
+									@focus="handleRowHover(rows[virtualRow.index], $event)"
+								/>
+							</tr>
+							<tr
+								v-if="rows[virtualRow.index].getIsExpanded()"
+								:class="ui.tr({ class: [props.ui?.tr] })"
+							>
+								<td
+									:colspan="rows[virtualRow.index].getAllCells().length"
+									:class="ui.td({ class: [props.ui?.td] })"
+								>
+									<slot name="expanded" :row="rows[virtualRow.index]" />
+								</td>
+							</tr>
+						</template>
 					</template>
-				</template>
 
-				<tr v-else-if="loading && !!slots['loading']">
-					<td
-						:colspan="columns?.length"
-						:class="ui.loading({ class: props.ui?.loading })"
-					>
-						<slot name="loading" />
-					</td>
-				</tr>
+					<tr v-else-if="loading && !!slots['loading']">
+						<td
+							:colspan="columns?.length"
+							:class="ui.loading({ class: props.ui?.loading })"
+						>
+							<slot name="loading" />
+						</td>
+					</tr>
 
-				<tr v-else>
-					<td
-						:colspan="columns?.length"
-						:class="ui.empty({ class: props.ui?.empty })"
-					>
-						<slot name="empty">
-							{{ empty || t("table.noData") }}
-						</slot>
-					</td>
-				</tr>
-			</tbody>
-		</table>
+					<tr v-else>
+						<td
+							:colspan="columns?.length"
+							:class="ui.empty({ class: props.ui?.empty })"
+						>
+							<slot name="empty">
+								{{ empty || t("table.noData") }}
+							</slot>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</Primitive>
 </template>

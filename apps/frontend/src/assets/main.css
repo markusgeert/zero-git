@@ -1,3 +1,4 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "./base.css";
+@import "vue-virtual-scroller/dist/vue-virtual-scroller.css";

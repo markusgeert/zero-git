@@ -16,14 +16,17 @@ const columns: TableColumn<Repo>[] = [
 	{
 		accessorKey: "id",
 		header: "ID",
+		size: 250,
 	},
 	{
 		accessorFn: (row) => row.org?.displayName,
 		header: "Org",
+		size: 250,
 	},
 	{
 		accessorKey: "name",
 		header: "Repo",
+		size: 200,
 	},
 	{
 		accessorKey: "visibility",
@@ -96,16 +99,21 @@ defineShortcuts({
 		<UButton icon="mdi:plus" color="neutral" class="self-end" @click="addRepo">
 			Add repo
 		</UButton>
+		<span> {{ repos.length }} </span>
 		<ItemList
 			v-if="repos.length > 0 || status === 'complete'"
 			:data="repos"
 			:columns="columns"
 			:get-link="(r) => repoStore.repoLinks[r.original.id]"
 			:ui="{
+				root: 'overflow-visible',
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
 				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
 			}"
 		/>
+		<UButton icon="mdi:plus" color="neutral" class="self-end" @click="addRepo">
+			Add repo
+		</UButton>
 	</Col>
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { recordPageLoad } from "@/page-load-stats";
 import { ref } from "vue";
 
 const items = ref([
@@ -44,6 +45,8 @@ const items = ref([
 		icon: "i-vscode-icons-file-type-nuxt",
 	},
 ]);
+
+recordPageLoad("code-view");
 </script>
 
 <template>

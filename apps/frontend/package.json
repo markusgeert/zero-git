@@ -12,7 +12,7 @@
 		"build-only": "vite build",
 		"fix": "bun run format & bun run lint",
 		"format": "prettier . --write --log-level warn",
-		"lint": "eslint",
+		"lint": "eslint --fix",
 		"check-types": "vue-tsc -p ./tsconfig.app.json"
 	},
 	"dependencies": {
@@ -30,6 +30,7 @@
 		"universal-cookie": "^7.2.2",
 		"vue": "^3.5.13",
 		"vue-router": "^4.5.1",
+		"vue-virtual-scroller": "2.0.0-beta.8",
 		"zero-vue": "^0.2.0"
 	},
 	"devDependencies": {

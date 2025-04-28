@@ -107,7 +107,7 @@ export const api = new Hono()
 			authorization = authorization.substring("Bearer ".length);
 		}
 
-		jwk = await getJwk();
+		jwk ??= await getJwk();
 		let authData: AuthData | undefined = undefined;
 
 		if (jwk && authorization) {
