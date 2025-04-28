@@ -4,20 +4,21 @@
 	"scripts": {
 		"predev": "turbo build --filter=@zero-git/zero",
 		"dev": "bunx zero-cache-dev -p src/zero-schema.ts",
-		"prebuild": "drizzle-zero generate -c src/drizzle-zero.config.ts -o src/zero-schema.gen.ts",
-		"build": "tsc"
+		"prebuild": "drizzle-zero generate -c src/drizzle-zero.config.ts -o src/zero-schema.gen.ts && (cd ../../ && bun fix || true)",
+		"build": "tsc",
+		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"exports": {
 		".": "./src/zero-schema.ts"
 	},
 	"dependencies": {
-		"@rocicorp/zero": "^0.18.2025040300",
+		"@rocicorp/zero": "^0.18.2025042300",
 		"@zero-git/auth": "workspace:*"
 	},
 	"devDependencies": {
 		"@zero-git/db": "workspace:*",
 		"@zero-git/typescript-config": "workspace:*",
-		"drizzle-zero": "^0.8.5",
+		"drizzle-zero": "^0.8.8",
 		"typescript": "^5.8.3"
 	}
 }

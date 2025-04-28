@@ -15,3 +15,5 @@ declare module "#build/ui-image-component" {
 	const component: Component;
 	export default component;
 }
+
+declare module "/home/runner/work/ui/ui/src/theme/checkbox-group" {}

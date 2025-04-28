@@ -10,10 +10,10 @@ const orgName = useRouteParams<string>("org");
 const repoName = useRouteParams<string>("repo");
 
 const z = useZero();
-const { data: repo } = useQuery(() =>
-	z.value.query.reposTable
-		.where("org", orgName.value)
-		.where("name", repoName.value)
+const { data: org } = useQuery(() =>
+	z.value.query.organizationsTable
+		.where("name", orgName.value)
+		.related("repos", (q) => q.where("name", repoName.value).one())
 		.one(),
 );
 
@@ -64,7 +64,10 @@ defineShortcuts({
 </script>
 
 <template>
-	<div v-if="repo">{{ repo.org }}/{{ repo.name }}</div>
+	<div v-if="org">{{ org.name }}/{{ org.repos?.name }}</div>
+	<router-link :to="{ name: 'home' }">
+		<button class="btn btn-primary">Go to home</button>
+	</router-link>
 	<UNavigationMenu :items="items" variant="link" class="w-full" />
 	<router-view v-slot="{ Component }">
 		<keep-alive>

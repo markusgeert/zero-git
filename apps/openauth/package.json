@@ -4,14 +4,15 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "PORT=9378 bun run --watch index.ts"
+		"dev": "PORT=9378 bun run --watch index.ts",
+		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"dependencies": {
 		"@openauthjs/openauth": "^0.4.3",
 		"@zero-git/auth": "workspace:*",
 		"@zero-git/db": "workspace:*",
-		"arktype": "^2.1.19",
-		"drizzle-orm": "^0.42.0",
+		"arktype": "^2.1.20",
+		"drizzle-orm": "^0.43.1",
 		"nanoid": "^5.1.5",
 		"octokit": "^4.1.3"
 	},

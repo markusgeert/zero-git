@@ -10,14 +10,15 @@
 		"dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
 		"dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata",
 		"db:regen": "drizzle-kit drop && drizzle-kit generate",
-		"db:gen": "drizzle-kit generate"
+		"db:gen": "drizzle-kit generate",
+		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"peerDependencies": {
 		"drizzle-orm": ">=0.41.0"
 	},
 	"devDependencies": {
-		"@types/bun": "^1.2.9",
+		"@types/bun": "^1.2.10",
 		"@zero-git/typescript-config": "workspace:*",
-		"drizzle-kit": "^0.30.6"
+		"drizzle-kit": "^0.31.0"
 	}
 }

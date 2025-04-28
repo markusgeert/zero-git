@@ -12,10 +12,12 @@ import { type } from "arktype";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { backOff } from "exponential-backoff";
-// import { nanoid } from "nanoid";
 import { jwtVerify } from "jose";
 import postgres from "postgres";
-import { type PostCommitTask, createServerMutators } from "./server-mutators";
+import {
+	type PostCommitTask,
+	createServerMutators,
+} from "./server-mutators.js";
 
 function getEnvOrThrow(key: string): string {
 	const value = process.env[key];
@@ -50,6 +52,14 @@ const client = createClient({
 	clientID: "lambda-api",
 	issuer: getEnvOrThrow("OPENAUTH_ISSUER_URL"),
 });
+
+async function getJwk() {
+	return fetch(`${getEnvOrThrow("OPENAUTH_ISSUER_URL")}/.well-known/jwks.json`)
+		.then((res) => res.json())
+		.then((data) => data.keys.pop());
+}
+
+let jwk: unknown | undefined = undefined;
 
 export const api = new Hono()
 	.get("/", async (c) => {
@@ -97,19 +107,20 @@ export const api = new Hono()
 			authorization = authorization.substring("Bearer ".length);
 		}
 
-		const jwk = process.env.PUBLIC_JWK;
+		jwk = await getJwk();
 		let authData: AuthData | undefined = undefined;
 
 		if (jwk && authorization) {
 			try {
 				const maybeAuthData = AuthDataSchema(
-					(await jwtVerify(authorization, JSON.parse(jwk))).payload,
+					(await jwtVerify(authorization, jwk)).payload,
 				);
 				if (maybeAuthData instanceof type.errors) {
 					throw maybeAuthData;
 				}
 				authData = maybeAuthData;
 			} catch (e) {
+				console.log(e, authorization, jwk);
 				if (e instanceof Error) {
 					return c.text(e.message, 401);
 				}
@@ -122,6 +133,7 @@ export const api = new Hono()
 			c.req.query(),
 			await c.req.json(),
 		);
+
 		return c.json(response);
 	});
 

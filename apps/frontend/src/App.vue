@@ -26,19 +26,19 @@ defineShortcuts({
 });
 
 const z = useZero();
-const { data: repos } = useQuery(() => z.value.query.reposTable);
+const { data: repos } = useQuery(() => z.value.query.reposTable.related("org"));
 
 const open = ref(false);
 watch(open, (open) => {
 	if (!open) {
-		document.activeElement?.blur();
+		(document.activeElement as HTMLElement)?.blur();
 	}
 });
 
 const groups = computed(() => {
 	const r = repos.value.map((repo) => {
 		return {
-			label: `${repo.org}/${repo.name}`,
+			label: `${repo.org?.name}/${repo.name}`,
 			suffix: Number.isFinite(repo.stars) ? String(repo.stars) : undefined,
 		};
 	});

@@ -38,6 +38,13 @@ export const organizationsTable = pgTable("organizations", {
 		.notNull(),
 });
 
+export const organizationsRelations = relations(
+	organizationsTable,
+	({ many }) => ({
+		repos: many(reposTable),
+	}),
+);
+
 export const reposTable = pgTable("repos", {
 	id: text().primaryKey(),
 	githubId: integer("github_id").notNull(),
@@ -53,7 +60,7 @@ export const reposTable = pgTable("repos", {
 		.notNull(),
 });
 
-export const reposRelations = relations(reposTable, ({ many, one }) => ({
+export const reposRelations = relations(reposTable, ({ one }) => ({
 	org: one(organizationsTable, {
 		fields: [reposTable.orgId],
 		references: [organizationsTable.id],

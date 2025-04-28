@@ -9,6 +9,11 @@ import { type Schema, schema } from "./zero-schema.gen.js";
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 	return {
+		organizationsTable: {
+			row: {
+				select: ANYONE_CAN,
+			},
+		},
 		usersTable: {
 			row: {
 				select: ANYONE_CAN,
@@ -18,7 +23,6 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 			row: {
 				select: ANYONE_CAN,
 				delete: ANYONE_CAN,
-				insert: ANYONE_CAN,
 			},
 		},
 	} satisfies PermissionsConfig<AuthData, Schema>;

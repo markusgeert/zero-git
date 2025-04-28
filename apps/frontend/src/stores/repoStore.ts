@@ -7,14 +7,21 @@ export type Repo = ReturnType<typeof useRepoStore>["repos"][0];
 
 export const useRepoStore = defineStore("repo", () => {
 	const z = useZero();
-	const { data: repos } = useQuery(() => z.value.query.reposTable, {
-		ttl: "forever",
-	});
+	const { data: repos } = useQuery(
+		() => z.value.query.reposTable.related("org"),
+		{
+			ttl: "forever",
+		},
+	);
 
 	const repoLinks = computed(() => {
 		const links: Record<string, string> = {};
 		for (const repo of repos.value) {
-			links[repo.id] = `/${repo.org}/${repo.name}`;
+			if (!repo.org?.name) {
+				continue;
+			}
+
+			links[repo.id] = `/${repo.org.name}/${repo.name}`;
 		}
 		return links;
 	});

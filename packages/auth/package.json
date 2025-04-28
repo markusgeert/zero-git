@@ -4,7 +4,11 @@
 	"exports": {
 		".": "./index.ts"
 	},
+	"scripts": {
+		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
+	},
 	"dependencies": {
-		"arktype": "^2.1.19"
+		"@openauthjs/openauth": "^0.4.3",
+		"arktype": "^2.1.20"
 	}
 }

@@ -18,7 +18,7 @@ const columns: TableColumn<Repo>[] = [
 		header: "ID",
 	},
 	{
-		accessorKey: "org",
+		accessorFn: (row) => row.org?.displayName,
 		header: "Org",
 	},
 	{
@@ -32,16 +32,19 @@ const columns: TableColumn<Repo>[] = [
 ];
 
 const z = useZero();
-
-const { data: repos, status } = useQuery(() => z.value.query.reposTable);
+const { data: repos, status } = useQuery(() =>
+	z.value.query.reposTable.related("org"),
+);
 
 async function addRepo() {
-	await z.value.mutate.reposTable.insert({
+	await z.value.mutate.reposTable.create({
 		id: nanoid(),
+		orgId: nanoid(),
+		orgGithubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }),
+		orgName: faker.internet.username(),
 		githubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }),
 		visibility: "public",
 		stars: faker.number.int({ min: 0, max: 100 }),
-		org: faker.internet.username(),
 		name: faker.git.branch(),
 	});
 }
