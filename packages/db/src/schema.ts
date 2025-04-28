@@ -4,6 +4,7 @@ import {
 	integer,
 	jsonb,
 	pgTable,
+	primaryKey,
 	text,
 	timestamp,
 } from "drizzle-orm/pg-core";
@@ -117,18 +118,22 @@ export const treeNodesRelations = relations(
 	}),
 );
 
-export const nodesInTree = pgTable("nodes_in_tree", {
-	tree_sha: text("tree_sha").notNull(),
-	node_sha: text("node_sha").notNull(),
+export const nodesInTree = pgTable(
+	"nodes_in_tree",
+	{
+		tree_sha: text("tree_sha").notNull(),
+		node_sha: text("node_sha").notNull(),
 
-	orgId: text("org_id").notNull(),
-	repoId: text("repo_id").notNull(),
+		orgId: text("org_id").notNull(),
+		repoId: text("repo_id").notNull(),
 
-	createdAt: timestamp("created_at", { withTimezone: true })
-		.defaultNow()
-		.notNull(),
-	modifiedAt: timestamp("modified_at", { withTimezone: true }),
-});
+		createdAt: timestamp("created_at", { withTimezone: true })
+			.defaultNow()
+			.notNull(),
+		modifiedAt: timestamp("modified_at", { withTimezone: true }),
+	},
+	(table) => [primaryKey({ columns: [table.tree_sha, table.node_sha] })],
+);
 
 export const nodesInTreeRelations = relations(nodesInTree, ({ one }) => ({
 	tree: one(treesTable, {

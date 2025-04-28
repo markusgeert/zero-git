@@ -16,9 +16,550 @@
  * ------------------------------------------------------------
  */
 
+import type { ReadonlyJSONValue } from "@rocicorp/zero";
+
+export type Simplify<T> = T & {};
 export type Schema = {
-	readonly tables: {};
-	readonly relationships: {};
+	readonly tables: {
+		usersTable: {
+			name: "usersTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly email: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly githubId: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly githubEmail: {
+					type: "string";
+					customType: string;
+					optional: true;
+					serverName: string;
+				};
+				readonly githubAvatarUrl: {
+					type: "string";
+					customType: string;
+					optional: true;
+					serverName: string;
+				};
+				readonly githubName: {
+					type: "string";
+					customType: string;
+					optional: true;
+					serverName: string;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		reposTable: {
+			name: "reposTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly githubId: {
+					optional: false;
+					type: "number";
+					customType: number;
+					serverName: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly name: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly visibility: {
+					optional: false;
+					type: "string";
+					customType: "public" | "private";
+				};
+				readonly stars: {
+					type: "number";
+					customType: number;
+					optional: true;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		nodesInTree: {
+			name: "nodesInTree";
+			primaryKey: any;
+			columns: {
+				readonly tree_sha: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly node_sha: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly repoId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		organizationsTable: {
+			name: "organizationsTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly githubId: {
+					optional: false;
+					type: "number";
+					customType: number;
+					serverName: string;
+				};
+				readonly name: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly displayName: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly avatarUrl: {
+					type: "string";
+					customType: string;
+					optional: true;
+					serverName: string;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		treesTable: {
+			name: "treesTable";
+			primaryKey: any;
+			columns: {
+				readonly sha: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly repoId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		treeNodesTable: {
+			name: "treeNodesTable";
+			primaryKey: any;
+			columns: {
+				readonly sha: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly repoId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly path: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly mode: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly type: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly size: {
+					optional: false;
+					type: "number";
+					customType: number;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		pullRequestsTable: {
+			name: "pullRequestsTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly githubId: {
+					optional: false;
+					type: "number";
+					customType: number;
+					serverName: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly repoId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly title: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly number: {
+					optional: false;
+					type: "number";
+					customType: number;
+				};
+				readonly state: {
+					optional: false;
+					type: "string";
+					customType: "open" | ({} & string);
+				};
+				readonly locked: {
+					type: "boolean";
+					customType: boolean;
+					optional: true;
+				};
+				readonly body: {
+					type: "string";
+					customType: string;
+					optional: true;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		githubEventsTable: {
+			name: "githubEventsTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly type: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly actorId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly repoId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly orgId: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly isPublic: {
+					optional: false;
+					type: "boolean";
+					customType: boolean;
+					serverName: string;
+				};
+				readonly content: {
+					optional: false;
+					type: "json";
+					customType: ReadonlyJSONValue;
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+	};
+	readonly relationships: {
+		reposTable: {
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+		nodesInTree: {
+			tree: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "sha" | "repoId")[];
+					readonly destSchema: "treesTable";
+					readonly cardinality: "one";
+				},
+			];
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+			repo: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "orgId" | "visibility" | "stars")[];
+					readonly destSchema: "reposTable";
+					readonly cardinality: "one";
+				},
+			];
+			node: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("mode" | "createdAt" | "modifiedAt" | "orgId" | "sha" | "repoId" | "path" | "type" | "size")[];
+					readonly destSchema: "treeNodesTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+		treesTable: {
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+			nodesInTree: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "tree_sha" | "node_sha")[];
+					readonly destSchema: "nodesInTree";
+					readonly cardinality: "many";
+				},
+			];
+			repo: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "orgId" | "visibility" | "stars")[];
+					readonly destSchema: "reposTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+		treeNodesTable: {
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+			nodesInTree: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("createdAt" | "modifiedAt" | "orgId" | "repoId" | "tree_sha" | "node_sha")[];
+					readonly destSchema: "nodesInTree";
+					readonly cardinality: "many";
+				},
+			];
+			repo: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "orgId" | "visibility" | "stars")[];
+					readonly destSchema: "reposTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+		pullRequestsTable: {
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+			repo: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "orgId" | "visibility" | "stars")[];
+					readonly destSchema: "reposTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+		githubEventsTable: {
+			org: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "displayName" | "avatarUrl")[];
+					readonly destSchema: "organizationsTable";
+					readonly cardinality: "one";
+				},
+			];
+			repo: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("name" | "id" | "githubId" | "createdAt" | "modifiedAt" | "orgId" | "visibility" | "stars")[];
+					readonly destSchema: "reposTable";
+					readonly cardinality: "one";
+				},
+			];
+			actor: [
+				{
+					readonly sourceField: string[];
+					readonly destField: ("email" | "id" | "githubId" | "githubEmail" | "githubAvatarUrl" | "githubName" | "createdAt" | "modifiedAt")[];
+					readonly destSchema: "usersTable";
+					readonly cardinality: "one";
+				},
+			];
+		};
+	};
 };
 
 export const schema = {
@@ -75,6 +616,47 @@ export const schema = {
 			primaryKey: ["id"],
 			serverName: "github_events",
 		},
+		nodesInTree: {
+			name: "nodesInTree",
+			columns: {
+				tree_sha: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				node_sha: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "repo_id",
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["tree_sha", "node_sha"],
+			serverName: "nodes_in_tree",
+		},
 		organizationsTable: {
 			name: "organizationsTable",
 			columns: {
@@ -121,6 +703,74 @@ export const schema = {
 			},
 			primaryKey: ["id"],
 			serverName: "organizations",
+		},
+		pullRequestsTable: {
+			name: "pullRequestsTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				githubId: {
+					type: "number",
+					optional: false,
+					customType: null as unknown,
+					serverName: "github_id",
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "repo_id",
+				},
+				title: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "name",
+				},
+				number: {
+					type: "number",
+					optional: false,
+					customType: null as unknown,
+				},
+				state: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				locked: {
+					type: "boolean",
+					optional: true,
+					customType: null as unknown,
+				},
+				body: {
+					type: "string",
+					optional: true,
+					customType: null as unknown,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "pull_requests",
 		},
 		reposTable: {
 			name: "reposTable",
@@ -173,6 +823,98 @@ export const schema = {
 			primaryKey: ["id"],
 			serverName: "repos",
 		},
+		treeNodesTable: {
+			name: "treeNodesTable",
+			columns: {
+				sha: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "repo_id",
+				},
+				path: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				mode: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				type: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				size: {
+					type: "number",
+					optional: false,
+					customType: null as unknown,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["sha"],
+			serverName: "tree_nodes",
+		},
+		treesTable: {
+			name: "treesTable",
+			columns: {
+				sha: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "repo_id",
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["sha"],
+			serverName: "trees",
+		},
 		usersTable: {
 			name: "usersTable",
 			columns: {
@@ -186,11 +928,29 @@ export const schema = {
 					optional: false,
 					customType: null as unknown,
 				},
+				githubId: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "github_id",
+				},
+				githubEmail: {
+					type: "string",
+					optional: true,
+					customType: null as unknown,
+					serverName: "github_email",
+				},
 				githubAvatarUrl: {
 					type: "string",
 					optional: true,
 					customType: null as unknown,
 					serverName: "github_avatar_url",
+				},
+				githubName: {
+					type: "string",
+					optional: true,
+					customType: null as unknown,
+					serverName: "github_name",
 				},
 				createdAt: {
 					type: "number",
@@ -236,12 +996,116 @@ export const schema = {
 				},
 			],
 		},
+		nodesInTree: {
+			tree: [
+				{
+					sourceField: ["tree_sha"],
+					destField: ["sha"],
+					destSchema: "treesTable",
+					cardinality: "one",
+				},
+			],
+			node: [
+				{
+					sourceField: ["node_sha"],
+					destField: ["sha"],
+					destSchema: "treeNodesTable",
+					cardinality: "one",
+				},
+			],
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+			repo: [
+				{
+					sourceField: ["repoId"],
+					destField: ["id"],
+					destSchema: "reposTable",
+					cardinality: "one",
+				},
+			],
+		},
+		pullRequestsTable: {
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+			repo: [
+				{
+					sourceField: ["repoId"],
+					destField: ["id"],
+					destSchema: "reposTable",
+					cardinality: "one",
+				},
+			],
+		},
 		reposTable: {
 			org: [
 				{
 					sourceField: ["orgId"],
 					destField: ["id"],
 					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+		},
+		treeNodesTable: {
+			nodesInTree: [
+				{
+					sourceField: ["sha"],
+					destField: ["node_sha"],
+					destSchema: "nodesInTree",
+					cardinality: "many",
+				},
+			],
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+			repo: [
+				{
+					sourceField: ["repoId"],
+					destField: ["id"],
+					destSchema: "reposTable",
+					cardinality: "one",
+				},
+			],
+		},
+		treesTable: {
+			nodesInTree: [
+				{
+					sourceField: ["sha"],
+					destField: ["tree_sha"],
+					destSchema: "nodesInTree",
+					cardinality: "many",
+				},
+			],
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+			repo: [
+				{
+					sourceField: ["repoId"],
+					destField: ["id"],
+					destSchema: "reposTable",
 					cardinality: "one",
 				},
 			],
