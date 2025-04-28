@@ -7,7 +7,8 @@ const props = defineProps<{
 	cell: Cell<T, unknown>;
 	link?: string;
 	ui?: unknown;
-	td?: unknown;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	td: (opts: any) => string;
 }>();
 
 const emit = defineEmits<{
@@ -33,9 +34,9 @@ const cellClass = computed(() => {
 		:class="link ? 'contents' : cellClass"
 	>
 		<slot :name="`${cell.column.id}-cell`" v-bind="cell.getContext()">
-			<a
+			<router-link
 				v-if="link"
-				:href="link"
+				:to="link"
 				:class="cellClass"
 				class="hover:text-unset"
 				:tabindex="props.cell.column.getIndex() === 0 ? 0 : -1"
@@ -45,7 +46,7 @@ const cellClass = computed(() => {
 					:render="cell.column.columnDef.cell"
 					:props="cell.getContext()"
 				/>
-			</a>
+			</router-link>
 			<FlexRender
 				v-else
 				:render="cell.column.columnDef.cell"

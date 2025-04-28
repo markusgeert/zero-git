@@ -23,6 +23,24 @@ const router = createRouter({
 			path: "/:org/:repo",
 			name: "repo",
 			component: () => import("../views/RepoView.vue"),
+			redirect: { name: "code" },
+			children: [
+				{
+					path: "",
+					name: "code",
+					component: () => import("../views/CodeView.vue"),
+				},
+				{
+					path: "issues",
+					name: "issues",
+					component: () => import("../views/IssuesView.vue"),
+				},
+				{
+					path: "pulls",
+					name: "pull-requests",
+					component: () => import("../views/PRsView.vue"),
+				},
+			],
 		},
 	],
 });

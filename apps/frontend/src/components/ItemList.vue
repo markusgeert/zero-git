@@ -39,12 +39,9 @@ import type {
 } from "@tanstack/vue-table";
 import type { VariantProps } from "tailwind-variants";
 import type { Ref } from "vue";
-// @ts-expect-error - this currently doesn't resolve to a module
 import _appConfig from "#build/app.config";
-// @ts-expect-error - this currently doesn't resolve to a module
-import _theme from "#build/ui/table";
-import type themeType from "../../../../node_modules/@nuxt/ui/.nuxt/ui/table";
-const theme: typeof themeType = _theme;
+import theme from "#build/ui/table";
+import { useVirtualizer } from "@tanstack/vue-virtual";
 
 declare module "@tanstack/table-core" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -217,7 +214,7 @@ export type TableSlots<T> = {
 </script>
 
 <script setup lang="ts" generic="T extends TableData">
-import { computed, watch } from "vue";
+import { computed, onMounted, watch } from "vue";
 import { Primitive } from "reka-ui";
 import { upperFirst } from "scule";
 import {
@@ -422,6 +419,8 @@ defineShortcuts({
 	ArrowDown: down,
 	ctrl_u: pageUp,
 	ctrl_d: pageDown,
+	"g-g": () => setSelection(0),
+	shift_g: () => setSelection(tableApi.getRowModel().rows.length - 1),
 	Escape: () => {
 		hoveredRow.value = null;
 	},
@@ -464,6 +463,15 @@ watch(hoveredRow, (newVal, oldVal) => {
 		.querySelector(`[data-list-key="${newVal.row.original.id}"]`)
 		?.scrollIntoView(scrollOptions);
 });
+
+function setSelection(index: number) {
+	const rows = tableApi.getRowModel().rows;
+	if (index < 0 || index >= rows.length) {
+		return;
+	}
+
+	hoveredRow.value = { row: rows[index], kind: "focus" };
+}
 
 function moveSelection(direction: "up" | "down", amount: number = 1) {
 	const rows = tableApi.getRowModel().rows;
@@ -525,6 +533,14 @@ function handleRowSelect(row: TableRow<T>, e: Event) {
 defineExpose({
 	tableApi,
 });
+
+// const virtualizer = useVirtualizer(computed(() => ({
+//     count: data.value.length,
+//     estimateSize: () => 40,
+//     overscan: 5,
+//     getItemKey: index => data.value[index].id,
+//     getScrollElement: () => listRef.current,
+// })));
 </script>
 
 <template>
@@ -576,36 +592,34 @@ defineExpose({
 			>
 				<template v-if="tableApi.getRowModel().rows?.length">
 					<template v-for="row in tableApi.getRowModel().rows" :key="row.id">
-						<router-link :to="props.getLink?.(row)" class="contents">
-							<tr
-								:data-selected="row.getIsSelected()"
-								:data-selectable="!!props.onSelect"
-								:data-expanded="row.getIsExpanded()"
-								:data-focused="
-									hoveredRow && row.original.id === hoveredRow.row.original?.id
-										? hoveredRow.kind
-										: undefined
-								"
-								:data-id="row.id"
-								:data-list-key="row.original.id"
-								:role="props.onSelect ? 'button' : undefined"
-								:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
-								:class="ui.tr({ class: [props.ui?.tr] })"
-								@hover="handleRowHover(row)"
-								@mousemove="handleRowHover(row)"
-								@click="handleRowSelect(row, $event)"
-							>
-								<ItemListCell
-									v-for="cell in row.getVisibleCells()"
-									:key="cell.id"
-									:cell="cell"
-									:link="props.getLink?.(row)"
-									:ui="props.ui?.td"
-									:td="ui.td"
-									@focus="handleRowHover(row, $event)"
-								/>
-							</tr>
-						</router-link>
+						<tr
+							:data-selected="row.getIsSelected()"
+							:data-selectable="!!props.onSelect"
+							:data-expanded="row.getIsExpanded()"
+							:data-focused="
+								hoveredRow && row.original.id === hoveredRow.row.original?.id
+									? hoveredRow.kind
+									: undefined
+							"
+							:data-id="row.id"
+							:data-list-key="row.original.id"
+							:role="props.onSelect ? 'button' : undefined"
+							:tabindex="props.onSelect && !props.getLink ? 0 : undefined"
+							:class="ui.tr({ class: [props.ui?.tr] })"
+							@hover="handleRowHover(row)"
+							@mousemove="handleRowHover(row)"
+							@click="handleRowSelect(row, $event)"
+						>
+							<ItemListCell
+								v-for="cell in row.getVisibleCells()"
+								:key="cell.id"
+								:cell="cell"
+								:link="props.getLink?.(row)"
+								:ui="props.ui?.td"
+								:td="ui.td"
+								@focus="handleRowHover(row, $event)"
+							/>
+						</tr>
 						<tr
 							v-if="row.getIsExpanded()"
 							:class="ui.tr({ class: [props.ui?.tr] })"

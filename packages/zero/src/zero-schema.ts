@@ -17,6 +17,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 		reposTable: {
 			row: {
 				select: ANYONE_CAN,
+				delete: ANYONE_CAN,
 				insert: ANYONE_CAN,
 			},
 		},

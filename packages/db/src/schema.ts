@@ -22,8 +22,23 @@ export const usersTable = pgTable("users", {
 		.notNull(),
 });
 
+export const organizationsTable = pgTable("organizations", {
+	id: text().primaryKey(),
+	githubId: integer("github_id").notNull(),
+	name: text("name").notNull(),
+	displayName: text("diaplay_name").notNull(),
+	avatarUrl: text("avatar_url"),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	modifiedAt: timestamp("modified_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
+
 export const reposTable = pgTable("repos", {
 	id: text().primaryKey(),
+	githubId: integer("github_id").notNull(),
 	org: text("org").notNull(),
 	name: text("name").notNull(),
 	visibility: text().notNull().$type<"public" | "private">(),

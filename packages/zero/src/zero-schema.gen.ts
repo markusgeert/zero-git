@@ -64,6 +64,12 @@ export type Schema = {
 					type: "string";
 					customType: string;
 				};
+				readonly githubId: {
+					optional: false;
+					type: "number";
+					customType: number;
+					serverName: string;
+				};
 				readonly org: {
 					optional: false;
 					type: "string";
@@ -83,6 +89,52 @@ export type Schema = {
 					optional: false;
 					type: "string";
 					customType: "public" | "private";
+				};
+				readonly createdAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+				readonly modifiedAt: {
+					type: "number";
+					customType: number;
+					optional: true;
+					serverName: string;
+				};
+			};
+		};
+		organizationsTable: {
+			name: "organizationsTable";
+			primaryKey: any;
+			columns: {
+				readonly id: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly name: {
+					optional: false;
+					type: "string";
+					customType: string;
+				};
+				readonly displayName: {
+					optional: false;
+					type: "string";
+					customType: string;
+					serverName: string;
+				};
+				readonly avatarUrl: {
+					type: "string";
+					customType: string;
+					optional: true;
+					serverName: string;
+				};
+				readonly githubId: {
+					optional: false;
+					type: "number";
+					customType: number;
+					serverName: string;
 				};
 				readonly createdAt: {
 					type: "number";
@@ -207,6 +259,53 @@ export const schema = {
 			primaryKey: ["id"],
 			serverName: "github_events",
 		},
+		organizationsTable: {
+			name: "organizationsTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				githubId: {
+					type: "number",
+					optional: false,
+					customType: null as unknown,
+					serverName: "github_id",
+				},
+				name: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+				},
+				displayName: {
+					type: "string",
+					optional: false,
+					customType: null as unknown,
+					serverName: "diaplay_name",
+				},
+				avatarUrl: {
+					type: "string",
+					optional: true,
+					customType: null as unknown,
+					serverName: "avatar_url",
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "organizations",
+		},
 		reposTable: {
 			name: "reposTable",
 			columns: {
@@ -214,6 +313,12 @@ export const schema = {
 					type: "string",
 					optional: false,
 					customType: null as unknown,
+				},
+				githubId: {
+					type: "number",
+					optional: false,
+					customType: null as unknown,
+					serverName: "github_id",
 				},
 				org: {
 					type: "string",

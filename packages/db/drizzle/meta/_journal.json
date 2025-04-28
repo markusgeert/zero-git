@@ -8,6 +8,13 @@
 			"when": 1745483638769,
 			"tag": "0000_wide_prowler",
 			"breakpoints": true
+		},
+		{
+			"idx": 1,
+			"version": "7",
+			"when": 1745573001701,
+			"tag": "0001_tough_captain_universe",
+			"breakpoints": true
 		}
 	]
 }

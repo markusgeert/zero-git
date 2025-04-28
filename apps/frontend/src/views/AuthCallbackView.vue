@@ -4,7 +4,6 @@ import { useRouteHash } from "@vueuse/router";
 import { watch } from "vue";
 
 const authStore = useAuthStore();
-
 const hash = useRouteHash();
 
 watch(

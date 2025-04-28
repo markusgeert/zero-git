@@ -13,8 +13,18 @@ export default drizzleZeroConfig(schema, {
 			createdAt: true,
 			modifiedAt: true,
 		},
+		organizationsTable: {
+			id: true,
+			name: true,
+			displayName: true,
+			avatarUrl: true,
+			githubId: true,
+			createdAt: true,
+			modifiedAt: true,
+		},
 		reposTable: {
 			id: true,
+			githubId: true,
 			org: true,
 			name: true,
 			stars: true,

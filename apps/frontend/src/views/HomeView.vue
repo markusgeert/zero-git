@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/authStore";
-import type { TableColumn, TableRow } from "@nuxt/ui";
+import type { TableColumn } from "@nuxt/ui";
 import { nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
 import { useRepoStore, type Repo } from "@/stores/repoStore";
 import { useZero } from "@/composables/useZero";
-import { ref } from "vue";
-
-console.time("HomeView");
+import { useQuery } from "zero-vue";
+import { watch } from "vue";
+import { recordPageLoad } from "@/page-load-stats";
 
 const authStore = useAuthStore();
 const repoStore = useRepoStore();
@@ -31,10 +31,14 @@ const columns: TableColumn<Repo>[] = [
 	},
 ];
 
+const z = useZero();
+
+const { data: repos, status } = useQuery(() => z.value.query.reposTable);
+
 async function addRepo() {
-	const z = useZero();
 	await z.value.mutate.reposTable.insert({
 		id: nanoid(),
+		githubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }),
 		visibility: "public",
 		stars: faker.number.int({ min: 0, max: 100 }),
 		org: faker.internet.username(),
@@ -42,11 +46,27 @@ async function addRepo() {
 	});
 }
 
-function onSelect(row: TableRow<Repo>, e?: Event) {
-	console.log(row, e);
+async function removeRepo() {
+	const idxToDelete = faker.number.int({
+		min: 0,
+		max: repos.value.length - 1,
+	});
+
+	await z.value.mutate.reposTable.delete({
+		id: repos.value[idxToDelete].id,
+	});
 }
 
-const focusedRow = ref();
+watch(status, (s) => {
+	if (s === "complete") {
+		recordPageLoad("list-page");
+	}
+});
+
+defineShortcuts({
+	c: addRepo,
+	d: removeRepo,
+});
 </script>
 
 <template>
@@ -74,8 +94,8 @@ const focusedRow = ref();
 			Add repo
 		</UButton>
 		<ItemList
-			v-model:focused-row="focusedRow"
-			:data="repoStore.repos"
+			v-if="repos.length > 0 || status === 'complete'"
+			:data="repos"
 			:columns="columns"
 			:get-link="(r) => repoStore.repoLinks[r.original.id]"
 			:ui="{
@@ -83,7 +103,6 @@ const focusedRow = ref();
 				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
 				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
 			}"
-			@select="onSelect"
 		/>
 	</Col>
 </template>
