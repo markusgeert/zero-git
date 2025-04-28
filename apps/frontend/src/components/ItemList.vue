@@ -41,7 +41,6 @@ import type { VariantProps } from "tailwind-variants";
 import type { Ref } from "vue";
 import _appConfig from "#build/app.config";
 import theme from "#build/ui/table";
-import { useVirtualizer } from "@tanstack/vue-virtual";
 
 declare module "@tanstack/table-core" {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -214,7 +213,7 @@ export type TableSlots<T> = {
 </script>
 
 <script setup lang="ts" generic="T extends TableData">
-import { computed, onMounted, watch } from "vue";
+import { computed, watch } from "vue";
 import { Primitive } from "reka-ui";
 import { upperFirst } from "scule";
 import {

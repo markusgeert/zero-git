@@ -16,192 +16,8 @@
  * ------------------------------------------------------------
  */
 
-import type { ReadonlyJSONValue } from "@rocicorp/zero";
-
-export type Simplify<T> = T & {};
 export type Schema = {
-	readonly tables: {
-		usersTable: {
-			name: "usersTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly email: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly githubAvatarUrl: {
-					type: "string";
-					customType: string;
-					optional: true;
-					serverName: string;
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-				readonly modifiedAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-		reposTable: {
-			name: "reposTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly githubId: {
-					optional: false;
-					type: "number";
-					customType: number;
-					serverName: string;
-				};
-				readonly org: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly name: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly stars: {
-					type: "number";
-					customType: number;
-					optional: true;
-				};
-				readonly visibility: {
-					optional: false;
-					type: "string";
-					customType: "public" | "private";
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-				readonly modifiedAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-		organizationsTable: {
-			name: "organizationsTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly name: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly displayName: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly avatarUrl: {
-					type: "string";
-					customType: string;
-					optional: true;
-					serverName: string;
-				};
-				readonly githubId: {
-					optional: false;
-					type: "number";
-					customType: number;
-					serverName: string;
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-				readonly modifiedAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-		githubEventsTable: {
-			name: "githubEventsTable";
-			primaryKey: any;
-			columns: {
-				readonly id: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly type: {
-					optional: false;
-					type: "string";
-					customType: string;
-				};
-				readonly actorId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly repoId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly orgId: {
-					optional: false;
-					type: "string";
-					customType: string;
-					serverName: string;
-				};
-				readonly isPublic: {
-					optional: false;
-					type: "boolean";
-					customType: boolean;
-					serverName: string;
-				};
-				readonly content: {
-					optional: false;
-					type: "json";
-					customType: ReadonlyJSONValue;
-				};
-				readonly createdAt: {
-					type: "number";
-					customType: number;
-					optional: true;
-					serverName: string;
-				};
-			};
-		};
-	};
+	readonly tables: {};
 	readonly relationships: {};
 };
 
@@ -320,10 +136,11 @@ export const schema = {
 					customType: null as unknown,
 					serverName: "github_id",
 				},
-				org: {
+				orgId: {
 					type: "string",
 					optional: false,
 					customType: null as unknown,
+					serverName: "org_id",
 				},
 				name: {
 					type: "string",
@@ -392,5 +209,42 @@ export const schema = {
 			serverName: "users",
 		},
 	},
-	relationships: {},
+	relationships: {
+		githubEventsTable: {
+			actor: [
+				{
+					sourceField: ["actorId"],
+					destField: ["id"],
+					destSchema: "usersTable",
+					cardinality: "one",
+				},
+			],
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+			repo: [
+				{
+					sourceField: ["repoId"],
+					destField: ["id"],
+					destSchema: "reposTable",
+					cardinality: "one",
+				},
+			],
+		},
+		reposTable: {
+			org: [
+				{
+					sourceField: ["orgId"],
+					destField: ["id"],
+					destSchema: "organizationsTable",
+					cardinality: "one",
+				},
+			],
+		},
+	},
 } as Schema;

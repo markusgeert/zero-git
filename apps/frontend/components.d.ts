@@ -29,6 +29,7 @@ declare module 'vue' {
     UModal: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
     UNavigationMenu: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/NavigationMenu.vue')['default']
     UTable: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
+    UTree: typeof import('./../../node_modules/@nuxt/ui/dist/runtime/components/Tree.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
 }

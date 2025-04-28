@@ -17,6 +17,12 @@ defineShortcuts({
 		},
 		usingInput: true,
 	},
+	ctrl_c: {
+		handler: () => {
+			open.value = false;
+		},
+		usingInput: true,
+	},
 });
 
 const z = useZero();

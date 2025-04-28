@@ -25,7 +25,7 @@ export default drizzleZeroConfig(schema, {
 		reposTable: {
 			id: true,
 			githubId: true,
-			org: true,
+			orgId: true,
 			name: true,
 			stars: true,
 			visibility: true,

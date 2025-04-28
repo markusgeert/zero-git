@@ -23,16 +23,17 @@ const items = ref<NavigationMenuItem[]>([
 			label: "Code",
 			icon: "i-lucide-code-xml",
 			to: { name: "code" },
+			exact: true,
 		},
 		{
 			label: "Issues",
 			icon: "i-lucide-circle-dot",
-			to: "issues",
+			to: { name: "issues" },
 		},
 		{
 			label: "Pull requests",
 			icon: "i-lucide-git-pull-request-arrow",
-			to: "pulls",
+			to: { name: "pull-requests" },
 		},
 	],
 ]);
@@ -64,7 +65,7 @@ defineShortcuts({
 
 <template>
 	<div v-if="repo">{{ repo.org }}/{{ repo.name }}</div>
-	<UNavigationMenu :items="items" class="w-full" />
+	<UNavigationMenu :items="items" variant="link" class="w-full" />
 	<router-view v-slot="{ Component }">
 		<keep-alive>
 			<component :is="Component" />
