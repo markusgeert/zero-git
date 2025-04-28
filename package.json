@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"drizzle-zero": "^0.8.5",
-		"turbo": "^2.5.0"
+		"turbo": "^2.5.2"
 	},
 	"packageManager": "bun@1.2.8",
 	"engines": {
