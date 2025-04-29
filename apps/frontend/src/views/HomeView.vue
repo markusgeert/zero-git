@@ -8,6 +8,7 @@ import { useZero } from "@/composables/useZero";
 import { useQuery } from "zero-vue";
 import { watch } from "vue";
 import { recordPageLoad } from "@/page-load-stats";
+import { CACHE_FOREVER } from "@/query-cache-policy";
 
 const authStore = useAuthStore();
 const repoStore = useRepoStore();
@@ -35,8 +36,9 @@ const columns: TableColumn<Repo>[] = [
 ];
 
 const z = useZero();
-const { data: repos, status } = useQuery(() =>
-	z.value.query.reposTable.related("org"),
+const { data: repos, status } = useQuery(
+	() => z.value.query.reposTable.related("org"),
+	CACHE_FOREVER,
 );
 
 async function addRepo() {
@@ -104,7 +106,7 @@ defineShortcuts({
 			v-if="repos.length > 0 || status === 'complete'"
 			:data="repos"
 			:columns="columns"
-			:get-link="(r) => repoStore.repoLinks[r.original.id]"
+			:get-link="(r) => `/${r.original.org.name}/${r.original.name}`"
 			:ui="{
 				root: 'overflow-visible',
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',

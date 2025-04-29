@@ -2,6 +2,7 @@
 import type { Cell, RowData } from "@tanstack/table-core";
 import { computed } from "vue";
 import { FlexRender } from "@tanstack/vue-table";
+import { useRouter } from "#imports";
 
 const props = defineProps<{
 	cell: Cell<T, unknown>;
@@ -25,6 +26,12 @@ const cellClass = computed(() => {
 		pinned: !!props.cell.column.getIsPinned(),
 	});
 });
+
+const router = useRouter();
+
+function isPrimaryMouseButton(e: MouseEvent) {
+	return !(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.button !== 0);
+}
 </script>
 
 <template>
@@ -41,6 +48,12 @@ const cellClass = computed(() => {
 				class="hover:text-unset"
 				:tabindex="props.cell.column.getIndex() === 0 ? 0 : -1"
 				@focus="emit('focus', $event)"
+				@mousedown="
+					if (isPrimaryMouseButton($event)) {
+						$event.preventDefault();
+						router.push(link);
+					}
+				"
 			>
 				<FlexRender
 					:render="cell.column.columnDef.cell"

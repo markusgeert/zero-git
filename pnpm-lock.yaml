@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  zero-vue:
+    hash: 001e737897e9288b748fb63deafafda2a10d2a6de3024ba4f6324363cedbd500
+    path: patches/zero-vue.patch
+
 importers:
 
   .:
@@ -116,7 +121,7 @@ importers:
         version: 2.0.0-beta.8(vue@3.5.13(typescript@5.8.3))
       zero-vue:
         specifier: ^0.2.0
-        version: 0.2.0(vue@3.5.13(typescript@5.8.3))
+        version: 0.2.0(patch_hash=001e737897e9288b748fb63deafafda2a10d2a6de3024ba4f6324363cedbd500)(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.8
@@ -8877,7 +8882,7 @@ snapshots:
 
   yoctocolors@2.1.1: {}
 
-  zero-vue@0.2.0(vue@3.5.13(typescript@5.8.3)):
+  zero-vue@0.2.0(patch_hash=001e737897e9288b748fb63deafafda2a10d2a6de3024ba4f6324363cedbd500)(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       '@rocicorp/zero': 0.18.2025042300
       vue: 3.5.13(typescript@5.8.3)

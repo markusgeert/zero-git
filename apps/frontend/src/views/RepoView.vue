@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useZero } from "@/composables/useZero";
+import { CACHE_FOREVER } from "@/query-cache-policy";
 import router from "@/router";
 import type { NavigationMenuItem } from "@nuxt/ui";
 import { useRouteParams } from "@vueuse/router";
@@ -10,11 +11,13 @@ const orgName = useRouteParams<string>("org");
 const repoName = useRouteParams<string>("repo");
 
 const z = useZero();
-const { data: org } = useQuery(() =>
-	z.value.query.organizationsTable
-		.where("name", orgName.value)
-		.related("repos", (q) => q.where("name", repoName.value).one())
-		.one(),
+const { data: org, status } = useQuery(
+	() =>
+		z.value.query.organizationsTable
+			.where("name", orgName.value)
+			// .related("repos", (q) => q.where("name", repoName.value).one())
+			.one(),
+	CACHE_FOREVER,
 );
 
 const items = ref<NavigationMenuItem[]>([

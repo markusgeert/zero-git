@@ -9,3 +9,6 @@ onlyBuiltDependencies:
   - esbuild
   - protobufjs
   - vue-demi
+
+patchedDependencies:
+  zero-vue: patches/zero-vue.patch
