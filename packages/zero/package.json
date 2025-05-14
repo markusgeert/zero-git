@@ -4,7 +4,7 @@
 	"scripts": {
 		"predev": "turbo build --filter=@zero-git/zero",
 		"dev": "bunx zero-cache-dev -p src/zero-schema.ts",
-		"prebuild": "drizzle-zero generate -c src/drizzle-zero.config.ts -o src/zero-schema.gen.ts && (cd ../../ && bun fix || true)",
+		"prebuild": "drizzle-zero generate -c src/drizzle-zero.config.ts -o src/zero-schema.gen.ts && sed -i '' 's/\".\\/drizzle-zero.config\"/\".\\/drizzle-zero.config.js\"/g' src/zero-schema.gen.ts && (cd ../../ && bun fix || true)",
 		"build": "tsc",
 		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
