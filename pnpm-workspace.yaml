@@ -5,10 +5,8 @@ packages:
 onlyBuiltDependencies:
   - '@biomejs/biome'
   - '@rocicorp/zero-sqlite3'
+  - '@tailwindcss/oxide'
   - core-js
   - esbuild
   - protobufjs
   - vue-demi
-
-patchedDependencies:
-  zero-vue: patches/zero-vue.patch
