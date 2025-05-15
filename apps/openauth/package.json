@@ -5,6 +5,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "PORT=9378 bun run --watch index.ts",
+		"start": "bun run index.ts",
 		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"dependencies": {
