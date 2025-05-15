@@ -14,6 +14,9 @@ importers:
       '@tsconfig/bun':
         specifier: ^1.0.7
         version: 1.0.7
+      bun:
+        specifier: ^1.2.13
+        version: 1.2.13
       turbo:
         specifier: ^2.5.3
         version: 2.5.3
@@ -1451,6 +1454,61 @@ packages:
   '@oslojs/jwt@0.2.0':
     resolution: {integrity: sha512-bLE7BtHrURedCn4Mco3ma9L4Y1GR2SMBuIvjWr7rmQ4/W/4Jy70TIAgZ+0nIlk0xHz1vNP8x8DCns45Sb2XRbg==}
 
+  '@oven/bun-darwin-aarch64@1.2.13':
+    resolution: {integrity: sha512-AOU4O9jxRp2TXeqoEfOjEaUNZb3+SUPBN8TIEnUjpnyLWPoYJGCeNdQuCDcUkmF3MJEmEuJdyF1IeOITozpC6A==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@oven/bun-darwin-x64-baseline@1.2.13':
+    resolution: {integrity: sha512-bZpIUOvx9np07AmH5MVXGYHWZ40m2vCpNV74fma6sCzBlssJclS2V3BZgO+lLvtUKSqnW3HAyJBGsRF34wPbNw==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@oven/bun-darwin-x64@1.2.13':
+    resolution: {integrity: sha512-kJ2iOvxY8uz5/nu+8zIjKf4LmRIHBH9pJJM2q+tA47U04Tod6k6rtntDOI8SdmRe2M5c87RfbadWdxhpYHFIWQ==}
+    cpu: [x64]
+    os: [darwin]
+
+  '@oven/bun-linux-aarch64-musl@1.2.13':
+    resolution: {integrity: sha512-P56m718KXeyu4Vq5fsESFktfu+0Us1jhu/ZzgHYFRYJcm/hjs6AUA/RJtUAifFy5PNAM5IJdrYl3xPsE8Wa+pg==}
+    cpu: [aarch64]
+    os: [linux]
+
+  '@oven/bun-linux-aarch64@1.2.13':
+    resolution: {integrity: sha512-hocSJmblX4CCjP1HpaM64I65erB+CONUCCwKzGGOfLGLobVi+vn/G56UaYWsje1y/Z7WlVaUSgKYVWl7EJ6T9g==}
+    cpu: [arm64]
+    os: [linux]
+
+  '@oven/bun-linux-x64-baseline@1.2.13':
+    resolution: {integrity: sha512-9n1ai2ejEpxEMqpbHQMWFyvacq3MYsB7gh5mxRlFwhNFPCWu/Sv6gyrO+q2vkOYgcEIGhJb6dqJ6L9vBNaL61A==}
+    cpu: [x64]
+    os: [linux]
+
+  '@oven/bun-linux-x64-musl-baseline@1.2.13':
+    resolution: {integrity: sha512-VI8hVdfqk0QmbAbyrsIdo2O95n3fkbt72E0h3Wu69cHD1iKJqRXG28R8QoHdehoLSJnKVzRTwsUzHp764nefWQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@oven/bun-linux-x64-musl@1.2.13':
+    resolution: {integrity: sha512-w5Ob+GM3Ww4yRA6f1N845o6wEvuwHSmipFUGaRaVp4UELrFnIV9G3pmrlBbYHFnWhk13o8Q7H1/4ZphOkCRJmQ==}
+    cpu: [x64]
+    os: [linux]
+
+  '@oven/bun-linux-x64@1.2.13':
+    resolution: {integrity: sha512-pf8+Kn2GLrFKLcb8JSLM6Z147Af6L9GQODpnOHM4gvXQv6E/GwQg47/o+7f1XCfzib3fdzOTJlDPvvO1rnXOTA==}
+    cpu: [x64]
+    os: [linux]
+
+  '@oven/bun-windows-x64-baseline@1.2.13':
+    resolution: {integrity: sha512-Aiezu99fOUJJpzGuylOJryd6w9Syg2TBigHeXV2+RJsouBzvAnIEYIBA94ZspRq1ulD26Wmkk8Ae+jZ4edk9GA==}
+    cpu: [x64]
+    os: [win32]
+
+  '@oven/bun-windows-x64@1.2.13':
+    resolution: {integrity: sha512-sArgbRmT7V3mUdNFaAdUcuJsuS+oeMDZLPWFSg0gtQZpRrURs9nPzEnZMmVCFo4+kPF9Tb5ujQT9uDySh6/qVg==}
+    cpu: [x64]
+    os: [win32]
+
   '@petamoriken/float16@3.9.2':
     resolution: {integrity: sha512-VgffxawQde93xKxT3qap3OH+meZf7VaSB5Sqd4Rqc+FP5alWbpOyan/7tRbOAvynjpG3GpdtAuGU/NdhQpmrog==}
 
@@ -2344,6 +2402,12 @@ packages:
 
   bun-types@1.2.13:
     resolution: {integrity: sha512-rRjA1T6n7wto4gxhAO/ErZEtOXyEZEmnIHQfl0Dt1QQSB4QV0iP6BZ9/YB5fZaHFQ2dwHFrmPaRQ9GGMX01k9Q==}
+
+  bun@1.2.13:
+    resolution: {integrity: sha512-EhP1MhFbicqtaRSFCbEZdkcFco8Ov47cNJcB9QmKS8U4cojKHfLU+dQR14lCvLYmtBvGgwv/Lp+9SSver2OPzQ==}
+    cpu: [arm64, x64, aarch64]
+    os: [darwin, linux, win32]
+    hasBin: true
 
   bundle-name@4.1.0:
     resolution: {integrity: sha512-tjwM5exMg6BGRI+kNmTntNsvdZS1X8BFYS6tnJ2hdH0kVxM6/eVZ2xy+FqStSWvYmtfFMDLIxurorHwDKfDz5Q==}
@@ -6430,6 +6494,39 @@ snapshots:
     dependencies:
       '@oslojs/encoding': 0.4.1
 
+  '@oven/bun-darwin-aarch64@1.2.13':
+    optional: true
+
+  '@oven/bun-darwin-x64-baseline@1.2.13':
+    optional: true
+
+  '@oven/bun-darwin-x64@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-aarch64-musl@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-aarch64@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-x64-baseline@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-x64-musl-baseline@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-x64-musl@1.2.13':
+    optional: true
+
+  '@oven/bun-linux-x64@1.2.13':
+    optional: true
+
+  '@oven/bun-windows-x64-baseline@1.2.13':
+    optional: true
+
+  '@oven/bun-windows-x64@1.2.13':
+    optional: true
+
   '@petamoriken/float16@3.9.2':
     optional: true
 
@@ -7366,6 +7463,20 @@ snapshots:
   bun-types@1.2.13:
     dependencies:
       '@types/node': 22.15.18
+
+  bun@1.2.13:
+    optionalDependencies:
+      '@oven/bun-darwin-aarch64': 1.2.13
+      '@oven/bun-darwin-x64': 1.2.13
+      '@oven/bun-darwin-x64-baseline': 1.2.13
+      '@oven/bun-linux-aarch64': 1.2.13
+      '@oven/bun-linux-aarch64-musl': 1.2.13
+      '@oven/bun-linux-x64': 1.2.13
+      '@oven/bun-linux-x64-baseline': 1.2.13
+      '@oven/bun-linux-x64-musl': 1.2.13
+      '@oven/bun-linux-x64-musl-baseline': 1.2.13
+      '@oven/bun-windows-x64': 1.2.13
+      '@oven/bun-windows-x64-baseline': 1.2.13
 
   bundle-name@4.1.0:
     dependencies:
