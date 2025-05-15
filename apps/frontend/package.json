@@ -5,11 +5,10 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build": "bun run build-only",
+		"build": "vite build",
 		"preview": "vite preview",
 		"test:unit": "vitest",
 		"test:e2e": "playwright test",
-		"build-only": "vite build",
 		"fix": "bun run format & bun run lint",
 		"format": "prettier . --write --log-level warn",
 		"lint": "eslint --fix",
