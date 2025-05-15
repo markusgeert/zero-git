@@ -1,6 +1,11 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
+import type {
+	WebhookEvent,
+	WebhookEventMap,
+	WebhookEventName,
+} from "@octokit/webhooks-types";
 import { createClient } from "@openauthjs/openauth/client";
 import type { ReadonlyJSONValue } from "@rocicorp/zero";
 import {
@@ -10,7 +15,7 @@ import {
 } from "@rocicorp/zero/pg";
 import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
-import { githubEventsTable, schema } from "@zero-git/db";
+import { githubEventsTable, pullRequestsTable, schema } from "@zero-git/db";
 import { schema as zeroSchema } from "@zero-git/zero";
 import { type } from "arktype";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -28,6 +33,105 @@ function getEnvOrThrow(key: string): string {
 	return value;
 }
 
+// Helper type to extract the 'action' literal type from an object with an optional 'action' property
+type ActionLiteral<T> = T extends { action: infer A } ? A : never;
+
+// Helper type to get all possible action literals for a given WebhookEvent type
+type PossibleActions<T extends WebhookEvent> = ActionLiteral<T>;
+
+// Helper type to generate the combined keys (event or event.action)
+type GenerateEventKeys = {
+	[K in WebhookEventName]:
+		| K // Event name itself
+		| (PossibleActions<WebhookEventMap[K]> extends never
+				? never // No actions for this event type
+				: `${K}.${PossibleActions<WebhookEventMap[K]>}`); // Event.action for each possible action
+}[WebhookEventName]; // Get the union of all generated keys
+
+// Define the refined EventKey type
+type EventKey = GenerateEventKeys;
+
+// Define a type for the event handlers
+type EventHandler<T extends WebhookEvent> = (
+	payload: T,
+) => Promise<void> | void;
+
+// Define the type for our eventHandlers map
+type EventHandlers = {
+	[K in EventKey]?: K extends WebhookEventName
+		? EventHandler<WebhookEventMap[K]> // Handler for a general event type
+		: K extends `${infer Type}.${infer Action}`
+			? Type extends WebhookEventName
+				? Action extends string
+					? EventHandler<
+							Extract<
+								WebhookEventMap[Type],
+								{ action: Action } | { action?: never } // Try to narrow by action
+							>
+						>
+					: never
+				: never
+			: never;
+};
+
+const eventHandlers: EventHandlers = {
+	pull_request: async (p) => {
+		const pr = p.pull_request;
+
+		await db
+			.insert(pullRequestsTable)
+			.values({
+				id: pr.id.toString(),
+				githubId: pr.id,
+				orgId: pr.base.repo.owner.login,
+				repoId: pr.base.repo.name,
+				title: pr.title,
+				number: pr.number,
+				state: pr.state,
+				locked: pr.locked,
+				body: pr.body,
+				content: pr,
+				createdAt: new Date(pr.created_at),
+				modifiedAt: new Date(pr.updated_at),
+			})
+			.onConflictDoUpdate({
+				target: pullRequestsTable.id,
+				set: {
+					title: pr.title,
+					state: pr.state,
+					locked: pr.locked,
+					body: pr.body,
+					content: pr,
+					modifiedAt: new Date(pr.updated_at),
+				},
+			});
+	},
+};
+
+async function handleEvent(type: WebhookEventName, payload: WebhookEvent) {
+	if ("action" in payload) {
+		const action = payload.action;
+		const specificKey = `${type}.${action}` as EventKey;
+
+		const specificHandler = eventHandlers[specificKey];
+		if (specificHandler) {
+			// @ts-expect-error: too complex for typescript
+			// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+			await specificHandler(payload as any);
+			return;
+		}
+	}
+
+	const generalHandler = eventHandlers[type];
+	if (generalHandler) {
+		// @ts-expect-error: too complex for typescript
+		// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+		await generalHandler(payload as any);
+		return;
+	}
+
+	console.warn(`No handler found for ${type}`);
+}
 const processor = new PushProcessor(
 	new ZQLDatabase(
 		new PostgresJSConnection(postgres(getEnvOrThrow("ZERO_UPSTREAM_DB"))),
@@ -88,18 +192,22 @@ export const api = new Hono()
 		return c.redirect(url, 302);
 	})
 	.post("/github/event", async (c) => {
-		const payload = await c.req.json();
+		const payload: WebhookEvent = await c.req.json();
+
+		const id = c.req.header("X-GitHub-Delivery");
+		assert(id);
+
+		const type = c.req.header("X-GitHub-Event") as WebhookEventName | undefined;
+		assert(type);
 
 		await db.insert(githubEventsTable).values({
-			id: payload.id,
-			type: payload.type,
-			actorId: payload.actor.id,
-			repoId: payload.repo.id,
-			orgId: payload.org.id,
-			isPublic: payload.public,
+			id,
+			type,
 			content: payload,
-			createdAt: payload.created_at,
+			createdAt: new Date(),
 		});
+
+		await handleEvent(type, payload);
 
 		return c.status(200);
 	})

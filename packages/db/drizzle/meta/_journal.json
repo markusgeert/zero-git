@@ -15,6 +15,13 @@
 			"when": 1745862237498,
 			"tag": "0001_first_silver_sable",
 			"breakpoints": true
+		},
+		{
+			"idx": 2,
+			"version": "7",
+			"when": 1747345207398,
+			"tag": "0002_overrated_komodo",
+			"breakpoints": true
 		}
 	]
 }

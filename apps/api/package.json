@@ -28,6 +28,7 @@
 		"postgres": "^3.4.5"
 	},
 	"devDependencies": {
+		"@octokit/webhooks-types": "^7.6.1",
 		"@types/pg": "^8.11.14",
 		"tsx": "^4.19.3"
 	}

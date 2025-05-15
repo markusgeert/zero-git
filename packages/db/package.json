@@ -16,6 +16,7 @@
 		"drizzle-orm": ">=0.41.0"
 	},
 	"devDependencies": {
+		"@octokit/webhooks-types": "^7.6.1",
 		"@types/bun": "^1.2.10",
 		"@zero-git/typescript-config": "workspace:*",
 		"drizzle-kit": "^0.31.0",

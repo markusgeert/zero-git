@@ -66,6 +66,9 @@ importers:
         specifier: ^3.4.5
         version: 3.4.5
     devDependencies:
+      '@octokit/webhooks-types':
+        specifier: ^7.6.1
+        version: 7.6.1
       '@types/pg':
         specifier: ^8.11.14
         version: 8.15.1
@@ -75,6 +78,9 @@ importers:
 
   apps/frontend:
     dependencies:
+      '@nuxt/schema':
+        specifier: ^3.17.3
+        version: 3.17.3
       '@nuxt/ui':
         specifier: ^3.1.0
         version: 3.1.1(@babel/parser@7.27.0)(aws4fetch@1.0.20)(embla-carousel@8.6.0)(typescript@5.8.3)(universal-cookie@7.2.2)(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.29.2)(tsx@4.19.4)(yaml@2.7.1))(vue-router@4.5.1(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))(zod@3.24.4)
@@ -84,6 +90,9 @@ importers:
       '@rocicorp/zero':
         specifier: ^0.19.0
         version: 0.19.2025050203(typescript@5.8.3)
+      '@tanstack/table-core':
+        specifier: ^8.21.3
+        version: 8.21.3
       '@tanstack/vue-table':
         specifier: ^8.21.3
         version: 8.21.3(vue@3.5.13(typescript@5.8.3))
@@ -196,6 +205,9 @@ importers:
       prettier:
         specifier: 3.5.3
         version: 3.5.3
+      tailwind-variants:
+        specifier: ^1.0.0
+        version: 1.0.0(tailwindcss@4.1.6)
       tailwindcss:
         specifier: ^4.1.6
         version: 4.1.6
@@ -274,6 +286,9 @@ importers:
         specifier: '>=0.41.0'
         version: 0.43.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.1)(bun-types@1.2.13)(gel@2.0.2)(pg@8.16.0)(postgres@3.4.5)
     devDependencies:
+      '@octokit/webhooks-types':
+        specifier: ^7.6.1
+        version: 7.6.1
       '@types/bun':
         specifier: ^1.2.10
         version: 1.2.13
@@ -1239,6 +1254,9 @@ packages:
   '@octokit/webhooks-methods@5.1.1':
     resolution: {integrity: sha512-NGlEHZDseJTCj8TMMFehzwa9g7On4KJMPVHDSrHxCQumL6uSQR8wIkP/qesv52fXqV1BPf4pTxwtS31ldAt9Xg==}
     engines: {node: '>= 18'}
+
+  '@octokit/webhooks-types@7.6.1':
+    resolution: {integrity: sha512-S8u2cJzklBC0FgTwWVLaM8tMrDuDMVE4xiTK4EYXM9GntyvrdbSoxqDQa+Fh57CCNApyIpyeqPhhFEmHPfrXgw==}
 
   '@octokit/webhooks@13.8.2':
     resolution: {integrity: sha512-NgKpxIVp9MnEukvTF9s871v11bYTDZwpuyIYkU0ZIEM3d+DBOeiciIJPuCdjFMC1pQgv05MNKtdhbl8+Q+i3GA==}
@@ -6145,6 +6163,8 @@ snapshots:
       '@octokit/openapi-types': 25.0.0
 
   '@octokit/webhooks-methods@5.1.1': {}
+
+  '@octokit/webhooks-types@7.6.1': {}
 
   '@octokit/webhooks@13.8.2':
     dependencies:

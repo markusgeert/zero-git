@@ -37,29 +37,10 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "type">,
 				},
-				actorId: {
+				action: {
 					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "actorId">,
-					serverName: "actor_id",
-				},
-				repoId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "repoId">,
-					serverName: "repo_id",
-				},
-				orgId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "orgId">,
-					serverName: "org_id",
-				},
-				isPublic: {
-					type: "boolean",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "isPublic">,
-					serverName: "is_public",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "action">,
 				},
 				content: {
 					type: "json",
@@ -215,6 +196,11 @@ export const schema = {
 					type: "string",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "body">,
+				},
+				content: {
+					type: "json",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "content">,
 				},
 				createdAt: {
 					type: "number",
@@ -430,11 +416,6 @@ export const schema = {
 		},
 	},
 	relationships: {
-		githubEventsTable: {
-			actor: [{ sourceField: ["actorId"], destField: ["id"], destSchema: "usersTable", cardinality: "one" }],
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
-			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
-		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],
 			node: [{ sourceField: ["node_sha"], destField: ["sha"], destSchema: "treeNodesTable", cardinality: "one" }],

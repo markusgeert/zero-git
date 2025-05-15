@@ -1,3 +1,4 @@
+import type { PullRequest, WebhookEvent } from "@octokit/webhooks-types";
 import { relations } from "drizzle-orm";
 import {
 	boolean,
@@ -174,6 +175,8 @@ export const pullRequestsTable = pgTable("pull_requests", {
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
 
+	content: jsonb().notNull().$type<PullRequest>(),
+
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
@@ -199,33 +202,29 @@ export const pullRequestsRelations = relations(
 export const githubEventsTable = pgTable("github_events", {
 	id: text().primaryKey(),
 	type: text().notNull(),
+	action: text(),
 
-	actorId: text("actor_id").notNull(),
-	repoId: text("repo_id").notNull(),
-	orgId: text("org_id").notNull(),
-
-	isPublic: boolean("is_public").notNull(),
-	content: jsonb().notNull(),
+	content: jsonb().notNull().$type<WebhookEvent>(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
 });
 
-export const githubEventsRelations = relations(
-	githubEventsTable,
-	({ one }) => ({
-		actor: one(usersTable, {
-			fields: [githubEventsTable.actorId],
-			references: [usersTable.id],
-		}),
-		org: one(organizationsTable, {
-			fields: [githubEventsTable.orgId],
-			references: [organizationsTable.id],
-		}),
-		repo: one(reposTable, {
-			fields: [githubEventsTable.repoId],
-			references: [reposTable.id],
-		}),
-	}),
-);
+// export const githubEventsRelations = relations(
+// 	githubEventsTable,
+// 	({ one }) => ({
+// 		actor: one(usersTable, {
+// 			fields: [githubEventsTable.actorId],
+// 			references: [usersTable.id],
+// 		}),
+// 		org: one(organizationsTable, {
+// 			fields: [githubEventsTable.orgId],
+// 			references: [organizationsTable.id],
+// 		}),
+// 		repo: one(reposTable, {
+// 			fields: [githubEventsTable.repoId],
+// 			references: [reposTable.id],
+// 		}),
+// 	}),
+// );
