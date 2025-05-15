@@ -132,6 +132,39 @@ async function handleEvent(type: WebhookEventName, payload: WebhookEvent) {
 
 	console.warn(`No handler found for ${type}`);
 }
+
+function getOrgId(payload: WebhookEvent) {
+	if ("repository" in payload) {
+		return payload.repository?.owner.id;
+	}
+
+	if ("organization" in payload) {
+		return payload.organization?.id;
+	}
+
+	if ("sender" in payload) {
+		return payload.sender?.id;
+	}
+
+	if ("account" in payload) {
+		return payload.account?.id;
+	}
+
+	if ("security_advisory" in payload || "zen" in payload) {
+		return;
+	}
+
+	payload satisfies never;
+
+	throw new Error("Unknown event");
+}
+
+function getRepoId(payload: WebhookEvent) {
+	if ("repository" in payload) {
+		return payload.repository?.id;
+	}
+}
+
 const processor = new PushProcessor(
 	new ZQLDatabase(
 		new PostgresJSConnection(postgres(getEnvOrThrow("ZERO_UPSTREAM_DB"))),
@@ -200,9 +233,14 @@ export const api = new Hono()
 		const type = c.req.header("X-GitHub-Event") as WebhookEventName | undefined;
 		assert(type);
 
+		const orgId = getOrgId(payload);
+		const repoId = getRepoId(payload);
+
 		await db.insert(githubEventsTable).values({
 			id,
 			type,
+			orgId,
+			repoId,
 			content: payload,
 			createdAt: new Date(),
 		});

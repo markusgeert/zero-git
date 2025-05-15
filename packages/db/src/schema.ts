@@ -204,6 +204,9 @@ export const githubEventsTable = pgTable("github_events", {
 	type: text().notNull(),
 	action: text(),
 
+	orgId: integer("org_id"),
+	repoId: integer("repo_id"),
+
 	content: jsonb().notNull().$type<WebhookEvent>(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
@@ -211,20 +214,16 @@ export const githubEventsTable = pgTable("github_events", {
 		.notNull(),
 });
 
-// export const githubEventsRelations = relations(
-// 	githubEventsTable,
-// 	({ one }) => ({
-// 		actor: one(usersTable, {
-// 			fields: [githubEventsTable.actorId],
-// 			references: [usersTable.id],
-// 		}),
-// 		org: one(organizationsTable, {
-// 			fields: [githubEventsTable.orgId],
-// 			references: [organizationsTable.id],
-// 		}),
-// 		repo: one(reposTable, {
-// 			fields: [githubEventsTable.repoId],
-// 			references: [reposTable.id],
-// 		}),
-// 	}),
-// );
+export const githubEventsRelations = relations(
+	githubEventsTable,
+	({ one }) => ({
+		org: one(organizationsTable, {
+			fields: [githubEventsTable.orgId],
+			references: [organizationsTable.id],
+		}),
+		repo: one(reposTable, {
+			fields: [githubEventsTable.repoId],
+			references: [reposTable.id],
+		}),
+	}),
+);
