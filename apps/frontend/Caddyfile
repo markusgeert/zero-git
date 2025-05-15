@@ -24,7 +24,7 @@
 	rewrite /health /*
 
 	# serve from the 'dist' folder (Vite builds into the 'dist' folder)
-    root * ../app/{$NIXPACKS_SPA_OUTPUT_DIR}
+    root * dist
 
 	# enable gzipping responses
 	encode gzip
