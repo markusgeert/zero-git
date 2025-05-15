@@ -42,6 +42,18 @@ export const schema = {
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "action">,
 				},
+				orgId: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "orgId">,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "repoId">,
+					serverName: "repo_id",
+				},
 				content: {
 					type: "json",
 					optional: false,
@@ -416,6 +428,10 @@ export const schema = {
 		},
 	},
 	relationships: {
+		githubEventsTable: {
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],
 			node: [{ sourceField: ["node_sha"], destField: ["sha"], destSchema: "treeNodesTable", cardinality: "one" }],

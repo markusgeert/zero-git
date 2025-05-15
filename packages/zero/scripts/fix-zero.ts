@@ -1,3 +1,5 @@
+console.log("Fixing zero-schema.gen.ts...");
+
 const generatedSchema = Bun.file(
 	Bun.resolveSync("../src/zero-schema.gen.ts", import.meta.dir),
 );

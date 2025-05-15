@@ -7,8 +7,11 @@
 			"cache": true,
 			"persistent": true
 		},
+		"generate-schema": {
+			"cache": false
+		},
 		"build": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["generate-schema", "^build"],
 			"cache": true,
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".next/**", "!.next/cache/**", "dist/**"]

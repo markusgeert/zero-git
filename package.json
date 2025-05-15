@@ -15,7 +15,6 @@
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@tsconfig/bun": "^1.0.7",
-		"bun": "^1.2.13",
 		"turbo": "^2.5.3"
 	},
 	"engines": {
