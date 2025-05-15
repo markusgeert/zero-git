@@ -3,7 +3,11 @@ import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
 import { createClient } from "@openauthjs/openauth/client";
 import type { ReadonlyJSONValue } from "@rocicorp/zero";
-import { PushProcessor, connectionProvider } from "@rocicorp/zero/pg";
+import {
+	PostgresJSConnection,
+	PushProcessor,
+	ZQLDatabase,
+} from "@rocicorp/zero/pg";
 import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
 import { githubEventsTable, schema } from "@zero-git/db";
@@ -14,10 +18,7 @@ import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { backOff } from "exponential-backoff";
 import { jwtVerify } from "jose";
 import postgres from "postgres";
-import {
-	type PostCommitTask,
-	createServerMutators,
-} from "./server-mutators.js";
+import { createServerMutators } from "./server-mutators.js";
 
 function getEnvOrThrow(key: string): string {
 	const value = process.env[key];
@@ -28,18 +29,18 @@ function getEnvOrThrow(key: string): string {
 }
 
 const processor = new PushProcessor(
-	zeroSchema,
-	connectionProvider(postgres(getEnvOrThrow("ZERO_UPSTREAM_DB"))),
+	new ZQLDatabase(
+		new PostgresJSConnection(postgres(getEnvOrThrow("ZERO_UPSTREAM_DB"))),
+		zeroSchema,
+	),
 );
 export async function handlePush(
 	authData: AuthData | undefined,
 	params: Record<string, string> | URLSearchParams,
 	body: ReadonlyJSONValue,
 ) {
-	const postCommitTasks: PostCommitTask[] = [];
-	const mutators = createServerMutators(authData, postCommitTasks);
+	const mutators = createServerMutators(authData);
 	const response = await processor.process(mutators, params, body);
-	await Promise.all(postCommitTasks.map((task) => task()));
 	return response;
 }
 
@@ -62,6 +63,9 @@ async function getJwk() {
 let jwk: unknown | undefined = undefined;
 
 export const api = new Hono()
+	.get("/health", async (c) => {
+		return c.json({ status: "ok" });
+	})
 	.get("/", async (c) => {
 		const access = getCookie(c, "access_token");
 		const refresh = getCookie(c, "refresh_token");
@@ -75,7 +79,7 @@ export const api = new Hono()
 			return c.json(verified.subject);
 		} catch (e) {
 			console.error(e);
-			return c.redirect("/authorize", 302);
+			return c.redirect("/api/v1/authorize", 302);
 		}
 	})
 	.get("/authorize", async (c) => {

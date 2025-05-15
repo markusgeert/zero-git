@@ -4,10 +4,7 @@ import { type Schema, createMutators } from "@zero-git/zero";
 
 export type PostCommitTask = () => Promise<void>;
 
-export function createServerMutators(
-	authData: AuthData | undefined,
-	postCommitTasks: PostCommitTask[],
-) {
+export function createServerMutators(authData: AuthData | undefined) {
 	const mutators = createMutators(authData);
 
 	return {

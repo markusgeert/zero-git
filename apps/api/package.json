@@ -6,8 +6,8 @@
 	},
 	"scripts": {
 		"dev": "PORT=9377 bun run --watch src/index.ts",
-		"start": "bun run src/index.ts",
-		"build": "bun build src/index.ts --target=bun",
+		"start": "bun run ./build/index.js",
+		"build": "bun build ./src/index.ts --target=bun --sourcemap --outdir ./build",
 		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"dependencies": {

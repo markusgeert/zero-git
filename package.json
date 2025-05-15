@@ -7,13 +7,14 @@
 		"dev": "turbo run dev",
 		"lint": "turbo run lint",
 		"test": "turbo run test",
-		"check-types": "turbo run check-types",
+		"typecheck": "turbo run check-types",
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "bun run fix",
 		"fix": "biome check . --write & cd apps/frontend && bun run fix"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
+		"@tsconfig/bun": "^1.0.7",
 		"turbo": "^2.5.3"
 	},
 	"engines": {

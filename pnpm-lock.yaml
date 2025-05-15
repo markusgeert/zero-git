@@ -11,6 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^1.9.4
         version: 1.9.4
+      '@tsconfig/bun':
+        specifier: ^1.0.7
+        version: 1.0.7
       turbo:
         specifier: ^2.5.3
         version: 2.5.3
@@ -254,6 +257,13 @@ importers:
       arktype:
         specifier: ^2.1.20
         version: 2.1.20
+    devDependencies:
+      '@zero-git/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/db:
     dependencies:
@@ -273,6 +283,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.0
         version: 0.31.1
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
 
   packages/typescript-config: {}
 
@@ -1827,6 +1840,9 @@ packages:
 
   '@ts-morph/common@0.26.1':
     resolution: {integrity: sha512-Sn28TGl/4cFpcM+jwsH1wLncYq3FtN/BIpem+HOygfBWPT5pAeS5dB4VFVzV8FbnOKHpDLZmvAl4AjPEev5idA==}
+
+  '@tsconfig/bun@1.0.7':
+    resolution: {integrity: sha512-udGrGJBNQdXGVulehc1aWT73wkR9wdaGBtB6yL70RJsqwW/yJhIg6ZbRlPOfIUiFNrnBuYLBi9CSmMKfDC7dvA==}
 
   '@tsconfig/node22@22.0.1':
     resolution: {integrity: sha512-VkgOa3n6jvs1p+r3DiwBqeEwGAwEvnVCg/hIjiANl5IEcqP3G0u5m8cBJspe1t9qjZRlZ7WFgqq5bJrGdgAKMg==}
@@ -6758,6 +6774,8 @@ snapshots:
       fast-glob: 3.3.3
       minimatch: 9.0.5
       path-browserify: 1.0.1
+
+  '@tsconfig/bun@1.0.7': {}
 
   '@tsconfig/node22@22.0.1': {}
 

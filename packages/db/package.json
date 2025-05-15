@@ -4,7 +4,6 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"dev": "bun run dev:db-up",
-		"postdev": "bun run dev:db-down",
 		"clean": "bun run dev:db-down && bun run dev:clean && bun run db:regen",
 		"dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up",
 		"dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
@@ -19,7 +18,8 @@
 	"devDependencies": {
 		"@types/bun": "^1.2.10",
 		"@zero-git/typescript-config": "workspace:*",
-		"drizzle-kit": "^0.31.0"
+		"drizzle-kit": "^0.31.0",
+		"typescript": "^5.8.3"
 	},
 	"dependencies": {
 		"dotenv": "^16.5.0"

@@ -11,11 +11,11 @@ const orgName = useRouteParams<string>("org");
 const repoName = useRouteParams<string>("repo");
 
 const z = useZero();
-const { data: org, status } = useQuery(
+const { data: org } = useQuery(
 	() =>
 		z.value.query.organizationsTable
 			.where("name", orgName.value)
-			// .related("repos", (q) => q.where("name", repoName.value).one())
+			.related("repos", (q) => q.where("name", repoName.value).one())
 			.one(),
 	CACHE_FOREVER,
 );

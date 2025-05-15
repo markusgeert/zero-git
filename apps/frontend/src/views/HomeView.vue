@@ -3,7 +3,7 @@ import { useAuthStore } from "@/stores/authStore";
 import type { TableColumn } from "@nuxt/ui";
 import { nanoid } from "nanoid";
 import { faker } from "@faker-js/faker";
-import { useRepoStore, type Repo } from "@/stores/repoStore";
+import type { Repo } from "@/stores/repoStore";
 import { useZero } from "@/composables/useZero";
 import { useQuery } from "zero-vue";
 import { watch } from "vue";
@@ -11,7 +11,6 @@ import { recordPageLoad } from "@/page-load-stats";
 import { CACHE_FOREVER } from "@/query-cache-policy";
 
 const authStore = useAuthStore();
-const repoStore = useRepoStore();
 
 const columns: TableColumn<Repo>[] = [
 	{
@@ -42,7 +41,7 @@ const { data: repos, status } = useQuery(
 );
 
 async function addRepo() {
-	await z.value.mutate.reposTable.create({
+	z.value.mutate.reposTable.create({
 		id: nanoid(),
 		orgId: nanoid(),
 		orgGithubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }),
@@ -106,7 +105,7 @@ defineShortcuts({
 			v-if="repos.length > 0 || status === 'complete'"
 			:data="repos"
 			:columns="columns"
-			:get-link="(r) => `/${r.original.org.name}/${r.original.name}`"
+			:get-link="(r) => `/${r.original.org?.name}/${r.original.name}`"
 			:ui="{
 				root: 'overflow-visible',
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
