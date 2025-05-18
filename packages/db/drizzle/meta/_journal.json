@@ -43,6 +43,13 @@
 			"when": 1747604036919,
 			"tag": "0005_greedy_moonstone",
 			"breakpoints": true
+		},
+		{
+			"idx": 6,
+			"version": "7",
+			"when": 1747607175150,
+			"tag": "0006_motionless_otto_octavius",
+			"breakpoints": true
 		}
 	]
 }

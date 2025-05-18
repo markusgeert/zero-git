@@ -2,7 +2,7 @@ import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
 import { createAppAuth } from "@octokit/auth-app";
-import { Octokit } from "@octokit/core";
+import { Octokit } from "@octokit/rest";
 import { Webhooks } from "@octokit/webhooks";
 import type {
 	Repository,
@@ -103,10 +103,12 @@ const eventHandlers: EventHandlers = {
 		});
 
 		for (const repoMeta of p.repositories ?? []) {
-			// @ts-expect-error: octokit.rest.repos.get is not resolved somehow
-			const repo: Repository = octokit.rest.repos.get({
-				repo_id: repoMeta.id,
+			const { data } = await octokit.rest.repos.get({
+				owner: p.installation.account.login,
+				repo: repoMeta.name,
 			});
+
+			const repo = data as Repository;
 
 			await db
 				.insert(reposTable)
@@ -118,7 +120,11 @@ const eventHandlers: EventHandlers = {
 					fork: repo.fork,
 					stars: repo.stargazers_count,
 					description: repo.description,
-					visibility: repo.visibility,
+					visibility: repo.visibility as
+						| "public"
+						| "private"
+						| "internal"
+						| undefined,
 					content: repo,
 					createdAt: new Date(repo.created_at),
 					modifiedAt: new Date(repo.updated_at),

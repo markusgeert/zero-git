@@ -1,0 +1,1 @@
+ALTER TABLE "repos" ALTER COLUMN "visibility" DROP NOT NULL;

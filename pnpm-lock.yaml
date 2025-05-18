@@ -23,9 +23,6 @@ importers:
       '@octokit/auth-app':
         specifier: ^7.2.1
         version: 7.2.1
-      '@octokit/core':
-        specifier: ^6.1.5
-        version: 6.1.5
       '@octokit/rest':
         specifier: ^21.1.1
         version: 21.1.1

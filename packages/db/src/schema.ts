@@ -58,7 +58,7 @@ export const reposTable = pgTable("repos", {
 	name: text("name").notNull(),
 	description: text("description"),
 	fork: boolean("fork").notNull(),
-	visibility: text().notNull().$type<"public" | "private" | "internal">(),
+	visibility: text().$type<"public" | "private" | "internal">(),
 	stars: integer("stars").default(0).notNull(),
 
 	content: jsonb().$type<Repository>(),
