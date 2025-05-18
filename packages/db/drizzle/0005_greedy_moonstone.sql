@@ -1,0 +1,1 @@
+ALTER TABLE "issues" ALTER COLUMN "number" SET DATA TYPE integer;
