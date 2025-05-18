@@ -102,47 +102,49 @@ const eventHandlers: EventHandlers = {
 			},
 		});
 
-		for (const repoMeta of p.repositories ?? []) {
-			const { data } = await octokit.rest.repos.get({
-				owner: p.installation.account.login,
-				repo: repoMeta.name,
-			});
+		await Promise.all(
+			p.repositories?.map(async (repoMeta) => {
+				const { data } = await octokit.rest.repos.get({
+					owner: p.installation.account.login,
+					repo: repoMeta.name,
+				});
 
-			const repo = data as Repository;
+				const repo = data as Repository;
 
-			await db
-				.insert(reposTable)
-				.values({
-					id: repo.id.toString(),
-					githubId: repo.id.toString(),
-					orgId: repo.owner.login,
-					name: repo.name,
-					fork: repo.fork,
-					stars: repo.stargazers_count,
-					description: repo.description,
-					visibility: repo.visibility as
-						| "public"
-						| "private"
-						| "internal"
-						| undefined,
-					content: repo,
-					createdAt: new Date(repo.created_at),
-					modifiedAt: new Date(repo.updated_at),
-				})
-				.onConflictDoUpdate({
-					target: reposTable.id,
-					set: {
-						name: repo.name,
+				return await db
+					.insert(reposTable)
+					.values({
+						id: repo.id.toString(),
+						githubId: repo.id.toString(),
 						orgId: repo.owner.login,
-						visibility: repo.visibility,
+						name: repo.name,
 						fork: repo.fork,
 						stars: repo.stargazers_count,
-						content: repo,
 						description: repo.description,
+						visibility: repo.visibility as
+							| "public"
+							| "private"
+							| "internal"
+							| undefined,
+						content: repo,
+						createdAt: new Date(repo.created_at),
 						modifiedAt: new Date(repo.updated_at),
-					},
-				});
-		}
+					})
+					.onConflictDoUpdate({
+						target: reposTable.id,
+						set: {
+							name: repo.name,
+							orgId: repo.owner.login,
+							visibility: repo.visibility,
+							fork: repo.fork,
+							stars: repo.stargazers_count,
+							content: repo,
+							description: repo.description,
+							modifiedAt: new Date(repo.updated_at),
+						},
+					});
+			}) ?? [],
+		);
 	},
 	repository: async (p) => {
 		const repo = p.repository;
