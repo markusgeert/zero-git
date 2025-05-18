@@ -1,1 +1,1 @@
-ALTER TABLE "issues" ALTER COLUMN "number" SET DATA TYPE integer;
+ALTER TABLE "issues" ALTER COLUMN "number" TYPE integer USING (number::integer);
