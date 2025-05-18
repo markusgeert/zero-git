@@ -44,7 +44,9 @@ async function addRepo() {
 	z.value.mutate.reposTable.create({
 		id: nanoid(),
 		orgId: nanoid(),
-		orgGithubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }).toString(),
+		orgGithubId: faker.number
+			.int({ min: 1_000_000, max: 9_999_999 })
+			.toString(),
 		orgName: faker.internet.username(),
 		githubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }).toString(),
 		visibility: "public",
