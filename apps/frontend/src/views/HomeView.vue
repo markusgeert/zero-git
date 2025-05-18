@@ -115,8 +115,5 @@ defineShortcuts({
 				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
 			}"
 		/>
-		<UButton icon="mdi:plus" color="neutral" class="self-end" @click="addRepo">
-			Add repo
-		</UButton>
 	</Col>
 </template>
