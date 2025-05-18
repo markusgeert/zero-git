@@ -1,6 +1,7 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
+import { Webhooks } from "@octokit/webhooks";
 import type {
 	WebhookEvent,
 	WebhookEventMap,
@@ -30,6 +31,10 @@ import { backOff } from "exponential-backoff";
 import { jwtVerify } from "jose";
 import postgres from "postgres";
 import { createServerMutators } from "./server-mutators.js";
+
+const webhooks = new Webhooks({
+	secret: getEnvOrThrow("GITHUB_WEBHOOK_SECRET"),
+});
 
 function getEnvOrThrow(key: string): string {
 	const value = process.env[key];
@@ -295,6 +300,15 @@ export const api = new Hono()
 		return c.redirect(url, 302);
 	})
 	.post("/github/event", async (c) => {
+		const signature = c.req.header("x-hub-signature-256");
+		assert(signature);
+
+		const body = await c.req.text();
+		if (!(await webhooks.verify(body, signature))) {
+			c.status(401);
+			return c.text("Unauthorized");
+		}
+
 		const payload: WebhookEvent = await c.req.json();
 
 		const id = c.req.header("X-GitHub-Delivery");
