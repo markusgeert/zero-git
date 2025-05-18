@@ -1,8 +1,11 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
+import { createAppAuth } from "@octokit/auth-app";
+import { Octokit } from "@octokit/core";
 import { Webhooks } from "@octokit/webhooks";
 import type {
+	Repository,
 	WebhookEvent,
 	WebhookEventMap,
 	WebhookEventName,
@@ -86,6 +89,55 @@ type EventHandlers = {
 };
 
 const eventHandlers: EventHandlers = {
+	"installation.created": async (p) => {
+		const buffer = Buffer.from(getEnvOrThrow("GITHUB_PRIVATE_KEY"), "base64");
+		const githubPrivateKey = buffer.toString("utf8");
+
+		const octokit = new Octokit({
+			authStrategy: createAppAuth,
+			auth: {
+				appId: getEnvOrThrow("GITHUB_APP_ID"),
+				privateKey: githubPrivateKey,
+				installationId: p.installation.id,
+			},
+		});
+
+		for (const repoMeta of p.repositories ?? []) {
+			// @ts-expect-error: octokit.rest.repos.get is not resolved somehow
+			const repo: Repository = octokit.rest.repos.get({
+				repo_id: repoMeta.id,
+			});
+
+			await db
+				.insert(reposTable)
+				.values({
+					id: repo.id.toString(),
+					githubId: repo.id.toString(),
+					orgId: repo.owner.login,
+					name: repo.name,
+					fork: repo.fork,
+					stars: repo.stargazers_count,
+					description: repo.description,
+					visibility: repo.visibility,
+					content: repo,
+					createdAt: new Date(repo.created_at),
+					modifiedAt: new Date(repo.updated_at),
+				})
+				.onConflictDoUpdate({
+					target: reposTable.id,
+					set: {
+						name: repo.name,
+						orgId: repo.owner.login,
+						visibility: repo.visibility,
+						fork: repo.fork,
+						stars: repo.stargazers_count,
+						content: repo,
+						description: repo.description,
+						modifiedAt: new Date(repo.updated_at),
+					},
+				});
+		}
+	},
 	repository: async (p) => {
 		const repo = p.repository;
 
