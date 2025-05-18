@@ -102,7 +102,7 @@ export const schema = {
 					serverName: "name",
 				},
 				number: {
-					type: "string",
+					type: "number",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "number">,
 				},

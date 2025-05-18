@@ -7,7 +7,8 @@
 	"scripts": {
 		"dev": "PORT=9377 bun run --watch src/index.ts",
 		"start": "bun run ./dist/index.js",
-		"build": "bun build ./src/index.ts --target=bun --sourcemap --outdir ./dist",
+		"build": "bun build ./src/index.ts --target=bun --sourcemap --outdir ./dist && bun run deploy-permissions",
+		"deploy-permissions": "[ \"$ZERO_ENVIRONMENT\" = \"production\" ] && bunx zero-deploy-permissions --schema-path ../../packages/zero/src/zero-schema.ts || true",
 		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"dependencies": {
