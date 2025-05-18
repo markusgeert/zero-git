@@ -20,7 +20,7 @@ function getEnvOrThrow(key: string): string {
 
 const connection = getEnvOrThrow("DATABASE_URL");
 
-async function getUserByGithubId(githubId: number) {
+async function getUserByGithubId(githubId: string) {
 	const db = drizzle({ connection, schema });
 	return db.query.usersTable.findFirst({
 		where: eq(usersTable.githubId, githubId),
@@ -35,7 +35,7 @@ async function getUserByGithubEmail(githubEmail: string) {
 }
 
 async function createNewUser(
-	githubId: number,
+	githubId: string,
 	githubEmail: string,
 	githubAvatarUrl: string,
 	githubName: string | null,
@@ -79,7 +79,8 @@ export default issuer({
 			});
 
 			const { data } = await octokit.rest.users.getAuthenticated();
-			const { id: githubId, avatar_url: githubAvatarUrl, name } = data;
+			const { id, avatar_url: githubAvatarUrl, name } = data;
+			const githubId = id.toString();
 
 			let user = await getUserByGithubId(githubId);
 			if (!user) {

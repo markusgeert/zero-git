@@ -246,7 +246,7 @@ export const issuesTable = pgTable("issues", {
 	repoId: text("repo_id").notNull(),
 
 	title: text("name").notNull(),
-	number: text("number").notNull(),
+	number: integer("number").notNull(),
 	state: text("state").$type<"closed" | "open" | null>(),
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),

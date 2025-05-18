@@ -88,7 +88,7 @@ const eventHandlers: EventHandlers = {
 			.insert(reposTable)
 			.values({
 				id: repo.id.toString(),
-				githubId: repo.id,
+				githubId: repo.id.toString(),
 				orgId: repo.owner.login,
 				name: repo.name,
 				fork: repo.fork,
@@ -121,8 +121,8 @@ const eventHandlers: EventHandlers = {
 			.insert(issuesTable)
 			.values({
 				id: issue.id.toString(),
-				githubId: issue.id,
-				orgId: repository.owner.login,
+				githubId: issue.id.toString(),
+				orgId: repository.owner.id.toString(),
 				repoId: repository.id.toString(),
 				title: issue.title,
 				number: issue.number,
@@ -152,7 +152,7 @@ const eventHandlers: EventHandlers = {
 			.insert(pullRequestsTable)
 			.values({
 				id: pr.id.toString(),
-				githubId: pr.id,
+				githubId: pr.id.toString(),
 				orgId: pr.base.repo.owner.login,
 				repoId: pr.base.repo.name,
 				title: pr.title,
@@ -309,8 +309,8 @@ export const api = new Hono()
 		await db.insert(githubEventsTable).values({
 			id,
 			type,
-			orgId,
-			repoId,
+			orgId: orgId?.toString(),
+			repoId: repoId?.toString(),
 			content: payload,
 			createdAt: new Date(),
 		});
