@@ -15,7 +15,13 @@ import {
 } from "@rocicorp/zero/pg";
 import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
-import { githubEventsTable, pullRequestsTable, schema } from "@zero-git/db";
+import {
+	githubEventsTable,
+	issuesTable,
+	pullRequestsTable,
+	reposTable,
+	schema,
+} from "@zero-git/db";
 import { schema as zeroSchema } from "@zero-git/zero";
 import { type } from "arktype";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -75,6 +81,70 @@ type EventHandlers = {
 };
 
 const eventHandlers: EventHandlers = {
+	repository: async (p) => {
+		const repo = p.repository;
+
+		await db
+			.insert(reposTable)
+			.values({
+				id: repo.id.toString(),
+				githubId: repo.id,
+				orgId: repo.owner.login,
+				name: repo.name,
+				fork: repo.fork,
+				stars: repo.stargazers_count,
+				description: repo.description,
+				visibility: repo.visibility,
+				content: repo,
+				createdAt: new Date(repo.created_at),
+				modifiedAt: new Date(repo.updated_at),
+			})
+			.onConflictDoUpdate({
+				target: reposTable.id,
+				set: {
+					name: repo.name,
+					orgId: repo.owner.login,
+					visibility: repo.visibility,
+					fork: repo.fork,
+					stars: repo.stargazers_count,
+					content: repo,
+					description: repo.description,
+					modifiedAt: new Date(repo.updated_at),
+				},
+			});
+	},
+	issues: async (p) => {
+		const repository = p.repository;
+		const issue = p.issue;
+
+		await db
+			.insert(issuesTable)
+			.values({
+				id: issue.id.toString(),
+				githubId: issue.id,
+				orgId: repository.owner.login,
+				repoId: repository.id.toString(),
+				title: issue.title,
+				number: issue.number,
+				state: issue.state,
+				locked: issue.locked,
+				body: issue.body,
+				content: issue,
+				createdAt: new Date(issue.created_at),
+				modifiedAt: new Date(issue.updated_at),
+			})
+			.onConflictDoUpdate({
+				target: issuesTable.id,
+				set: {
+					title: issue.title,
+					state: issue.state,
+					locked: issue.locked,
+					body: issue.body,
+					content: issue,
+					modifiedAt: new Date(issue.updated_at),
+				},
+			});
+	},
 	pull_request: async (p) => {
 		const pr = p.pull_request;
 

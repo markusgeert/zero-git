@@ -11,7 +11,8 @@
 		"typecheck": "turbo run check-types",
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "bun run fix",
-		"fix": "biome check . --write & cd apps/frontend && bun run fix"
+		"fix": "biome check . --write & cd apps/frontend && bun run fix",
+		"db:gen": "cd packages/db && bun run db:gen"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

@@ -43,13 +43,13 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "action">,
 				},
 				orgId: {
-					type: "number",
+					type: "string",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "orgId">,
 					serverName: "org_id",
 				},
 				repoId: {
-					type: "number",
+					type: "string",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubEventsTable", "repoId">,
 					serverName: "repo_id",
@@ -68,6 +68,79 @@ export const schema = {
 			},
 			primaryKey: ["id"],
 			serverName: "github_events",
+		},
+		issuesTable: {
+			name: "issuesTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "id">,
+				},
+				githubId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "githubId">,
+					serverName: "github_id",
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "orgId">,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "repoId">,
+					serverName: "repo_id",
+				},
+				title: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "title">,
+					serverName: "name",
+				},
+				number: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "number">,
+				},
+				state: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "state">,
+				},
+				locked: {
+					type: "boolean",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "locked">,
+				},
+				body: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "body">,
+				},
+				content: {
+					type: "json",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "content">,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "createdAt">,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "modifiedAt">,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "issues",
 		},
 		nodesInTree: {
 			name: "nodesInTree",
@@ -119,7 +192,7 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "id">,
 				},
 				githubId: {
-					type: "number",
+					type: "string",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "githubId">,
 					serverName: "github_id",
@@ -166,7 +239,7 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "id">,
 				},
 				githubId: {
-					type: "number",
+					type: "string",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "githubId">,
 					serverName: "github_id",
@@ -211,7 +284,7 @@ export const schema = {
 				},
 				content: {
 					type: "json",
-					optional: false,
+					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "content">,
 				},
 				createdAt: {
@@ -239,7 +312,7 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "id">,
 				},
 				githubId: {
-					type: "number",
+					type: "string",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "githubId">,
 					serverName: "github_id",
@@ -255,6 +328,16 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "name">,
 				},
+				description: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "description">,
+				},
+				fork: {
+					type: "boolean",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "fork">,
+				},
 				visibility: {
 					type: "string",
 					optional: false,
@@ -264,6 +347,11 @@ export const schema = {
 					type: "number",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "stars">,
+				},
+				content: {
+					type: "json",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "content">,
 				},
 				createdAt: {
 					type: "number",
@@ -387,7 +475,7 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "usersTable", "email">,
 				},
 				githubId: {
-					type: "number",
+					type: "string",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "usersTable", "githubId">,
 					serverName: "github_id",

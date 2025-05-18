@@ -29,6 +29,13 @@
 			"when": 1747346135755,
 			"tag": "0003_burly_brood",
 			"breakpoints": true
+		},
+		{
+			"idx": 4,
+			"version": "7",
+			"when": 1747583950876,
+			"tag": "0004_open_bastion",
+			"breakpoints": true
 		}
 	]
 }

@@ -1,4 +1,9 @@
-import type { PullRequest, WebhookEvent } from "@octokit/webhooks-types";
+import type {
+	Issue,
+	PullRequest,
+	Repository,
+	WebhookEvent,
+} from "@octokit/webhooks-types";
 import { relations } from "drizzle-orm";
 import {
 	boolean,
@@ -13,7 +18,7 @@ import {
 export const usersTable = pgTable("users", {
 	id: text().primaryKey(),
 	email: text().notNull(),
-	githubId: integer("github_id"),
+	githubId: text("github_id"),
 	githubEmail: text("github_email"),
 	githubAvatarUrl: text("github_avatar_url"),
 	githubName: text("github_name"),
@@ -27,7 +32,7 @@ export const usersTable = pgTable("users", {
 
 export const organizationsTable = pgTable("organizations", {
 	id: text().primaryKey(),
-	githubId: integer("github_id").notNull(),
+	githubId: text("github_id").notNull(),
 	name: text("name").notNull(),
 	displayName: text("diaplay_name").notNull(),
 	avatarUrl: text("avatar_url"),
@@ -48,11 +53,16 @@ export const organizationsRelations = relations(
 
 export const reposTable = pgTable("repos", {
 	id: text().primaryKey(),
-	githubId: integer("github_id").notNull(),
+	githubId: text("github_id").notNull(),
 	orgId: text("org_id").notNull(),
 	name: text("name").notNull(),
-	visibility: text().notNull().$type<"public" | "private">(),
+	description: text("description"),
+	fork: boolean("fork").notNull(),
+	visibility: text().notNull().$type<"public" | "private" | "internal">(),
 	stars: integer("stars").default(0).notNull(),
+
+	content: jsonb().$type<Repository>(),
+
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
@@ -164,7 +174,7 @@ export const nodesInTreeRelations = relations(nodesInTree, ({ one }) => ({
 
 export const pullRequestsTable = pgTable("pull_requests", {
 	id: text().primaryKey(),
-	githubId: integer("github_id").notNull(),
+	githubId: text("github_id").notNull(),
 
 	orgId: text("org_id").notNull(),
 	repoId: text("repo_id").notNull(),
@@ -175,7 +185,7 @@ export const pullRequestsTable = pgTable("pull_requests", {
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
 
-	content: jsonb().notNull().$type<PullRequest>(),
+	content: jsonb().$type<PullRequest>(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
@@ -204,8 +214,8 @@ export const githubEventsTable = pgTable("github_events", {
 	type: text().notNull(),
 	action: text(),
 
-	orgId: integer("org_id"),
-	repoId: integer("repo_id"),
+	orgId: text("org_id"),
+	repoId: text("repo_id"),
 
 	content: jsonb().notNull().$type<WebhookEvent>(),
 
@@ -227,3 +237,26 @@ export const githubEventsRelations = relations(
 		}),
 	}),
 );
+
+export const issuesTable = pgTable("issues", {
+	id: text().primaryKey(),
+	githubId: text("github_id").notNull(),
+
+	orgId: text("org_id").notNull(),
+	repoId: text("repo_id").notNull(),
+
+	title: text("name").notNull(),
+	number: text("number").notNull(),
+	state: text("state").$type<"closed" | "open" | null>(),
+	locked: boolean("locked").default(false).notNull(),
+	body: text("body"),
+
+	content: jsonb().$type<Issue>(),
+
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	modifiedAt: timestamp("modified_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});

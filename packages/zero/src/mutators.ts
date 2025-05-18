@@ -5,14 +5,14 @@ import type { Schema } from "./zero-schema.js";
 
 interface CreateRepoArgs {
 	id: string;
-	githubId: number;
+	githubId: string;
 
 	name: string;
 	visibility: "public" | "private";
 	stars?: number;
 
 	orgId: string;
-	orgGithubId: number;
+	orgGithubId: string;
 	orgName: string;
 }
 
@@ -46,6 +46,7 @@ export function createMutators(authData: AuthData | undefined) {
 					name,
 					visibility,
 					orgId,
+					fork: false,
 					stars: stars ?? 0,
 				});
 			},
