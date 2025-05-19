@@ -116,7 +116,7 @@ const eventHandlers: EventHandlers = {
 					.values({
 						id: repo.id.toString(),
 						githubId: repo.id.toString(),
-						orgId: repo.owner.login,
+						orgId: repo.owner.id.toString(),
 						name: repo.name,
 						fork: repo.fork,
 						stars: repo.stargazers_count,
@@ -134,7 +134,7 @@ const eventHandlers: EventHandlers = {
 						target: reposTable.id,
 						set: {
 							name: repo.name,
-							orgId: repo.owner.login,
+							orgId: repo.owner.id.toString(),
 							visibility: repo.visibility,
 							fork: repo.fork,
 							stars: repo.stargazers_count,
@@ -154,7 +154,7 @@ const eventHandlers: EventHandlers = {
 			.values({
 				id: repo.id.toString(),
 				githubId: repo.id.toString(),
-				orgId: repo.owner.login,
+				orgId: repo.owner.id.toString(),
 				name: repo.name,
 				fork: repo.fork,
 				stars: repo.stargazers_count,
@@ -168,7 +168,7 @@ const eventHandlers: EventHandlers = {
 				target: reposTable.id,
 				set: {
 					name: repo.name,
-					orgId: repo.owner.login,
+					orgId: repo.owner.id.toString(),
 					visibility: repo.visibility,
 					fork: repo.fork,
 					stars: repo.stargazers_count,
@@ -218,8 +218,8 @@ const eventHandlers: EventHandlers = {
 			.values({
 				id: pr.id.toString(),
 				githubId: pr.id.toString(),
-				orgId: pr.base.repo.owner.login,
-				repoId: pr.base.repo.name,
+				orgId: pr.base.repo.owner.id.toString(),
+				repoId: pr.base.repo.id.toString(),
 				title: pr.title,
 				number: pr.number,
 				state: pr.state,
