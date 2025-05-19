@@ -7,6 +7,13 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
+import posthog from "posthog-js";
+
+posthog.init(import.meta.env.VITE_POSTHOG_API_KEY, {
+	api_host: import.meta.env.VITE_POSTHOG_HOST,
+	person_profiles: "always",
+});
+
 const app = createApp(App);
 
 app.use(createPinia());
