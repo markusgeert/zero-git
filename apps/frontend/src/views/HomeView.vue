@@ -53,13 +53,13 @@ defineShortcuts({
 		searchEl.value?.inputRef?.focus();
 	},
 	ctrl_c: {
-		usingInput: true,
+		usingInput: "search-el",
 		handler: () => {
 			searchEl.value?.inputRef?.blur();
 		},
 	},
 	escape: {
-		usingInput: true,
+		usingInput: "search-el",
 		handler: () => {
 			searchEl.value?.inputRef?.blur();
 		},
