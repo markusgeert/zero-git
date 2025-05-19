@@ -5,6 +5,7 @@ import { createAppAuth } from "@octokit/auth-app";
 import { Octokit } from "@octokit/rest";
 import { Webhooks } from "@octokit/webhooks";
 import type {
+	PullRequest,
 	Repository,
 	WebhookEvent,
 	WebhookEventMap,
@@ -29,6 +30,7 @@ import {
 } from "@zero-git/db";
 import { schema as zeroSchema } from "@zero-git/zero";
 import { type } from "arktype";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { backOff } from "exponential-backoff";
@@ -120,7 +122,7 @@ const eventHandlers: EventHandlers = {
 						avatarUrl: p.installation.account.avatar_url,
 					},
 				}),
-			...(p.repositories?.map(async (repoMeta) => {
+			...(p.repositories?.flatMap(async (repoMeta) => {
 				const { data } = await octokit.rest.repos.get({
 					owner: p.installation.account.login,
 					repo: repoMeta.name,
@@ -128,38 +130,79 @@ const eventHandlers: EventHandlers = {
 
 				const repo = data as Repository;
 
-				return await db
-					.insert(reposTable)
-					.values({
-						id: repo.id.toString(),
-						githubId: repo.id.toString(),
-						orgId: repo.owner.id.toString(),
-						name: repo.name,
-						fork: repo.fork,
-						stars: repo.stargazers_count,
-						description: repo.description,
-						visibility: repo.visibility as
-							| "public"
-							| "private"
-							| "internal"
-							| undefined,
-						content: repo,
-						createdAt: new Date(repo.created_at),
-						modifiedAt: new Date(repo.updated_at),
-					})
+				const { data: pulls } = await octokit.rest.pulls.list({
+					owner: p.installation.account.login,
+					repo: repoMeta.name,
+				});
+
+				const prUpdates = db
+					.insert(pullRequestsTable)
+					.values(
+						pulls.map((pr) => ({
+							id: pr.id.toString(),
+							githubId: pr.id.toString(),
+							ownerId: repo.owner.id.toString(),
+							repoId: repo.id.toString(),
+							creatorId: pr.user?.id.toString() ?? "",
+							title: pr.title,
+							number: pr.number,
+							state: pr.state,
+							locked: pr.locked,
+							body: pr.body,
+							content: pr as PullRequest,
+							createdAt: new Date(pr.created_at),
+							modifiedAt: new Date(pr.updated_at),
+						})),
+					)
 					.onConflictDoUpdate({
-						target: reposTable.id,
+						target: pullRequestsTable.id,
 						set: {
-							name: repo.name,
-							orgId: repo.owner.id.toString(),
-							visibility: repo.visibility,
-							fork: repo.fork,
-							stars: repo.stargazers_count,
-							content: repo,
-							description: repo.description,
-							modifiedAt: new Date(repo.updated_at),
+							title: sql.raw(`excluded.${pullRequestsTable.title.name}`),
+							state: sql.raw(`excluded.${pullRequestsTable.state.name}`),
+							locked: sql.raw(`excluded.${pullRequestsTable.locked.name}`),
+							body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
+							content: sql.raw(`excluded.${pullRequestsTable.content.name}`),
+							modifiedAt: sql.raw(
+								`excluded.${pullRequestsTable.modifiedAt.name}`,
+							),
 						},
 					});
+
+				return [
+					prUpdates,
+					db
+						.insert(reposTable)
+						.values({
+							id: repo.id.toString(),
+							githubId: repo.id.toString(),
+							orgId: repo.owner.id.toString(),
+							name: repo.name,
+							fork: repo.fork,
+							stars: repo.stargazers_count,
+							description: repo.description,
+							visibility: repo.visibility as
+								| "public"
+								| "private"
+								| "internal"
+								| undefined,
+							content: repo,
+							createdAt: new Date(repo.created_at),
+							modifiedAt: new Date(repo.updated_at),
+						})
+						.onConflictDoUpdate({
+							target: reposTable.id,
+							set: {
+								name: repo.name,
+								orgId: repo.owner.id.toString(),
+								visibility: repo.visibility,
+								fork: repo.fork,
+								stars: repo.stargazers_count,
+								content: repo,
+								description: repo.description,
+								modifiedAt: new Date(repo.updated_at),
+							},
+						}),
+				];
 			}) ?? []),
 		]);
 	},
