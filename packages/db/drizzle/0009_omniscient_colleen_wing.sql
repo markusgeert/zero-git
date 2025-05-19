@@ -1,0 +1,1 @@
+ALTER TABLE "github_users" ALTER COLUMN "type" SET NOT NULL;

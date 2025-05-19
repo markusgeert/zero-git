@@ -37,7 +37,7 @@ export const githubUsersTable = pgTable("github_users", {
 	name: text("name").notNull(),
 	avatarUrl: text("avatar_url"),
 
-	type: text("type").$type<"Bot" | "User" | "Organization">(),
+	type: text("type").notNull().$type<"Bot" | "User" | "Organization">(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
