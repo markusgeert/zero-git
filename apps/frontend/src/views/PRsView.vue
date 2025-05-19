@@ -145,15 +145,21 @@ defineShortcuts({
 		searchEl.value?.inputRef?.focus();
 	},
 	ctrl_c: {
-		usingInput: true,
+		usingInput: "search-el",
 		handler: () => {
 			searchEl.value?.inputRef?.blur();
 		},
 	},
 	escape: {
-		usingInput: true,
+		usingInput: "search-el",
 		handler: () => {
 			searchEl.value?.inputRef?.blur();
+		},
+	},
+	enter: {
+		usingInput: "search-el",
+		handler: () => {
+			document.querySelector("tbody a")?.focus();
 		},
 	},
 });
@@ -172,6 +178,7 @@ function isPrimaryMouseButton(e: MouseEvent) {
 	<UInput
 		ref="search-el"
 		v-model="searchInput"
+		name="search-el"
 		icon="i-lucide-search"
 		size="md"
 		variant="outline"
