@@ -60,7 +60,7 @@ export function useTableSelector<T extends { id: string }>(
 		for (const [idx, rowEl] of rowEls?.entries() ?? []) {
 			const row = rows.value[idx];
 
-			const isActive = row.id === hoveredRow?.row.id;
+			const isActive = row && row?.id === hoveredRow?.row?.id;
 
 			if (isActive) {
 				rowEl.setAttribute("data-focused", hoveredRow.kind);
