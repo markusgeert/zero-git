@@ -9,6 +9,7 @@
 		},
 		"generate-schema": {
 			"inputs": [
+				"packages/db/src/**/*.ts",
 				"packages/zero/src/drizzle-zero.config.ts",
 				"packages/zero/scripts/fix-zero.ts"
 			],
