@@ -8,7 +8,12 @@
 			"persistent": true
 		},
 		"generate-schema": {
-			"cache": false
+			"inputs": [
+				"packages/zero/src/drizzle-zero.config.ts",
+				"packages/zero/scripts/fix-zero.ts"
+			],
+			"outputs": ["packages/zero/src/zero-schema.gen.ts"],
+			"cache": true
 		},
 		"build": {
 			"dependsOn": ["generate-schema", "^build"],
