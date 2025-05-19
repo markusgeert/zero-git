@@ -13,7 +13,7 @@ const repoName = useRouteParams<string>("repo");
 const z = useZero();
 const { data: org } = useQuery(
 	() =>
-		z.value.query.organizationsTable
+		z.value.query.githubUsersTable
 			.where("name", orgName.value)
 			.related("repos", (q) => q.where("name", repoName.value).one())
 			.one(),

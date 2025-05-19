@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from "@/stores/authStore";
 import type { TableColumn } from "@nuxt/ui";
-import { nanoid } from "nanoid";
-import { faker } from "@faker-js/faker";
 import type { Repo } from "@/stores/repoStore";
 import { useZero } from "@/composables/useZero";
 import { useQuery } from "zero-vue";
@@ -40,21 +38,6 @@ const { data: repos, status } = useQuery(
 	CACHE_FOREVER,
 );
 
-async function addRepo() {
-	z.value.mutate.reposTable.create({
-		id: nanoid(),
-		orgId: nanoid(),
-		orgGithubId: faker.number
-			.int({ min: 1_000_000, max: 9_999_999 })
-			.toString(),
-		orgName: faker.internet.username(),
-		githubId: faker.number.int({ min: 1_000_000, max: 9_999_999 }).toString(),
-		visibility: "public",
-		stars: faker.number.int({ min: 0, max: 100 }),
-		name: faker.git.branch(),
-	});
-}
-
 watch(status, (s) => {
 	if (s === "complete") {
 		recordPageLoad("list-page");
@@ -82,9 +65,6 @@ watch(status, (s) => {
 			@click="authStore.login"
 		>
 			Sign in with Github
-		</UButton>
-		<UButton icon="mdi:plus" color="neutral" class="self-end" @click="addRepo">
-			Add repo
 		</UButton>
 		<span> {{ repos.length }} </span>
 		<ItemList

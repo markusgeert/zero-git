@@ -9,7 +9,7 @@ import { type Schema, schema } from "./zero-schema.gen.js";
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 	return {
-		organizationsTable: {
+		githubUsersTable: {
 			row: {
 				select: ANYONE_CAN,
 			},

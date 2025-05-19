@@ -69,6 +69,52 @@ export const schema = {
 			primaryKey: ["id"],
 			serverName: "github_events",
 		},
+		githubUsersTable: {
+			name: "githubUsersTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "id">,
+				},
+				githubId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "githubId">,
+					serverName: "github_id",
+				},
+				name: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "name">,
+				},
+				avatarUrl: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "avatarUrl">,
+					serverName: "avatar_url",
+				},
+				type: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "type">,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "createdAt">,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "modifiedAt">,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "github_users",
+		},
 		issuesTable: {
 			name: "issuesTable",
 			columns: {
@@ -183,47 +229,6 @@ export const schema = {
 			primaryKey: ["tree_sha", "node_sha"],
 			serverName: "nodes_in_tree",
 		},
-		organizationsTable: {
-			name: "organizationsTable",
-			columns: {
-				id: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "id">,
-				},
-				githubId: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "githubId">,
-					serverName: "github_id",
-				},
-				name: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "name">,
-				},
-				avatarUrl: {
-					type: "string",
-					optional: true,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "avatarUrl">,
-					serverName: "avatar_url",
-				},
-				createdAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "createdAt">,
-					serverName: "created_at",
-				},
-				modifiedAt: {
-					type: "number",
-					optional: true,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "modifiedAt">,
-					serverName: "modified_at",
-				},
-			},
-			primaryKey: ["id"],
-			serverName: "organizations",
-		},
 		pullRequestsTable: {
 			name: "pullRequestsTable",
 			columns: {
@@ -238,17 +243,23 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "githubId">,
 					serverName: "github_id",
 				},
-				orgId: {
+				ownerId: {
 					type: "string",
 					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "orgId">,
-					serverName: "org_id",
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "ownerId">,
+					serverName: "owner_id",
 				},
 				repoId: {
 					type: "string",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "repoId">,
 					serverName: "repo_id",
+				},
+				creatorId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "creatorId">,
+					serverName: "creator_id",
 				},
 				title: {
 					type: "string",
@@ -511,33 +522,35 @@ export const schema = {
 	},
 	relationships: {
 		githubEventsTable: {
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+		},
+		githubUsersTable: {
+			repos: [{ sourceField: ["id"], destField: ["orgId"], destSchema: "reposTable", cardinality: "many" }],
 		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],
 			node: [{ sourceField: ["node_sha"], destField: ["sha"], destSchema: "treeNodesTable", cardinality: "one" }],
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 		},
-		organizationsTable: {
-			repos: [{ sourceField: ["id"], destField: ["orgId"], destSchema: "reposTable", cardinality: "many" }],
-		},
 		pullRequestsTable: {
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			owner: [{ sourceField: ["ownerId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			creator: [{ sourceField: ["creatorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 		},
 		reposTable: {
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			pulls: [{ sourceField: ["id"], destField: ["repoId"], destSchema: "pullRequestsTable", cardinality: "many" }],
 		},
 		treeNodesTable: {
 			nodesInTree: [{ sourceField: ["sha"], destField: ["node_sha"], destSchema: "nodesInTree", cardinality: "many" }],
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 		},
 		treesTable: {
 			nodesInTree: [{ sourceField: ["sha"], destField: ["tree_sha"], destSchema: "nodesInTree", cardinality: "many" }],
-			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "organizationsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 		},
 	},

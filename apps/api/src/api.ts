@@ -21,8 +21,8 @@ import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
 import {
 	githubEventsTable,
+	githubUsersTable,
 	issuesTable,
-	organizationsTable,
 	pullRequestsTable,
 	reposTable,
 	schema,
@@ -105,15 +105,16 @@ const eventHandlers: EventHandlers = {
 
 		await Promise.all([
 			db
-				.insert(organizationsTable)
+				.insert(githubUsersTable)
 				.values({
 					id: p.installation.account.id.toString(),
 					githubId: p.installation.account.id.toString(),
 					name: p.installation.account.login,
 					avatarUrl: p.installation.account.avatar_url,
+					type: p.installation.account.type,
 				})
 				.onConflictDoUpdate({
-					target: organizationsTable.id,
+					target: githubUsersTable.id,
 					set: {
 						name: p.installation.account.login,
 						avatarUrl: p.installation.account.avatar_url,
@@ -234,8 +235,9 @@ const eventHandlers: EventHandlers = {
 			.values({
 				id: pr.id.toString(),
 				githubId: pr.id.toString(),
-				orgId: pr.base.repo.owner.id.toString(),
+				ownerId: pr.base.repo.owner.id.toString(),
 				repoId: pr.base.repo.id.toString(),
+				creatorId: p.sender.id.toString(),
 				title: pr.title,
 				number: pr.number,
 				state: pr.state,

@@ -30,11 +30,15 @@ export const usersTable = pgTable("users", {
 		.notNull(),
 });
 
-export const organizationsTable = pgTable("organizations", {
+export const githubUsersTable = pgTable("github_users", {
 	id: text().primaryKey(),
 	githubId: text("github_id").notNull(),
+
 	name: text("name").notNull(),
 	avatarUrl: text("avatar_url"),
+
+	type: text("type").notNull().$type<"Bot" | "User" | "Organization">(),
+
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
@@ -43,12 +47,9 @@ export const organizationsTable = pgTable("organizations", {
 		.notNull(),
 });
 
-export const organizationsRelations = relations(
-	organizationsTable,
-	({ many }) => ({
-		repos: many(reposTable),
-	}),
-);
+export const githubUsersRelations = relations(githubUsersTable, ({ many }) => ({
+	repos: many(reposTable),
+}));
 
 export const reposTable = pgTable("repos", {
 	id: text().primaryKey(),
@@ -71,9 +72,9 @@ export const reposTable = pgTable("repos", {
 });
 
 export const reposRelations = relations(reposTable, ({ one, many }) => ({
-	org: one(organizationsTable, {
+	org: one(githubUsersTable, {
 		fields: [reposTable.orgId],
-		references: [organizationsTable.id],
+		references: [githubUsersTable.id],
 	}),
 	pulls: many(pullRequestsTable),
 }));
@@ -93,9 +94,9 @@ export const treesTable = pgTable("trees", {
 
 export const treesRelations = relations(treesTable, ({ many, one }) => ({
 	nodesInTree: many(nodesInTree),
-	org: one(organizationsTable, {
+	org: one(githubUsersTable, {
 		fields: [treesTable.orgId],
-		references: [organizationsTable.id],
+		references: [githubUsersTable.id],
 	}),
 	repo: one(reposTable, {
 		fields: [treesTable.repoId],
@@ -125,9 +126,9 @@ export const treeNodesRelations = relations(
 	treeNodesTable,
 	({ many, one }) => ({
 		nodesInTree: many(nodesInTree),
-		org: one(organizationsTable, {
+		org: one(githubUsersTable, {
 			fields: [treeNodesTable.orgId],
-			references: [organizationsTable.id],
+			references: [githubUsersTable.id],
 		}),
 		repo: one(reposTable, {
 			fields: [treeNodesTable.repoId],
@@ -162,9 +163,9 @@ export const nodesInTreeRelations = relations(nodesInTree, ({ one }) => ({
 		fields: [nodesInTree.node_sha],
 		references: [treeNodesTable.sha],
 	}),
-	org: one(organizationsTable, {
+	org: one(githubUsersTable, {
 		fields: [nodesInTree.orgId],
-		references: [organizationsTable.id],
+		references: [githubUsersTable.id],
 	}),
 	repo: one(reposTable, {
 		fields: [nodesInTree.repoId],
@@ -176,8 +177,9 @@ export const pullRequestsTable = pgTable("pull_requests", {
 	id: text().primaryKey(),
 	githubId: text("github_id").notNull(),
 
-	orgId: text("org_id").notNull(),
+	ownerId: text("owner_id").notNull(),
 	repoId: text("repo_id").notNull(),
+	creatorId: text("creator_id").notNull(),
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
@@ -198,9 +200,13 @@ export const pullRequestsTable = pgTable("pull_requests", {
 export const pullRequestsRelations = relations(
 	pullRequestsTable,
 	({ one }) => ({
-		org: one(organizationsTable, {
-			fields: [pullRequestsTable.orgId],
-			references: [organizationsTable.id],
+		owner: one(githubUsersTable, {
+			fields: [pullRequestsTable.ownerId],
+			references: [githubUsersTable.id],
+		}),
+		creator: one(githubUsersTable, {
+			fields: [pullRequestsTable.creatorId],
+			references: [githubUsersTable.id],
 		}),
 		repo: one(reposTable, {
 			fields: [pullRequestsTable.repoId],
@@ -227,9 +233,9 @@ export const githubEventsTable = pgTable("github_events", {
 export const githubEventsRelations = relations(
 	githubEventsTable,
 	({ one }) => ({
-		org: one(organizationsTable, {
+		org: one(githubUsersTable, {
 			fields: [githubEventsTable.orgId],
-			references: [organizationsTable.id],
+			references: [githubUsersTable.id],
 		}),
 		repo: one(reposTable, {
 			fields: [githubEventsTable.repoId],

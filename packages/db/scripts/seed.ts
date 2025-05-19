@@ -9,7 +9,7 @@ async function main() {
 	const db = drizzle(process.env.DATABASE_URL as string);
 	await migrate(db, { migrationsFolder: "./drizzle" });
 	await seed(db, schema).refine((f) => ({
-		organizationsTable: {
+		githubUsersTable: {
 			count: 10,
 			columns: {
 				id: f.intPrimaryKey(),

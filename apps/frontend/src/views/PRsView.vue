@@ -9,7 +9,7 @@ import { useTemplateRef } from "vue";
 import { useQuery } from "zero-vue";
 
 type PRRow = Row<typeof schema.tables.pullRequestsTable>;
-type OrgRow = Row<typeof schema.tables.organizationsTable>;
+type GithubUsersRow = Row<typeof schema.tables.githubUsersTable>;
 
 const repoName = useRouteParams<string>("repo");
 const orgName = useRouteParams<string>("org");
@@ -29,7 +29,7 @@ const { data: prs, status } = useQuery(
 		z.value.query.pullRequestsTable
 			.where("repoId", repo.value?.id ?? "")
 			.where("state", "open")
-			.related("org")
+			.related("creator")
 			.orderBy("createdAt", "desc"),
 	CACHE_AWHILE,
 );
@@ -122,7 +122,7 @@ function getIcon(state: string) {
 	}
 }
 
-function getPrText(pr: PRRow & { org?: OrgRow }) {
+function getPrText(pr: PRRow & { org?: GithubUsersRow }) {
 	if (pr.state === "open" || pr.state === "draft") {
 		return `#${pr.number} opened ${formatRelativeDate(pr.createdAt)} by ${pr.org?.name}`;
 	}
