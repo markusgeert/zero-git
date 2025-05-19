@@ -242,7 +242,7 @@ const eventHandlers: EventHandlers = {
 								repo: repoMeta.name,
 							});
 
-							return Promise.all([
+							return Promise.allSettled([
 								upsertRepo(repo as Repository, db),
 								upsertPulls(pulls.map(mapPR), db),
 							]);
@@ -255,7 +255,7 @@ const eventHandlers: EventHandlers = {
 			...reposToFetch,
 		] satisfies Promise<unknown>[];
 
-		await Promise.all(promisesToResolve);
+		await Promise.allSettled(promisesToResolve);
 	},
 	repository: async (p, db) => {
 		const repo = p.repository;
