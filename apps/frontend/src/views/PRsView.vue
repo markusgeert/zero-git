@@ -107,20 +107,12 @@ function formatRelativeDate(date?: string | number | null) {
 	}
 }
 
-function getIcon(state: string) {
-	switch (state) {
-		case "open":
-			return "i-lucide-git-pull-request-arrow";
-		case "closed":
-			return "i-lucide-git-pull-request-closed";
-		case "merged":
-			return "i-proicons-branch";
-		case "draft":
-			return "i-lucide-git-pull-request-draft";
-		default:
-			return "i-lucide-git-pull-request";
-	}
-}
+const icons = {
+	open: { icon: "i-lucide-git-pull-request-arrow", class: "text-green-500" },
+	closed: { icon: "i-lucide-git-pull-request-closed", class: "text-red-500" },
+	merged: { icon: "i-proicons-branch", class: "text-violet-400" },
+	draft: { icon: "i-lucide-git-pull-request-draft", class: "text-zinc-400" },
+};
 
 function getPrText(pr: PRRow & { org?: GithubUsersRow }) {
 	if (pr.state === "open" || pr.state === "draft") {
@@ -156,15 +148,19 @@ useTableSelector(table, (row) => {
 			root: 'overflow-visible',
 			tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 			tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
-			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base',
+			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-2',
 		}"
 	>
 		<template #main-cell="{ row: { original: pr } }">
-			<div class="flex items-center gap-3">
-				<UIcon :name="getIcon(pr.state)" />
+			<div class="flex items-center gap-2">
+				<UIcon
+					:name="icons[pr.state].icon"
+					:class="icons[pr.state].class"
+					class="self-start"
+				/>
 				<div class="flex flex-col">
 					<h3 class="font-semibold">{{ pr.title }}</h3>
-					<div class="flex text-sm">
+					<div class="flex text-xs">
 						<span>
 							{{ getPrText(pr) }}
 						</span>

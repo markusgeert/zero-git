@@ -188,7 +188,9 @@ export const pullRequestsTable = pgTable("pull_requests", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
-	state: text("state").notNull().$type<"open" | ({} & string)>(),
+	state: text("state")
+		.notNull()
+		.$type<"open" | "closed" | "draft" | "merged">(),
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
 
