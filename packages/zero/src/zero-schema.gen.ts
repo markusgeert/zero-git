@@ -96,7 +96,7 @@ export const schema = {
 				},
 				type: {
 					type: "string",
-					optional: false,
+					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "githubUsersTable", "type">,
 				},
 				createdAt: {
