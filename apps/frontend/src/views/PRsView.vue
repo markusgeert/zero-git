@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { useTableSelector } from "@/composables/useTableSelector";
 import { useZero } from "@/composables/useZero";
 import { CACHE_AWHILE } from "@/query-cache-policy";
 import type { Row } from "@rocicorp/zero";
 import { useRouteParams } from "@vueuse/router";
 import type { schema } from "@zero-git/zero";
+import { useTemplateRef } from "vue";
 import { useQuery } from "zero-vue";
 
 type PRRow = Row<typeof schema.tables.pullRequestsTable>;
@@ -133,11 +135,17 @@ function getPrText(pr: PRRow & { org?: OrgRow }) {
 		return `#${pr.number} by ${pr.org?.name} was merged ${formatRelativeDate(pr.content?.merged_at)}`;
 	}
 }
+
+const table = useTemplateRef("prsTable");
+useTableSelector(table, (row) => {
+	console.log("navigating to pr", row);
+});
 </script>
 
 <template>
 	<UTable
 		v-if="prs.length > 0 || status === 'complete'"
+		ref="prsTable"
 		:data="prs"
 		:columns="[
 			{

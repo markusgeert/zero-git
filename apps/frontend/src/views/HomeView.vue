@@ -55,26 +55,10 @@ async function addRepo() {
 	});
 }
 
-async function removeRepo() {
-	const idxToDelete = faker.number.int({
-		min: 0,
-		max: repos.value.length - 1,
-	});
-
-	await z.value.mutate.reposTable.delete({
-		id: repos.value[idxToDelete].id,
-	});
-}
-
 watch(status, (s) => {
 	if (s === "complete") {
 		recordPageLoad("list-page");
 	}
-});
-
-defineShortcuts({
-	c: addRepo,
-	d: removeRepo,
 });
 </script>
 

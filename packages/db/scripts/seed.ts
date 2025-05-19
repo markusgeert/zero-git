@@ -28,6 +28,7 @@ async function main() {
 				visibility: f.valuesFromArray({ values: ["public", "private"] }),
 				modifiedAt: f.date({ maxDate: new Date() }),
 				createdAt: f.date({ maxDate: new Date() }),
+				stars: f.int({ minValue: 0, maxValue: 100_000 }),
 			},
 			with: {
 				pullRequestsTable: 10,
