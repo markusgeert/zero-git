@@ -64,6 +64,12 @@ defineShortcuts({
 			searchEl.value?.inputRef?.blur();
 		},
 	},
+	enter: {
+		usingInput: "search-el",
+		handler: () => {
+			document.querySelector("tbody a")?.focus();
+		},
+	},
 });
 
 const { results } = useFuse(searchInput, repos, {
@@ -99,6 +105,7 @@ const filteredRepos = computed(() => results.value.map((r) => r.item));
 			<UInput
 				ref="search-el"
 				v-model="searchInput"
+				name="search-el"
 				icon="i-lucide-search"
 				size="md"
 				variant="outline"
