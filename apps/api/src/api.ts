@@ -311,8 +311,9 @@ const eventHandlers: EventHandlers = {
 };
 
 async function handleEvent(type: WebhookEventName, payload: WebhookEvent) {
+	let action: string | undefined;
 	if ("action" in payload) {
-		const action = payload.action;
+		action = payload.action;
 		const specificKey = `${type}.${action}` as EventKey;
 
 		const specificHandler = eventHandlers[specificKey];
@@ -332,7 +333,7 @@ async function handleEvent(type: WebhookEventName, payload: WebhookEvent) {
 		return;
 	}
 
-	console.warn(`No handler found for ${type}`);
+	console.warn(`No handler found for ${type}${action ? `.${action}` : ""}`);
 }
 
 function getOrgId(payload: WebhookEvent) {
