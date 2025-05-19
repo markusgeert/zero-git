@@ -23,9 +23,11 @@ declare module 'vue' {
     UApp: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
     UButton: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     UCommandPalette: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/CommandPalette.vue')['default']
+    UIcon: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/vue/components/Icon.vue')['default']
     ULinkBase: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/LinkBase.vue')['default']
     UModal: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/Modal.vue')['default']
     UNavigationMenu: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/NavigationMenu.vue')['default']
+    UTable: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/Table.vue')['default']
     UTree: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/components/Tree.vue')['default']
   }
 }

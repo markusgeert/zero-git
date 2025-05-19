@@ -22,7 +22,11 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 		reposTable: {
 			row: {
 				select: ANYONE_CAN,
-				delete: ANYONE_CAN,
+			},
+		},
+		pullRequestsTable: {
+			row: {
+				select: ANYONE_CAN,
 			},
 		},
 	} satisfies PermissionsConfig<AuthData, Schema>;

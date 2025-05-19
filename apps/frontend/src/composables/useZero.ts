@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/stores/authStore";
 import { Zero } from "@rocicorp/zero";
 import { createMutators, schema } from "@zero-git/zero";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 
 export function useZero() {
 	const authStore = useAuthStore();
@@ -23,6 +23,17 @@ export function useZero() {
 			},
 		});
 	});
+
+	if (process.env.NODE_ENV === "development") {
+		watch(
+			z,
+			(newZ) => {
+				// @ts-expect-error - z is not defined on window
+				window.z = newZ;
+			},
+			{ immediate: true },
+		);
+	}
 
 	return z;
 }

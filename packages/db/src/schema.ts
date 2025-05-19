@@ -70,11 +70,12 @@ export const reposTable = pgTable("repos", {
 		.notNull(),
 });
 
-export const reposRelations = relations(reposTable, ({ one }) => ({
+export const reposRelations = relations(reposTable, ({ one, many }) => ({
 	org: one(organizationsTable, {
 		fields: [reposTable.orgId],
 		references: [organizationsTable.id],
 	}),
+	pulls: many(pullRequestsTable),
 }));
 
 export const treesTable = pgTable("trees", {

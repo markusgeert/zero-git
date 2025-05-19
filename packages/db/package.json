@@ -4,12 +4,13 @@
 	"main": "src/index.ts",
 	"scripts": {
 		"dev": "bun run dev:db-up",
-		"clean": "bun run dev:db-down && bun run dev:clean && bun run db:regen",
-		"dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up",
+		"clean": "bun run dev:db-down && bun run dev:clean",
+		"dev:db-up": "docker compose --env-file .env -f ../../docker/docker-compose.yml up --detach",
 		"dev:db-down": "docker compose --env-file .env -f ../../docker/docker-compose.yml down",
 		"dev:clean": "source .env && docker volume rm -f docker_zero_git_pgdata",
 		"db:regen": "drizzle-kit drop && drizzle-kit generate",
 		"db:gen": "drizzle-kit generate",
+		"seed": "bun run dev:db-down && bun run dev:clean && bun run dev:db-up && sleep 1 && bun run ./scripts/seed.ts",
 		"check-types": "tsc --noEmit --skipLibCheck --strict --project tsconfig.json"
 	},
 	"peerDependencies": {
@@ -20,6 +21,7 @@
 		"@types/bun": "^1.2.10",
 		"@zero-git/typescript-config": "workspace:*",
 		"drizzle-kit": "^0.31.0",
+		"drizzle-seed": "^0.3.1",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {

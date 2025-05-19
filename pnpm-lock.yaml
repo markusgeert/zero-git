@@ -307,6 +307,9 @@ importers:
       drizzle-kit:
         specifier: ^0.31.0
         version: 0.31.1
+      drizzle-seed:
+        specifier: ^0.3.1
+        version: 0.3.1(drizzle-orm@0.43.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.1)(bun-types@1.2.13)(gel@2.0.2)(pg@8.16.0)(postgres@3.4.5))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -2764,6 +2767,14 @@ packages:
       sqlite3:
         optional: true
 
+  drizzle-seed@0.3.1:
+    resolution: {integrity: sha512-F/0lgvfOAsqlYoHM/QAGut4xXIOXoE5VoAdv2FIl7DpGYVXlAzKuJO+IphkKUFK3Dz+rFlOsQLnMNrvoQ0cx7g==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.4'
+    peerDependenciesMeta:
+      drizzle-orm:
+        optional: true
+
   drizzle-zero@0.10.1:
     resolution: {integrity: sha512-Bg1hEG8XsriKeO4V/yRYc3aPaccAATyxdAxR+CeG15NKNJCWWVCWD9MXIJToAmbUsMr1GUKCvVqcS8/6C3QVxw==}
     hasBin: true
@@ -4158,6 +4169,9 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  pure-rand@6.1.0:
+    resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
 
   qs@6.14.0:
     resolution: {integrity: sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==}
@@ -7705,6 +7719,12 @@ snapshots:
       pg: 8.16.0
       postgres: 3.4.5
 
+  drizzle-seed@0.3.1(drizzle-orm@0.43.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.1)(bun-types@1.2.13)(gel@2.0.2)(pg@8.16.0)(postgres@3.4.5)):
+    dependencies:
+      pure-rand: 6.1.0
+    optionalDependencies:
+      drizzle-orm: 0.43.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.1)(bun-types@1.2.13)(gel@2.0.2)(pg@8.16.0)(postgres@3.4.5)
+
   drizzle-zero@0.10.1(@rocicorp/zero@0.19.2025050203(typescript@5.8.3))(drizzle-orm@0.43.1(@opentelemetry/api@1.9.0)(@types/pg@8.15.1)(bun-types@1.2.13)(gel@2.0.2)(pg@8.16.0)(postgres@3.4.5))(prettier@3.5.3):
     dependencies:
       '@rocicorp/zero': 0.19.2025050203(typescript@5.8.3)
@@ -9154,6 +9174,8 @@ snapshots:
   punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
+
+  pure-rand@6.1.0: {}
 
   qs@6.14.0:
     dependencies:
