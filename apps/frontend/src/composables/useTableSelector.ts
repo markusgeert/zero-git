@@ -49,7 +49,7 @@ export function useTableSelector<
 
 				rowEl.setAttribute(
 					"data-list-key",
-					`${newRows[idx].original.id ?? newRows[idx].original.item.id}`,
+					`${newRows[idx]?.original.id ?? newRows[idx]?.original.item.id}`,
 				);
 			});
 		},

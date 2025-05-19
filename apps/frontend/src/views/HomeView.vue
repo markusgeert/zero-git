@@ -95,25 +95,27 @@ const filteredRepos = computed(() => results.value.map((r) => r.item));
 		>
 			Sign in with Github
 		</UButton>
-		<UInput
-			ref="search-el"
-			v-model="searchInput"
-			icon="i-lucide-search"
-			size="md"
-			variant="outline"
-			class="self-start"
-		/>
-		<ItemList
-			v-if="repos.length > 0 || status === 'complete'"
-			:data="filteredRepos"
-			:columns="columns"
-			:get-link="(r) => `/${r.original.org?.name}/${r.original.name}`"
-			:ui="{
-				root: 'overflow-visible',
-				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
-				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
-				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
-			}"
-		/>
+		<div class="max-w-7xl w-full mx-auto px-3 md:px-4 lg:px-5">
+			<UInput
+				ref="search-el"
+				v-model="searchInput"
+				icon="i-lucide-search"
+				size="md"
+				variant="outline"
+				class="self-start"
+			/>
+			<ItemList
+				v-if="repos.length > 0 || status === 'complete'"
+				:data="filteredRepos"
+				:columns="columns"
+				:get-link="(r) => `/${r.original.org?.name}/${r.original.name}`"
+				:ui="{
+					root: 'overflow-visible',
+					tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
+					tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
+					td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
+				}"
+			/>
+		</div>
 	</Col>
 </template>

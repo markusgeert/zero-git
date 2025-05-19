@@ -60,7 +60,7 @@ const groups = computed(() => {
 			<template #content>
 				<UCommandPalette
 					:groups="groups"
-					placeholder="Search users..."
+					placeholder="Search repos..."
 					class="h-80"
 					@update:model-value="
 						(entry) => {
