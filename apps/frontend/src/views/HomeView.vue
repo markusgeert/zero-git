@@ -4,9 +4,10 @@ import type { TableColumn } from "@nuxt/ui";
 import type { Repo } from "@/stores/repoStore";
 import { useZero } from "@/composables/useZero";
 import { useQuery } from "zero-vue";
-import { watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import { recordPageLoad } from "@/page-load-stats";
 import { CACHE_FOREVER } from "@/query-cache-policy";
+import { useFuse } from "@vueuse/integrations/useFuse";
 
 const authStore = useAuthStore();
 
@@ -43,6 +44,28 @@ watch(status, (s) => {
 		recordPageLoad("list-page");
 	}
 });
+
+const searchInput = ref("");
+const searchEl = useTemplateRef("search-el");
+
+defineShortcuts({
+	"/": () => {
+		searchEl.value?.inputRef?.focus();
+	},
+	escape: {
+		usingInput: true,
+		handler: () => {
+			searchEl.value?.inputRef?.blur();
+		},
+	},
+});
+
+const { results } = useFuse(searchInput, repos, {
+	matchAllWhenSearchEmpty: true,
+	fuseOptions: { keys: ["org.name", "name"] },
+});
+
+const filteredRepos = computed(() => results.value.map((r) => r.item));
 </script>
 
 <template>
@@ -66,10 +89,17 @@ watch(status, (s) => {
 		>
 			Sign in with Github
 		</UButton>
-		<span> {{ repos.length }} </span>
+		<UInput
+			ref="search-el"
+			v-model="searchInput"
+			icon="i-lucide-search"
+			size="md"
+			variant="outline"
+			class="self-start"
+		/>
 		<ItemList
 			v-if="repos.length > 0 || status === 'complete'"
-			:data="repos"
+			:data="filteredRepos"
 			:columns="columns"
 			:get-link="(r) => `/${r.original.org?.name}/${r.original.name}`"
 			:ui="{

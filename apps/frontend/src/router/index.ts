@@ -40,6 +40,11 @@ const router = createRouter({
 					name: "pull-requests",
 					component: () => import("../views/PRsView.vue"),
 				},
+				{
+					path: "pull/:prId",
+					name: "pull-request",
+					component: () => import("../views/PRView.vue"),
+				},
 			],
 		},
 	],

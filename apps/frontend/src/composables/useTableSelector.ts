@@ -46,6 +46,11 @@ export function useTableSelector<
 					const row = newRows[idx];
 					handleRowSelect(row, e);
 				});
+
+				rowEl.setAttribute(
+					"data-list-key",
+					`${newRows[idx].original.id ?? newRows[idx].original.item.id}`,
+				);
 			});
 		},
 		{ immediate: true, deep: true },
@@ -103,8 +108,8 @@ export function useTableSelector<
 			return;
 		}
 
-		const linkToFocus = document
-			.querySelector(
+		const linkToFocus = tableRef.value
+			?.querySelector(
 				`[data-list-key="${newVal.row.original.id ?? newVal.row.original.item.id}"]`,
 			)
 			?.querySelector("a");
@@ -190,5 +195,5 @@ export function useTableSelector<
 		onSelect(row, e);
 	}
 
-	return { hoveredRow };
+	return { hoveredRow, handleRowHover };
 }

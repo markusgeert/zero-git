@@ -135,7 +135,7 @@ function mapPR(pr: PR): InferInsertModel<typeof pullRequestsTable> {
 		creatorId: pr.user?.id.toString() ?? "",
 		title: pr.title,
 		number: pr.number,
-		state: pr.state,
+		state: pr.state as "open" | "closed",
 		locked: pr.locked,
 		body: pr.body,
 		content: pr,
@@ -237,10 +237,15 @@ const eventHandlers: EventHandlers = {
 							repo: repoMeta.name,
 						})
 						.then(async ({ data: repo }) => {
-							const { data: pulls } = await octokit.rest.pulls.list({
-								owner: p.installation.account.login,
-								repo: repoMeta.name,
-							});
+							const pulls = await octokit.paginate(
+								"GET /repos/{owner}/{repo}/pulls",
+								{
+									owner: p.installation.account.login,
+									repo: repoMeta.name,
+									state: "all",
+									per_page: 100,
+								},
+							);
 
 							return Promise.allSettled([
 								upsertRepo(repo as Repository, db),

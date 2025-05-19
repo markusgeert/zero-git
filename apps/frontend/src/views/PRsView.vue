@@ -8,12 +8,15 @@ import type { schema } from "@zero-git/zero";
 import { ref, useTemplateRef } from "vue";
 import { useQuery } from "zero-vue";
 import { useFuse } from "@vueuse/integrations/useFuse";
+import { useRouter } from "vue-router";
 
 type PRRow = Row<typeof schema.tables.pullRequestsTable>;
 type GithubUsersRow = Row<typeof schema.tables.githubUsersTable>;
 
 const repoName = useRouteParams<string>("repo");
 const orgName = useRouteParams<string>("org");
+
+const router = useRouter();
 
 const z = useZero();
 const { data: repo } = useQuery(
@@ -29,7 +32,7 @@ const { data: prs, status } = useQuery(
 	() =>
 		z.value.query.pullRequestsTable
 			.where("repoId", repo.value?.id ?? "")
-			// .where("state", "open")
+			.where(({ cmp, or }) => or(cmp("state", "open"), cmp("state", "draft")))
 			.related("creator")
 			.orderBy("createdAt", "desc"),
 	CACHE_AWHILE,
@@ -130,7 +133,7 @@ function getPrText(pr: PRRow & { org?: GithubUsersRow }) {
 }
 
 const table = useTemplateRef("prsTable");
-useTableSelector(table, (row) => {
+const { handleRowHover } = useTableSelector(table, (row) => {
 	console.log("navigating to pr", row);
 });
 
@@ -153,6 +156,10 @@ const { results: filteredPRs } = useFuse(searchInput, prs, {
 	matchAllWhenSearchEmpty: true,
 	fuseOptions: { keys: ["title", "body", "number", "creator.name"] },
 });
+
+function isPrimaryMouseButton(e: MouseEvent) {
+	return !(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.button !== 0);
+}
 </script>
 
 <template>
@@ -184,11 +191,20 @@ const { results: filteredPRs } = useFuse(searchInput, prs, {
 				row: {
 					original: { item: pr },
 				},
+				row,
 			}"
 		>
 			<router-link
 				:to="`/${orgName}/${repoName}/pull/${pr.number}`"
 				class="flex p-2"
+				:tabindex="0"
+				@focus="handleRowHover(row, $event)"
+				@mousedown="
+					if (isPrimaryMouseButton($event)) {
+						$event.preventDefault();
+						router.push(`/${orgName}/${repoName}/pull/${pr.number}`);
+					}
+				"
 			>
 				<div class="flex items-center gap-2">
 					<UIcon
