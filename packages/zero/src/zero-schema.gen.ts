@@ -202,12 +202,6 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "name">,
 				},
-				displayName: {
-					type: "string",
-					optional: false,
-					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "organizationsTable", "displayName">,
-					serverName: "diaplay_name",
-				},
 				avatarUrl: {
 					type: "string",
 					optional: true,
@@ -340,7 +334,7 @@ export const schema = {
 				},
 				visibility: {
 					type: "string",
-					optional: false,
+					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reposTable", "visibility">,
 				},
 				stars: {

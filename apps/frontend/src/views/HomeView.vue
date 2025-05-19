@@ -19,7 +19,7 @@ const columns: TableColumn<Repo>[] = [
 		size: 250,
 	},
 	{
-		accessorFn: (row) => row.org?.displayName,
+		accessorFn: (row) => row.org?.name,
 		header: "Org",
 		size: 250,
 	},

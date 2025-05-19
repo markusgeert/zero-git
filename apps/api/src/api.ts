@@ -22,6 +22,7 @@ import { type AuthData, AuthDataSchema } from "@zero-git/auth";
 import {
 	githubEventsTable,
 	issuesTable,
+	organizationsTable,
 	pullRequestsTable,
 	reposTable,
 	schema,
@@ -102,8 +103,23 @@ const eventHandlers: EventHandlers = {
 			},
 		});
 
-		await Promise.all(
-			p.repositories?.map(async (repoMeta) => {
+		await Promise.all([
+			db
+				.insert(organizationsTable)
+				.values({
+					id: p.installation.account.id.toString(),
+					githubId: p.installation.account.id.toString(),
+					name: p.installation.account.login,
+					avatarUrl: p.installation.account.avatar_url,
+				})
+				.onConflictDoUpdate({
+					target: organizationsTable.id,
+					set: {
+						name: p.installation.account.login,
+						avatarUrl: p.installation.account.avatar_url,
+					},
+				}),
+			...(p.repositories?.map(async (repoMeta) => {
 				const { data } = await octokit.rest.repos.get({
 					owner: p.installation.account.login,
 					repo: repoMeta.name,
@@ -143,8 +159,8 @@ const eventHandlers: EventHandlers = {
 							modifiedAt: new Date(repo.updated_at),
 						},
 					});
-			}) ?? [],
-		);
+			}) ?? []),
+		]);
 	},
 	repository: async (p) => {
 		const repo = p.repository;

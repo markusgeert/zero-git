@@ -34,7 +34,6 @@ export const organizationsTable = pgTable("organizations", {
 	id: text().primaryKey(),
 	githubId: text("github_id").notNull(),
 	name: text("name").notNull(),
-	displayName: text("diaplay_name").notNull(),
 	avatarUrl: text("avatar_url"),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()

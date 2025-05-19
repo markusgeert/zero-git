@@ -38,7 +38,6 @@ export function createMutators(authData: AuthData | undefined) {
 					id: orgId,
 					githubId: orgGithubId,
 					name: orgName,
-					displayName: orgName,
 				});
 				await tx.mutate.reposTable?.insert({
 					id,
