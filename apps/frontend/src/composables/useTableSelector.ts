@@ -1,7 +1,9 @@
 import { watch, ref, toValue, type MaybeRefOrGetter, computed } from "vue";
 import type { Table, Row } from "@tanstack/table-core";
 
-export function useTableSelector<T extends { id: string }>(
+export function useTableSelector<
+	T extends { id: string } | { item: { id: string } },
+>(
 	table: MaybeRefOrGetter<{
 		tableRef?: HTMLTableElement;
 		tableApi?: Table<T>;
@@ -102,7 +104,9 @@ export function useTableSelector<T extends { id: string }>(
 		}
 
 		const linkToFocus = document
-			.querySelector(`[data-list-key="${newVal.row.original.id}"]`)
+			.querySelector(
+				`[data-list-key="${newVal.row.original.id ?? newVal.row.original.item.id}"]`,
+			)
 			?.querySelector("a");
 
 		if (!linkToFocus) {

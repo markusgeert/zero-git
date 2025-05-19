@@ -5,8 +5,9 @@ import { CACHE_AWHILE } from "@/query-cache-policy";
 import type { Row } from "@rocicorp/zero";
 import { useRouteParams } from "@vueuse/router";
 import type { schema } from "@zero-git/zero";
-import { useTemplateRef } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { useQuery } from "zero-vue";
+import { useFuse } from "@vueuse/integrations/useFuse";
 
 type PRRow = Row<typeof schema.tables.pullRequestsTable>;
 type GithubUsersRow = Row<typeof schema.tables.githubUsersTable>;
@@ -28,7 +29,7 @@ const { data: prs, status } = useQuery(
 	() =>
 		z.value.query.pullRequestsTable
 			.where("repoId", repo.value?.id ?? "")
-			.where("state", "open")
+			// .where("state", "open")
 			.related("creator")
 			.orderBy("createdAt", "desc"),
 	CACHE_AWHILE,
@@ -132,13 +133,40 @@ const table = useTemplateRef("prsTable");
 useTableSelector(table, (row) => {
 	console.log("navigating to pr", row);
 });
+
+const searchInput = ref("");
+const searchEl = useTemplateRef("search-el");
+
+defineShortcuts({
+	"/": () => {
+		searchEl.value?.inputRef?.focus();
+	},
+	escape: {
+		usingInput: true,
+		handler: () => {
+			searchEl.value?.inputRef?.blur();
+		},
+	},
+});
+
+const { results: filteredPRs } = useFuse(searchInput, prs, {
+	matchAllWhenSearchEmpty: true,
+	fuseOptions: { keys: ["title", "body", "number", "creator.name"] },
+});
 </script>
 
 <template>
+	<UInput
+		ref="search-el"
+		v-model="searchInput"
+		icon="i-lucide-search"
+		size="md"
+		variant="outline"
+	/>
 	<UTable
 		v-if="prs.length > 0 || status === 'complete'"
 		ref="prsTable"
-		:data="prs"
+		:data="filteredPRs"
 		:columns="[
 			{
 				id: 'main',
@@ -148,26 +176,37 @@ useTableSelector(table, (row) => {
 			root: 'overflow-visible',
 			tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 			tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
-			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-2',
+			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-0',
 		}"
 	>
-		<template #main-cell="{ row: { original: pr } }">
-			<div class="flex items-center gap-2">
-				<UIcon
-					:name="icons[pr.state].icon"
-					:class="icons[pr.state].class"
-					class="self-start"
-				/>
-				<div class="flex flex-col">
-					<h3 class="font-semibold">{{ pr.title }}</h3>
-					<div class="flex text-xs">
-						<span>
-							{{ getPrText(pr) }}
-						</span>
-						<span v-if="pr.state === 'draft'"> • Draft </span>
+		<template
+			#main-cell="{
+				row: {
+					original: { item: pr },
+				},
+			}"
+		>
+			<router-link
+				:to="`/${orgName}/${repoName}/pull/${pr.number}`"
+				class="flex p-2"
+			>
+				<div class="flex items-center gap-2">
+					<UIcon
+						:name="icons[pr.state].icon"
+						:class="icons[pr.state].class"
+						class="self-start"
+					/>
+					<div class="flex flex-col">
+						<h3 class="font-semibold text-default">{{ pr.title }}</h3>
+						<div class="flex gap-1 text-xs">
+							<span>
+								{{ getPrText(pr) }}
+							</span>
+							<span v-if="pr.state === 'draft'"> • Draft </span>
+						</div>
 					</div>
 				</div>
-			</div>
+			</router-link>
 		</template>
 	</UTable>
 </template>

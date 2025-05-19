@@ -123,6 +123,9 @@ importers:
       '@zero-git/zero':
         specifier: workspace:*
         version: link:../../packages/zero
+      fuse.js:
+        specifier: ^7.1.0
+        version: 7.1.0
       hono:
         specifier: ^4.7.8
         version: 4.7.9
