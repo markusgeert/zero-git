@@ -105,7 +105,7 @@ const eventHandlers: EventHandlers = {
 			},
 		});
 
-		await Promise.all([
+		const promisesToResolve = [
 			db
 				.insert(githubUsersTable)
 				.values({
@@ -135,38 +135,41 @@ const eventHandlers: EventHandlers = {
 					repo: repoMeta.name,
 				});
 
-				const prUpdates = db
-					.insert(pullRequestsTable)
-					.values(
-						pulls.map((pr) => ({
-							id: pr.id.toString(),
-							githubId: pr.id.toString(),
-							ownerId: repo.owner.id.toString(),
-							repoId: repo.id.toString(),
-							creatorId: pr.user?.id.toString() ?? "",
-							title: pr.title,
-							number: pr.number,
-							state: pr.state,
-							locked: pr.locked,
-							body: pr.body,
-							content: pr as PullRequest,
-							createdAt: new Date(pr.created_at),
-							modifiedAt: new Date(pr.updated_at),
-						})),
-					)
-					.onConflictDoUpdate({
-						target: pullRequestsTable.id,
-						set: {
-							title: sql.raw(`excluded.${pullRequestsTable.title.name}`),
-							state: sql.raw(`excluded.${pullRequestsTable.state.name}`),
-							locked: sql.raw(`excluded.${pullRequestsTable.locked.name}`),
-							body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
-							content: sql.raw(`excluded.${pullRequestsTable.content.name}`),
-							modifiedAt: sql.raw(
-								`excluded.${pullRequestsTable.modifiedAt.name}`,
-							),
-						},
-					});
+				const pullsToInsert = pulls.map((pr) => ({
+					id: pr.id.toString(),
+					githubId: pr.id.toString(),
+					ownerId: repo.owner.id.toString(),
+					repoId: repo.id.toString(),
+					creatorId: pr.user?.id.toString() ?? "",
+					title: pr.title,
+					number: pr.number,
+					state: pr.state,
+					locked: pr.locked,
+					body: pr.body,
+					content: pr as PullRequest,
+					createdAt: new Date(pr.created_at),
+					modifiedAt: new Date(pr.updated_at),
+				}));
+
+				let prUpdates: Promise<unknown> | undefined;
+				if (pullsToInsert.length > 0) {
+					prUpdates = db
+						.insert(pullRequestsTable)
+						.values(pullsToInsert)
+						.onConflictDoUpdate({
+							target: pullRequestsTable.id,
+							set: {
+								title: sql.raw(`excluded.${pullRequestsTable.title.name}`),
+								state: sql.raw(`excluded.${pullRequestsTable.state.name}`),
+								locked: sql.raw(`excluded.${pullRequestsTable.locked.name}`),
+								body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
+								content: sql.raw(`excluded.${pullRequestsTable.content.name}`),
+								modifiedAt: sql.raw(
+									`excluded.${pullRequestsTable.modifiedAt.name}`,
+								),
+							},
+						});
+				}
 
 				return [
 					prUpdates,
@@ -204,7 +207,10 @@ const eventHandlers: EventHandlers = {
 						}),
 				];
 			}) ?? []),
-		]);
+			// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+		] satisfies Promise<any>[];
+
+		await Promise.all(promisesToResolve);
 	},
 	repository: async (p) => {
 		const repo = p.repository;
