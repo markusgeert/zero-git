@@ -1,16 +1,8 @@
 import { type Context, Hono } from "hono";
 import { getCookie, setCookie } from "hono/cookie";
 import "dotenv/config";
-import { createAppAuth } from "@octokit/auth-app";
-import { Octokit } from "@octokit/rest";
 import { Webhooks } from "@octokit/webhooks";
-import type {
-	PullRequest,
-	Repository,
-	WebhookEvent,
-	WebhookEventMap,
-	WebhookEventName,
-} from "@octokit/webhooks-types";
+import type { WebhookEvent, WebhookEventName } from "@octokit/webhooks-types";
 import { createClient } from "@openauthjs/openauth/client";
 import type { ReadonlyJSONValue } from "@rocicorp/zero";
 import {
@@ -20,321 +12,21 @@ import {
 } from "@rocicorp/zero/pg";
 import { assert, subjects } from "@zero-git/auth";
 import { type AuthData, AuthDataSchema } from "@zero-git/auth";
-import {
-	githubEventsTable,
-	githubUsersTable,
-	issuesTable,
-	pullRequestsTable,
-	reposTable,
-	schema,
-} from "@zero-git/db";
+import { githubEventsTable, schema } from "@zero-git/db";
 import { schema as zeroSchema } from "@zero-git/zero";
 import { type } from "arktype";
-import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { backOff } from "exponential-backoff";
 import { jwtVerify } from "jose";
 import postgres from "postgres";
+import { getEnvOrThrow } from "./get-env.js";
+import { handleEvent } from "./github-events.js";
 import { createServerMutators } from "./server-mutators.js";
 
 const webhooks = new Webhooks({
 	secret: getEnvOrThrow("GITHUB_WEBHOOK_SECRET"),
 });
-
-function getEnvOrThrow(key: string): string {
-	const value = process.env[key];
-	if (!value) {
-		throw new Error(`Missing environment variable: ${key}`);
-	}
-	return value;
-}
-
-// Helper type to extract the 'action' literal type from an object with an optional 'action' property
-type ActionLiteral<T> = T extends { action: infer A } ? A : never;
-
-// Helper type to get all possible action literals for a given WebhookEvent type
-type PossibleActions<T extends WebhookEvent> = ActionLiteral<T>;
-
-// Helper type to generate the combined keys (event or event.action)
-type GenerateEventKeys = {
-	[K in WebhookEventName]:
-		| K // Event name itself
-		| (PossibleActions<WebhookEventMap[K]> extends never
-				? never // No actions for this event type
-				: `${K}.${PossibleActions<WebhookEventMap[K]>}`); // Event.action for each possible action
-}[WebhookEventName]; // Get the union of all generated keys
-
-// Define the refined EventKey type
-type EventKey = GenerateEventKeys;
-
-// Define a type for the event handlers
-type EventHandler<T extends WebhookEvent> = (
-	payload: T,
-) => Promise<void> | void;
-
-// Define the type for our eventHandlers map
-type EventHandlers = {
-	[K in EventKey]?: K extends WebhookEventName
-		? EventHandler<WebhookEventMap[K]> // Handler for a general event type
-		: K extends `${infer Type}.${infer Action}`
-			? Type extends WebhookEventName
-				? Action extends string
-					? EventHandler<
-							Extract<
-								WebhookEventMap[Type],
-								{ action: Action } | { action?: never } // Try to narrow by action
-							>
-						>
-					: never
-				: never
-			: never;
-};
-
-const eventHandlers: EventHandlers = {
-	"installation.created": async (p) => {
-		const buffer = Buffer.from(getEnvOrThrow("GITHUB_PRIVATE_KEY"), "base64");
-		const githubPrivateKey = buffer.toString("utf8");
-
-		const octokit = new Octokit({
-			authStrategy: createAppAuth,
-			auth: {
-				appId: getEnvOrThrow("GITHUB_APP_ID"),
-				privateKey: githubPrivateKey,
-				installationId: p.installation.id,
-			},
-		});
-
-		const promisesToResolve = [
-			db
-				.insert(githubUsersTable)
-				.values({
-					id: p.installation.account.id.toString(),
-					githubId: p.installation.account.id.toString(),
-					name: p.installation.account.login,
-					avatarUrl: p.installation.account.avatar_url,
-					type: p.installation.account.type,
-				})
-				.onConflictDoUpdate({
-					target: githubUsersTable.id,
-					set: {
-						name: p.installation.account.login,
-						avatarUrl: p.installation.account.avatar_url,
-					},
-				}),
-			...(p.repositories?.flatMap(async (repoMeta) => {
-				const { data } = await octokit.rest.repos.get({
-					owner: p.installation.account.login,
-					repo: repoMeta.name,
-				});
-
-				const repo = data as Repository;
-
-				const { data: pulls } = await octokit.rest.pulls.list({
-					owner: p.installation.account.login,
-					repo: repoMeta.name,
-				});
-
-				const pullsToInsert = pulls.map((pr) => ({
-					id: pr.id.toString(),
-					githubId: pr.id.toString(),
-					ownerId: repo.owner.id.toString(),
-					repoId: repo.id.toString(),
-					creatorId: pr.user?.id.toString() ?? "",
-					title: pr.title,
-					number: pr.number,
-					state: pr.state,
-					locked: pr.locked,
-					body: pr.body,
-					content: pr as PullRequest,
-					createdAt: new Date(pr.created_at),
-					modifiedAt: new Date(pr.updated_at),
-				}));
-
-				let prUpdates: Promise<unknown> | undefined;
-				if (pullsToInsert.length > 0) {
-					prUpdates = db
-						.insert(pullRequestsTable)
-						.values(pullsToInsert)
-						.onConflictDoUpdate({
-							target: pullRequestsTable.id,
-							set: {
-								title: sql.raw(`excluded.${pullRequestsTable.title.name}`),
-								state: sql.raw(`excluded.${pullRequestsTable.state.name}`),
-								locked: sql.raw(`excluded.${pullRequestsTable.locked.name}`),
-								body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
-								content: sql.raw(`excluded.${pullRequestsTable.content.name}`),
-								modifiedAt: sql.raw(
-									`excluded.${pullRequestsTable.modifiedAt.name}`,
-								),
-							},
-						});
-				}
-
-				return [
-					prUpdates,
-					db
-						.insert(reposTable)
-						.values({
-							id: repo.id.toString(),
-							githubId: repo.id.toString(),
-							orgId: repo.owner.id.toString(),
-							name: repo.name,
-							fork: repo.fork,
-							stars: repo.stargazers_count,
-							description: repo.description,
-							visibility: repo.visibility as
-								| "public"
-								| "private"
-								| "internal"
-								| undefined,
-							content: repo,
-							createdAt: new Date(repo.created_at),
-							modifiedAt: new Date(repo.updated_at),
-						})
-						.onConflictDoUpdate({
-							target: reposTable.id,
-							set: {
-								name: repo.name,
-								orgId: repo.owner.id.toString(),
-								visibility: repo.visibility,
-								fork: repo.fork,
-								stars: repo.stargazers_count,
-								content: repo,
-								description: repo.description,
-								modifiedAt: new Date(repo.updated_at),
-							},
-						}),
-				];
-			}) ?? []),
-			// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
-		] satisfies Promise<any>[];
-
-		await Promise.all(promisesToResolve);
-	},
-	repository: async (p) => {
-		const repo = p.repository;
-
-		await db
-			.insert(reposTable)
-			.values({
-				id: repo.id.toString(),
-				githubId: repo.id.toString(),
-				orgId: repo.owner.id.toString(),
-				name: repo.name,
-				fork: repo.fork,
-				stars: repo.stargazers_count,
-				description: repo.description,
-				visibility: repo.visibility,
-				content: repo,
-				createdAt: new Date(repo.created_at),
-				modifiedAt: new Date(repo.updated_at),
-			})
-			.onConflictDoUpdate({
-				target: reposTable.id,
-				set: {
-					name: repo.name,
-					orgId: repo.owner.id.toString(),
-					visibility: repo.visibility,
-					fork: repo.fork,
-					stars: repo.stargazers_count,
-					content: repo,
-					description: repo.description,
-					modifiedAt: new Date(repo.updated_at),
-				},
-			});
-	},
-	issues: async (p) => {
-		const repository = p.repository;
-		const issue = p.issue;
-
-		await db
-			.insert(issuesTable)
-			.values({
-				id: issue.id.toString(),
-				githubId: issue.id.toString(),
-				orgId: repository.owner.id.toString(),
-				repoId: repository.id.toString(),
-				title: issue.title,
-				number: issue.number,
-				state: issue.state,
-				locked: issue.locked,
-				body: issue.body,
-				content: issue,
-				createdAt: new Date(issue.created_at),
-				modifiedAt: new Date(issue.updated_at),
-			})
-			.onConflictDoUpdate({
-				target: issuesTable.id,
-				set: {
-					title: issue.title,
-					state: issue.state,
-					locked: issue.locked,
-					body: issue.body,
-					content: issue,
-					modifiedAt: new Date(issue.updated_at),
-				},
-			});
-	},
-	pull_request: async (p) => {
-		const pr = p.pull_request;
-
-		await db
-			.insert(pullRequestsTable)
-			.values({
-				id: pr.id.toString(),
-				githubId: pr.id.toString(),
-				ownerId: pr.base.repo.owner.id.toString(),
-				repoId: pr.base.repo.id.toString(),
-				creatorId: p.sender.id.toString(),
-				title: pr.title,
-				number: pr.number,
-				state: pr.state,
-				locked: pr.locked,
-				body: pr.body,
-				content: pr,
-				createdAt: new Date(pr.created_at),
-				modifiedAt: new Date(pr.updated_at),
-			})
-			.onConflictDoUpdate({
-				target: pullRequestsTable.id,
-				set: {
-					title: pr.title,
-					state: pr.state,
-					locked: pr.locked,
-					body: pr.body,
-					content: pr,
-					modifiedAt: new Date(pr.updated_at),
-				},
-			});
-	},
-};
-
-async function handleEvent(type: WebhookEventName, payload: WebhookEvent) {
-	let action: string | undefined;
-	if ("action" in payload) {
-		action = payload.action;
-		const specificKey = `${type}.${action}` as EventKey;
-
-		const specificHandler = eventHandlers[specificKey];
-		if (specificHandler) {
-			// @ts-expect-error: too complex for typescript
-			// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
-			await specificHandler(payload as any);
-			return;
-		}
-	}
-
-	const generalHandler = eventHandlers[type];
-	if (generalHandler) {
-		// @ts-expect-error: too complex for typescript
-		// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
-		await generalHandler(payload as any);
-		return;
-	}
-
-	console.warn(`No handler found for ${type}${action ? `.${action}` : ""}`);
-}
 
 function getOrgId(payload: WebhookEvent) {
 	if ("repository" in payload) {
@@ -457,7 +149,7 @@ export const api = new Hono()
 			createdAt: new Date(),
 		});
 
-		await handleEvent(type, payload);
+		await handleEvent(type, payload, db);
 
 		return c.status(200);
 	})

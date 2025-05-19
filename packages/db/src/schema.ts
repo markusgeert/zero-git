@@ -1,3 +1,4 @@
+import type { RestEndpointMethodTypes } from "@octokit/rest";
 import type {
 	Issue,
 	PullRequest,
@@ -173,6 +174,10 @@ export const nodesInTreeRelations = relations(nodesInTree, ({ one }) => ({
 	}),
 }));
 
+type PR =
+	| PullRequest
+	| RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number];
+
 export const pullRequestsTable = pgTable("pull_requests", {
 	id: text().primaryKey(),
 	githubId: text("github_id").notNull(),
@@ -187,7 +192,7 @@ export const pullRequestsTable = pgTable("pull_requests", {
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
 
-	content: jsonb().$type<PullRequest>(),
+	content: jsonb().$type<PR>(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
