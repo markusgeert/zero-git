@@ -40,6 +40,7 @@ const groups = computed(() => {
 		return {
 			label: `${repo.org?.name}/${repo.name}`,
 			suffix: Number.isFinite(repo.stars) ? String(repo.stars) : undefined,
+			to: `/${repo.org?.name}/${repo.name}`,
 		};
 	});
 
@@ -61,6 +62,13 @@ const groups = computed(() => {
 					:groups="groups"
 					placeholder="Search users..."
 					class="h-80"
+					@update:model-value="
+						(entry) => {
+							if (entry) {
+								open = false;
+							}
+						}
+					"
 				/>
 			</template>
 		</UModal>
