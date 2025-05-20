@@ -6,30 +6,30 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-	const avatarGroupInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useAvatarGroup.js"))["avatarGroupInjectionKey"];
-	const buttonGroupInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useButtonGroup.js"))["buttonGroupInjectionKey"];
-	const defineLocale: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/defineLocale.js"))["defineLocale"];
-	const defineShortcuts: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.js"))["defineShortcuts"];
-	const extractShortcuts: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.js"))["extractShortcuts"];
-	const formBusInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formBusInjectionKey"];
-	const formFieldInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formFieldInjectionKey"];
-	const formInputsInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formInputsInjectionKey"];
-	const formLoadingInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formLoadingInjectionKey"];
-	const formOptionsInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formOptionsInjectionKey"];
-	const inputIdInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["inputIdInjectionKey"];
-	const kbdKeysMap: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.js"))["kbdKeysMap"];
-	const localeContextInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useLocale.js"))["localeContextInjectionKey"];
-	const portalTargetInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/usePortal.js"))["portalTargetInjectionKey"];
-	const useAppConfig: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/vue/composables/useAppConfig.js"))["useAppConfig"];
-	const useAvatarGroup: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useAvatarGroup.js"))["useAvatarGroup"];
-	const useButtonGroup: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useButtonGroup.js"))["useButtonGroup"];
-	const useComponentIcons: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.js"))["useComponentIcons"];
-	const useFormField: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["useFormField"];
-	const useKbd: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.js"))["useKbd"];
-	const useLocale: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useLocale.js"))["useLocale"];
-	const useOverlay: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.js"))["useOverlay"];
-	const usePortal: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/usePortal.js"))["usePortal"];
-	const useToast: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useToast.js"))["useToast"];
+	const avatarGroupInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useAvatarGroup.js"))["avatarGroupInjectionKey"];
+	const buttonGroupInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useButtonGroup.js"))["buttonGroupInjectionKey"];
+	const defineLocale: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/defineLocale.js"))["defineLocale"];
+	const defineShortcuts: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.js"))["defineShortcuts"];
+	const extractShortcuts: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.js"))["extractShortcuts"];
+	const formBusInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formBusInjectionKey"];
+	const formFieldInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formFieldInjectionKey"];
+	const formInputsInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formInputsInjectionKey"];
+	const formLoadingInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formLoadingInjectionKey"];
+	const formOptionsInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["formOptionsInjectionKey"];
+	const inputIdInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["inputIdInjectionKey"];
+	const kbdKeysMap: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.js"))["kbdKeysMap"];
+	const localeContextInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useLocale.js"))["localeContextInjectionKey"];
+	const portalTargetInjectionKey: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/usePortal.js"))["portalTargetInjectionKey"];
+	const useAppConfig: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/vue/composables/useAppConfig.js"))["useAppConfig"];
+	const useAvatarGroup: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useAvatarGroup.js"))["useAvatarGroup"];
+	const useButtonGroup: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useButtonGroup.js"))["useButtonGroup"];
+	const useComponentIcons: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.js"))["useComponentIcons"];
+	const useFormField: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useFormField.js"))["useFormField"];
+	const useKbd: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.js"))["useKbd"];
+	const useLocale: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useLocale.js"))["useLocale"];
+	const useOverlay: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.js"))["useOverlay"];
+	const usePortal: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/usePortal.js"))["usePortal"];
+	const useToast: (typeof import("../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useToast.js"))["useToast"];
 }
 // for type re-export
 declare global {
@@ -38,34 +38,34 @@ declare global {
 		ShortcutConfig,
 		ShortcutsConfig,
 		ShortcutsOptions,
-	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.d";
+	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.d";
 	import(
-		"../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.d"
+		"../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/defineShortcuts.d"
 	);
 	// @ts-ignore
-	export type { UseComponentIconsProps } from "../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.d";
+	export type { UseComponentIconsProps } from "../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.d";
 	import(
-		"../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.d"
+		"../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useComponentIcons.d"
 	);
 	// @ts-ignore
 	export type {
 		KbdKey,
 		KbdKeySpecific,
-	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.d";
+	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.d";
 	import(
-		"../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.d"
+		"../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useKbd.d"
 	);
 	// @ts-ignore
 	export type {
 		OverlayOptions,
 		Overlay,
-	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.d";
+	} from "../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.d";
 	import(
-		"../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.d"
+		"../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useOverlay.d"
 	);
 	// @ts-ignore
-	export type { Toast } from "../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useToast.d";
+	export type { Toast } from "../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useToast.d";
 	import(
-		"../../node_modules/.pnpm/@nuxt+ui@3.1.1_@babel+parser@7.27.0_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._8c767528cb0f31c610642fc0477e966d/node_modules/@nuxt/ui/dist/runtime/composables/useToast.d"
+		"../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/composables/useToast.d"
 	);
 }

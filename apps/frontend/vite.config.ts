@@ -13,8 +13,17 @@ export default defineConfig({
 		ui({
 			ui: {
 				colors: {
-					primary: "green",
+					primary: "emerald",
 					neutral: "slate",
+				},
+				navigationMenu: {
+					variants: {
+						active: {
+							false: {
+								link: "text-regular",
+							},
+						},
+					},
 				},
 			},
 		}),
