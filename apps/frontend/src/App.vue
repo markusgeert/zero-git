@@ -73,6 +73,7 @@ const groups = computed(() => {
 			</template>
 		</UModal>
 		<router-view v-slot="{ Component }">
+			<TheNavigation />
 			<keep-alive include="HomeView">
 				<component :is="Component" />
 			</keep-alive>

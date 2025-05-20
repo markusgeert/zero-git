@@ -20,6 +20,11 @@ const router = createRouter({
 			component: () => import("../views/AuthCallbackView.vue"),
 		},
 		{
+			path: "/:org",
+			name: "org",
+			component: () => import("../views/AuthCallbackView.vue"),
+		},
+		{
 			path: "/:org/:repo",
 			name: "repo",
 			component: () => import("../views/RepoView.vue"),
@@ -46,6 +51,11 @@ const router = createRouter({
 					component: () => import("../views/PRView.vue"),
 				},
 			],
+		},
+		{
+			path: "/not-found",
+			name: "not-found",
+			component: HomeView,
 		},
 	],
 });

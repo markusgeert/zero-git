@@ -1,24 +1,30 @@
 <script setup lang="ts">
 import { useZero } from "@/composables/useZero";
-import { CACHE_FOREVER } from "@/query-cache-policy";
+import { CACHE_AWHILE } from "@/query-cache-policy";
 import router from "@/router";
 import type { NavigationMenuItem } from "@nuxt/ui";
 import { useRouteParams } from "@vueuse/router";
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useQuery } from "zero-vue";
 
 const orgName = useRouteParams<string>("org");
 const repoName = useRouteParams<string>("repo");
 
 const z = useZero();
-const { data: org } = useQuery(
+const { data: org, status } = useQuery(
 	() =>
 		z.value.query.githubUsersTable
 			.where("name", orgName.value)
 			.related("repos", (q) => q.where("name", repoName.value).one())
 			.one(),
-	CACHE_FOREVER,
+	CACHE_AWHILE,
 );
+
+watch(status, (s) => {
+	if (s === "complete" && !org.value?.repos) {
+		router.push({ name: "not-found" });
+	}
+});
 
 const items = computed<NavigationMenuItem[]>(() => [
 	[
@@ -67,9 +73,7 @@ defineShortcuts({
 </script>
 
 <template>
-	<TheNavigation />
 	<div class="max-w-7xl mx-auto px-3 md:px-4 lg:px-5">
-		<div v-if="org">{{ org.name }}/{{ org.repos?.name }}</div>
 		<UNavigationMenu :items="items" variant="link" class="w-full" />
 		<router-view v-slot="{ Component }">
 			<keep-alive>
