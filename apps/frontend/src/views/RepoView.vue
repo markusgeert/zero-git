@@ -3,6 +3,7 @@ import { useZero } from "@/composables/useZero";
 import { CACHE_AWHILE } from "@/query-cache-policy";
 import router from "@/router";
 import type { NavigationMenuItem } from "@nuxt/ui";
+import { useTitle } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import { computed, watch } from "vue";
 import { useQuery } from "zero-vue";
@@ -18,6 +19,16 @@ const { data: org, status } = useQuery(
 			.related("repos", (q) => q.where("name", repoName.value).one())
 			.one(),
 	CACHE_AWHILE,
+);
+
+const title = useTitle();
+
+watch(
+	[orgName, repoName],
+	([orgName, repoName]) => {
+		title.value = `${orgName}/${repoName} - commit.zone`;
+	},
+	{ immediate: true },
 );
 
 watch(status, (s) => {
@@ -50,18 +61,30 @@ const items = computed<NavigationMenuItem[]>(() => [
 async function goToCode() {
 	await router.push({
 		name: "code",
+		params: {
+			org: orgName.value,
+			repo: repoName.value,
+		},
 	});
 }
 
 async function goToIssues() {
 	await router.push({
 		name: "issues",
+		params: {
+			org: orgName.value,
+			repo: repoName.value,
+		},
 	});
 }
 
 async function goToPullRequests() {
 	await router.push({
 		name: "pull-requests",
+		params: {
+			org: orgName.value,
+			repo: repoName.value,
+		},
 	});
 }
 
