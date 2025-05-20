@@ -88,7 +88,7 @@ async function upsertUserFromInstallation(
 		});
 }
 
-async function upsertRepo(repo: Repository, db: DBType) {
+async function upsertRepo(repo: Repo, db: DBType) {
 	return db
 		.insert(reposTable)
 		.values({
@@ -113,7 +113,7 @@ async function upsertRepo(repo: Repository, db: DBType) {
 			set: {
 				name: repo.name,
 				orgId: repo.owner.id.toString(),
-				visibility: repo.visibility,
+				visibility: repo.visibility as "public" | "private" | "internal",
 				fork: repo.fork,
 				stars: repo.stargazers_count,
 				content: repo,
@@ -126,6 +126,8 @@ async function upsertRepo(repo: Repository, db: DBType) {
 type PR =
 	| RestEndpointMethodTypes["pulls"]["list"]["response"]["data"][number]
 	| PullRequest;
+
+type Repo = Repository | components["schemas"]["full-repository"];
 
 function mapPR(pr: PR): InferInsertModel<typeof pullRequestsTable> {
 	return {
@@ -215,6 +217,39 @@ async function upsertUsers(
 		});
 }
 
+async function upsertUsersFromPullRequests(
+	pulls: components["schemas"]["pull-request-simple"][],
+	db: DBType,
+) {
+	const usersToUpsert = new Map<string, components["schemas"]["simple-user"]>();
+
+	for (const pull of pulls) {
+		const { user, assignee, assignees, requested_reviewers } = pull;
+
+		if (user) {
+			usersToUpsert.set(user.id.toString(), user);
+		}
+
+		if (assignee) {
+			usersToUpsert.set(assignee.id.toString(), assignee);
+		}
+
+		if (assignees) {
+			for (const assignee of assignees) {
+				usersToUpsert.set(assignee.id.toString(), assignee);
+			}
+		}
+
+		if (requested_reviewers) {
+			for (const reviewer of requested_reviewers) {
+				usersToUpsert.set(reviewer.id.toString(), reviewer);
+			}
+		}
+	}
+
+	return await upsertUsers(Array.from(usersToUpsert.values()), db);
+}
+
 async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 	await db
 		.insert(issuesTable)
@@ -245,6 +280,64 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 		});
 }
 
+async function fetchIssueComments(repo: Repo, octokit: Octokit) {
+	return await octokit.paginate("GET /repos/{owner}/{repo}/issues/comments", {
+		owner: repo.owner.login,
+		repo: repo.name,
+		per_page: 100,
+	});
+}
+
+async function upsertIssueComments(
+	comments: components["schemas"]["issue-comment"][],
+	db: DBType,
+) {}
+
+async function fetchReviews(pulls: PR[], octokit: Octokit) {
+	const reviews = await Promise.all(
+		pulls.map((pr) =>
+			octokit.paginate(
+				"GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews",
+				{
+					owner: pr.base.repo.owner.login,
+					repo: pr.base.repo.name,
+					pull_number: pr.number,
+					per_page: 100,
+				},
+			),
+		),
+	);
+
+	return reviews.flat();
+}
+
+async function upsertReviews(
+	reviews: components["schemas"]["pull-request-review"][],
+	db: DBType,
+) {}
+
+async function fetchReviewComments(repo: Repo, octokit: Octokit) {
+	return await octokit.paginate("GET /repos/{owner}/{repo}/pulls/comments", {
+		owner: repo.owner.login,
+		repo: repo.name,
+		per_page: 100,
+	});
+}
+
+async function upsertReviewComments(
+	comments: components["schemas"]["pull-request-review-comment"][],
+	db: DBType,
+) {}
+
+async function fetchPulls(repo: Repo, octokit: Octokit) {
+	return await octokit.paginate("GET /repos/{owner}/{repo}/pulls", {
+		owner: repo.owner.login,
+		repo: repo.name,
+		state: "all",
+		per_page: 100,
+	});
+}
+
 const eventHandlers: EventHandlers = {
 	"installation.created": async (p, db) => {
 		const buffer = Buffer.from(getEnvOrThrow("GITHUB_PRIVATE_KEY"), "base64");
@@ -260,59 +353,31 @@ const eventHandlers: EventHandlers = {
 		});
 
 		const reposToFetch = p.repositories
-			? p.repositories.map((repoMeta) =>
-					octokit.rest.repos
-						.get({
-							owner: p.installation.account.login,
-							repo: repoMeta.name,
-						})
-						.then(async ({ data: repo }) => {
-							const pulls = await octokit.paginate(
-								"GET /repos/{owner}/{repo}/pulls",
-								{
-									owner: p.installation.account.login,
-									repo: repoMeta.name,
-									state: "all",
-									per_page: 100,
-								},
-							);
+			? p.repositories.map(async (repoMeta) => {
+					const { data: repo } = await octokit.rest.repos.get({
+						owner: p.installation.account.login,
+						repo: repoMeta.name,
+					});
 
-							const usersToUpsert = new Map<
-								string,
-								components["schemas"]["simple-user"]
-							>();
-
-							for (const pull of pulls) {
-								const { user, assignee, assignees, requested_reviewers } = pull;
-
-								if (user) {
-									usersToUpsert.set(user.id.toString(), user);
-								}
-
-								if (assignee) {
-									usersToUpsert.set(assignee.id.toString(), assignee);
-								}
-
-								if (assignees) {
-									for (const assignee of assignees) {
-										usersToUpsert.set(assignee.id.toString(), assignee);
-									}
-								}
-
-								if (requested_reviewers) {
-									for (const reviewer of requested_reviewers) {
-										usersToUpsert.set(reviewer.id.toString(), reviewer);
-									}
-								}
-							}
-
-							return Promise.allSettled([
-								upsertRepo(repo as Repository, db),
+					return Promise.allSettled([
+						fetchPulls(repo, octokit).then((pulls) =>
+							Promise.allSettled([
 								upsertPulls(pulls.map(mapPR), db),
-								upsertUsers(Array.from(usersToUpsert.values()), db),
-							]);
-						}),
-				)
+								upsertUsersFromPullRequests(pulls, db),
+								// fetchReviews(pulls, octokit).then((reviews) =>
+								// 	upsertReviews(reviews, db),
+								// ),
+							]),
+						),
+						upsertRepo(repo, db),
+						// fetchReviewComments(repo, octokit).then((comments) =>
+						// 	upsertReviewComments(comments, db),
+						// ),
+						// fetchIssueComments(repo, octokit).then((comments) =>
+						// 	upsertIssueComments(comments, db),
+						// ),
+					]);
+				})
 			: [];
 
 		const promisesToResolve = [

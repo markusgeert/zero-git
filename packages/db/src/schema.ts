@@ -1,3 +1,4 @@
+import type { components } from "@octokit/openapi-types";
 import type { RestEndpointMethodTypes } from "@octokit/rest";
 import type {
 	Issue,
@@ -63,7 +64,9 @@ export const reposTable = pgTable("repos", {
 	visibility: text().$type<"public" | "private" | "internal">(),
 	stars: integer("stars").default(0).notNull(),
 
-	content: jsonb().$type<Repository>(),
+	content: jsonb().$type<
+		Repository | components["schemas"]["full-repository"]
+	>(),
 
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
