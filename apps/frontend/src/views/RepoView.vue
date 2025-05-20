@@ -67,6 +67,7 @@ defineShortcuts({
 </script>
 
 <template>
+	<TheNavigation />
 	<div class="max-w-7xl mx-auto px-3 md:px-4 lg:px-5">
 		<div v-if="org">{{ org.name }}/{{ org.repos?.name }}</div>
 		<router-link :to="{ name: 'home' }">
