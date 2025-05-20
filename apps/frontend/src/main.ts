@@ -14,6 +14,11 @@ posthog.init(import.meta.env.VITE_POSTHOG_API_KEY, {
 	person_profiles: "always",
 });
 
+// This handles the case when the site is redeployed, and the bundle can't be found anymore
+window.addEventListener("vite:preloadError", () => {
+	window.location.reload();
+});
+
 const app = createApp(App);
 
 app.use(createPinia());
