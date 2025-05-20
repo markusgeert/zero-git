@@ -118,17 +118,17 @@ const icons = {
 	draft: { icon: "i-lucide-git-pull-request-draft", class: "text-zinc-400" },
 };
 
-function getPrText(pr: PRRow & { org?: GithubUsersRow }) {
+function getPrText(pr: PRRow & { creator?: GithubUsersRow }) {
 	if (pr.state === "open" || pr.state === "draft") {
-		return `#${pr.number} opened ${formatRelativeDate(pr.createdAt)} by ${pr.org?.name}`;
+		return `#${pr.number} opened ${formatRelativeDate(pr.createdAt)} by ${pr.creator?.name}`;
 	}
 
 	if (pr.state === "closed") {
-		return `#${pr.number} by ${pr.org?.name} was closed ${formatRelativeDate(pr.content?.closed_at)}`;
+		return `#${pr.number} by ${pr.creator?.name} was closed ${formatRelativeDate(pr.content?.closed_at)}`;
 	}
 
 	if (pr.state === "merged") {
-		return `#${pr.number} by ${pr.org?.name} was merged ${formatRelativeDate(pr.content?.merged_at)}`;
+		return `#${pr.number} by ${pr.creator?.name} was merged ${formatRelativeDate(pr.content?.merged_at)}`;
 	}
 }
 

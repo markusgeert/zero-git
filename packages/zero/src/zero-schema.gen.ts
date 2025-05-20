@@ -527,6 +527,7 @@ export const schema = {
 		},
 		githubUsersTable: {
 			repos: [{ sourceField: ["id"], destField: ["orgId"], destSchema: "reposTable", cardinality: "many" }],
+			createdPullRequests: [{ sourceField: ["id"], destField: ["ownerId"], destSchema: "pullRequestsTable", cardinality: "many" }],
 		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],

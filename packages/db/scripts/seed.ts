@@ -6,6 +6,11 @@ import * as schema from "../src/schema.js";
 async function main() {
 	console.log("Seeding database...");
 
+	const userIds: number[] = [];
+	for (let i = 1; i <= 10; i++) {
+		userIds.push(i);
+	}
+
 	const db = drizzle(process.env.DATABASE_URL as string);
 	await migrate(db, { migrationsFolder: "./drizzle" });
 	await seed(db, schema).refine((f) => ({
@@ -39,6 +44,8 @@ async function main() {
 				title: f.loremIpsum(),
 				id: f.intPrimaryKey(),
 				githubId: f.intPrimaryKey(),
+				creatorId: f.valuesFromArray({ values: userIds }),
+				ownerId: f.valuesFromArray({ values: userIds }),
 				number: f.intPrimaryKey(),
 				state: f.valuesFromArray({
 					values: ["open", "closed", "merged", "draft"],

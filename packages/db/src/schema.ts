@@ -50,6 +50,7 @@ export const githubUsersTable = pgTable("github_users", {
 
 export const githubUsersRelations = relations(githubUsersTable, ({ many }) => ({
 	repos: many(reposTable),
+	createdPullRequests: many(pullRequestsTable),
 }));
 
 export const reposTable = pgTable("repos", {

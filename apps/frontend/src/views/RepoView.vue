@@ -4,7 +4,7 @@ import { CACHE_FOREVER } from "@/query-cache-policy";
 import router from "@/router";
 import type { NavigationMenuItem } from "@nuxt/ui";
 import { useRouteParams } from "@vueuse/router";
-import { ref } from "vue";
+import { computed } from "vue";
 import { useQuery } from "zero-vue";
 
 const orgName = useRouteParams<string>("org");
@@ -20,7 +20,7 @@ const { data: org } = useQuery(
 	CACHE_FOREVER,
 );
 
-const items = ref<NavigationMenuItem[]>([
+const items = computed<NavigationMenuItem[]>(() => [
 	[
 		{
 			label: "Code",
