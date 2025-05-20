@@ -1,4 +1,5 @@
 import { createAppAuth } from "@octokit/auth-app";
+import type { components } from "@octokit/openapi-types";
 import { Octokit, type RestEndpointMethodTypes } from "@octokit/rest";
 import type {
 	Installation,
@@ -185,6 +186,35 @@ async function upsertPulls(
 		});
 }
 
+async function upsertUsers(
+	users: components["schemas"]["simple-user"][],
+	db: DBType,
+) {
+	if (users.length === 0) {
+		return;
+	}
+
+	return db
+		.insert(githubUsersTable)
+		.values(
+			users.map((user) => ({
+				id: user.id.toString(),
+				githubId: user.id.toString(),
+				name: user.login,
+				avatarUrl: user.avatar_url,
+				type: user.type as "User" | "Bot" | "Organization",
+			})),
+		)
+		.onConflictDoUpdate({
+			target: githubUsersTable.id,
+			set: {
+				name: sql.raw(`excluded.${githubUsersTable.name.name}`),
+				avatarUrl: sql.raw(`excluded.${githubUsersTable.avatarUrl.name}`),
+				type: sql.raw(`excluded.${githubUsersTable.type.name}`),
+			},
+		});
+}
+
 async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 	await db
 		.insert(issuesTable)
@@ -247,9 +277,39 @@ const eventHandlers: EventHandlers = {
 								},
 							);
 
+							const usersToUpsert = new Map<
+								string,
+								components["schemas"]["simple-user"]
+							>();
+
+							for (const pull of pulls) {
+								const { user, assignee, assignees, requested_reviewers } = pull;
+
+								if (user) {
+									usersToUpsert.set(user.id.toString(), user);
+								}
+
+								if (assignee) {
+									usersToUpsert.set(assignee.id.toString(), assignee);
+								}
+
+								if (assignees) {
+									for (const assignee of assignees) {
+										usersToUpsert.set(assignee.id.toString(), assignee);
+									}
+								}
+
+								if (requested_reviewers) {
+									for (const reviewer of requested_reviewers) {
+										usersToUpsert.set(reviewer.id.toString(), reviewer);
+									}
+								}
+							}
+
 							return Promise.allSettled([
 								upsertRepo(repo as Repository, db),
 								upsertPulls(pulls.map(mapPR), db),
+								upsertUsers(Array.from(usersToUpsert.values()), db),
 							]);
 						}),
 				)
