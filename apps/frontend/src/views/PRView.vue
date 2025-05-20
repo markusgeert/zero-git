@@ -45,7 +45,10 @@ const { data: pr, status: prStatus } = useQuery(
 			<p class="text-sm text-gray-500">No PR found</p>
 		</div>
 		<div v-else class="flex flex-col gap-4">
-			<h1 class="text-2xl font-bold">{{ pr.title }}</h1>
+			<h1 class="text-3xl font-semibold">
+				{{ pr.title }}
+				<span class="text-dimmed font-normal">#{{ pr.number }}</span>
+			</h1>
 			<div class="flex items-center gap-2">
 				<span
 					class="px-2 py-1 text-xs rounded-full"
@@ -59,10 +62,15 @@ const { data: pr, status: prStatus } = useQuery(
 					{{ pr.state }}
 				</span>
 				<span class="text-sm">
-					PR #{{ pr.number }} by {{ pr.creator?.name }}
+					<template v-if="pr.state === 'open' || pr.state === 'draft'">
+						{{ pr.creator?.name }} wants to merge 1 commit into
+					</template>
+					<template v-else>
+						{{ pr.creator?.name }} merged 1 commit into
+					</template>
 				</span>
 			</div>
-			<p v-if="pr.body" class="mt-4 text-sm">{{ pr.body }}</p>
+			<AppMarkdown v-if="pr.body" :md="pr.body" />
 		</div>
 	</AppContainer>
 </template>
