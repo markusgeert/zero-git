@@ -63,6 +63,20 @@ export default issuer({
 			github: { hide: false },
 		},
 	}),
+	allow: async ({ redirectURI }) => {
+		const parsedUrl = new URL(redirectURI);
+
+		if (parsedUrl.hostname === "localhost") {
+			return true;
+		}
+
+		if (parsedUrl.hostname.endsWith(getEnvOrThrow("REDIRECT_DOMAIN"))) {
+			return true;
+		}
+
+		return false;
+	},
+
 	subjects,
 	storage: MemoryStorage(),
 	providers: {
