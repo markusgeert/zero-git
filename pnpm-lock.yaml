@@ -276,7 +276,7 @@ importers:
         version: 5.1.5
       octokit:
         specifier: ^4.1.3
-        version: 4.1.3
+        version: 4.1.4
       typescript:
         specifier: ^5
         version: 5.8.3
@@ -1463,10 +1463,6 @@ packages:
 
   '@octokit/webhooks-types@7.6.1':
     resolution: {integrity: sha512-S8u2cJzklBC0FgTwWVLaM8tMrDuDMVE4xiTK4EYXM9GntyvrdbSoxqDQa+Fh57CCNApyIpyeqPhhFEmHPfrXgw==}
-
-  '@octokit/webhooks@13.8.2':
-    resolution: {integrity: sha512-NgKpxIVp9MnEukvTF9s871v11bYTDZwpuyIYkU0ZIEM3d+DBOeiciIJPuCdjFMC1pQgv05MNKtdhbl8+Q+i3GA==}
-    engines: {node: '>= 18'}
 
   '@octokit/webhooks@13.9.0':
     resolution: {integrity: sha512-5Kva+/Gi7c+39d0/0MM/v/5RCZuwqm75fUD+t7Es3Iz/adui54GnjfNmJpkkPkXGC+5IWnEvgqwY6gstK/JlUQ==}
@@ -3826,8 +3822,8 @@ packages:
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
-  octokit@4.1.3:
-    resolution: {integrity: sha512-PP+EL8h4xPCE9NBo6jXq6I2/EiTXsn1cg9F0IZehHBv/qhuQpyGMFElEB17miWKciuT6vRHiFFiG9+FoXOmg6A==}
+  octokit@4.1.4:
+    resolution: {integrity: sha512-cRvxRte6FU3vAHRC9+PMSY3D+mRAs2Rd9emMoqp70UGRvJRM3sbAoim2IXRZNNsf8wVfn4sGxVBHRAP+JBVX/g==}
     engines: {node: '>= 18'}
 
   ofetch@1.4.1:
@@ -6034,7 +6030,7 @@ snapshots:
       '@octokit/oauth-app': 7.1.6
       '@octokit/plugin-paginate-rest': 12.0.0(@octokit/core@6.1.5)
       '@octokit/types': 14.0.0
-      '@octokit/webhooks': 13.8.2
+      '@octokit/webhooks': 13.9.0
 
   '@octokit/auth-app@7.2.1':
     dependencies:
@@ -6195,12 +6191,6 @@ snapshots:
   '@octokit/webhooks-methods@5.1.1': {}
 
   '@octokit/webhooks-types@7.6.1': {}
-
-  '@octokit/webhooks@13.8.2':
-    dependencies:
-      '@octokit/openapi-webhooks-types': 11.0.0
-      '@octokit/request-error': 6.1.8
-      '@octokit/webhooks-methods': 5.1.1
 
   '@octokit/webhooks@13.9.0':
     dependencies:
@@ -8637,7 +8627,7 @@ snapshots:
 
   obuf@1.1.2: {}
 
-  octokit@4.1.3:
+  octokit@4.1.4:
     dependencies:
       '@octokit/app': 15.1.6
       '@octokit/core': 6.1.5
@@ -8649,6 +8639,7 @@ snapshots:
       '@octokit/plugin-throttling': 10.0.0(@octokit/core@6.1.5)
       '@octokit/request-error': 6.1.8
       '@octokit/types': 14.0.0
+      '@octokit/webhooks': 13.9.0
 
   ofetch@1.4.1:
     dependencies:
