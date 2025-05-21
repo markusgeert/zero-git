@@ -62,7 +62,12 @@ export function useTableSelector<
 					handleRowSelect(row, e);
 				});
 
-				rowEl.setAttribute("data-list-key", `${getOriginal(newRows[idx]).id}`);
+				if (newRows[idx]) {
+					rowEl.setAttribute(
+						"data-list-key",
+						`${getOriginal(newRows[idx]).id}`,
+					);
+				}
 			});
 		},
 		{ immediate: true, deep: true },
