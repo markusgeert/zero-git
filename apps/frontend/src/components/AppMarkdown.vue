@@ -25,6 +25,30 @@ const sanitizedHtml = computed(() => {
 	font-size: 16px;
 	line-height: 1.5;
 	word-wrap: break-word;
+
+	--fgColor-danger: var(--ui-error);
+	--color-danger-fg: var(--ui-text);
+	--base-size-4: 0.25rem;
+	--base-size-8: 0.5rem;
+	--base-size-16: 1rem;
+	--base-size-24: 1.5rem;
+	--borderColor-default: var(--ui-border);
+	--color-border-default: var(--ui-border);
+	--fgColor-muted: var(--ui-text-muted);
+	--color-fg-muted: var(--ui-text-muted);
+	--base-text-weight-semibold: var(--font-weight-semibold);
+	--fgColor-default: var(--ui-text);
+	--color-fg-default: var(--ui-text);
+	--borderColor-muted: var(--ui-border-muted);
+	--color-border-muted: var(--ui-border-muted);
+	--bgColor-default: var(--ui-bg);
+	--color-canvas-default: var(--ui-bg);
+	--bgColor-muted: var(--ui-bg-muted);
+	--color-canvas-subtle: var(--ui-bg-muted);
+	--bgColor-neutral-muted: var(--ui-bg-muted);
+	--color-neutral-muted: var(--ui-bg-muted);
+	--borderColor-accent-emphasis: var(--ui-border-accented);
+	--color-accent-emphasis: var(--ui-border-accented);
 }
 .markdown-body::before {
 	display: table;
