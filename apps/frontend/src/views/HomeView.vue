@@ -7,6 +7,7 @@ import { computed, ref, useTemplateRef, watch } from "vue";
 import { recordPageLoad } from "@/page-load-stats";
 import { CACHE_FOREVER } from "@/query-cache-policy";
 import { useFuse } from "@vueuse/integrations/useFuse";
+import AppContainer from "@/components/AppContainer.vue";
 
 const columns: TableColumn<Repo>[] = [
 	{
@@ -78,7 +79,7 @@ const filteredRepos = computed(() => results.value.map((r) => r.item));
 </script>
 
 <template>
-	<div class="max-w-7xl w-full mx-auto px-3 md:px-4 lg:px-5">
+	<AppContainer class="pt-4">
 		<UInput
 			ref="search-el"
 			v-model="searchInput"
@@ -100,5 +101,5 @@ const filteredRepos = computed(() => results.value.map((r) => r.item));
 				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none',
 			}"
 		/>
-	</div>
+	</AppContainer>
 </template>
