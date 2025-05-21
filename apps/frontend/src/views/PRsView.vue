@@ -182,6 +182,7 @@ function isPrimaryMouseButton(e: MouseEvent) {
 		icon="i-lucide-search"
 		size="md"
 		variant="outline"
+		class="py-2"
 	/>
 	<UTable
 		v-if="prs.length > 0 || status === 'complete'"
@@ -194,7 +195,9 @@ function isPrimaryMouseButton(e: MouseEvent) {
 		]"
 		:ui="{
 			root: 'overflow-visible',
+			base: 'overflow-auto',
 			tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
+			thead: 'hidden',
 			tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
 			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-0',
 		}"
