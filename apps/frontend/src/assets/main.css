@@ -5,3 +5,7 @@
 html {
 	overflow-y: scroll;
 }
+
+#app {
+	min-height: 100vh;
+}

@@ -175,70 +175,79 @@ function isPrimaryMouseButton(e: MouseEvent) {
 </script>
 
 <template>
-	<UInput
-		ref="search-el"
-		v-model="searchInput"
-		name="search-el"
-		icon="i-lucide-search"
-		size="md"
-		variant="outline"
-		class="py-2"
-	/>
-	<UTable
-		v-if="prs.length > 0 || status === 'complete'"
-		ref="prsTable"
-		:data="filteredPRs"
-		:columns="[
-			{
-				id: 'main',
-			},
-		]"
-		:ui="{
-			root: 'overflow-visible',
-			base: 'overflow-auto',
-			tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
-			thead: 'hidden',
-			tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50  data-[focused=focus]:outline',
-			td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-0',
-		}"
-	>
-		<template
-			#main-cell="{
-				row: {
-					original: { item: pr },
+	<AppContainer class="flex flex-col gap-4 pt-4">
+		<UInput
+			ref="search-el"
+			v-model="searchInput"
+			name="search-el"
+			icon="i-lucide-search"
+			size="md"
+			variant="outline"
+			class="self-start"
+		/>
+		<UTable
+			v-if="prs.length > 0 || status === 'complete'"
+			ref="prsTable"
+			class="prs-table"
+			:data="filteredPRs"
+			:columns="[
+				{
+					id: 'main',
 				},
-				row,
+			]"
+			:ui="{
+				root: 'overflow-visible group',
+				base: 'overflow-auto',
+				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
+				thead: 'hidden',
+				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50',
+				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-0',
 			}"
 		>
-			<router-link
-				:to="`/${orgName}/${repoName}/pull/${pr.number}`"
-				class="flex p-2"
-				:tabindex="0"
-				@focus="handleRowHover(row, $event)"
-				@mousedown="
-					if (isPrimaryMouseButton($event)) {
-						$event.preventDefault();
-						router.push(`/${orgName}/${repoName}/pull/${pr.number}`);
-					}
-				"
+			<template
+				#main-cell="{
+					row: {
+						original: { item: pr },
+					},
+					row,
+				}"
 			>
-				<div class="flex items-center gap-2">
-					<UIcon
-						:name="icons[pr.state].icon"
-						:class="icons[pr.state].class"
-						class="self-start"
-					/>
-					<div class="flex flex-col">
-						<h3 class="font-semibold text-default">{{ pr.title }}</h3>
-						<div class="flex gap-1 text-xs">
-							<span>
-								{{ getPrText(pr) }}
-							</span>
-							<span v-if="pr.state === 'draft'"> • Draft </span>
+				<router-link
+					:to="`/${orgName}/${repoName}/pull/${pr.number}`"
+					class="row flex p-2"
+					:tabindex="0"
+					@focus="handleRowHover(row, $event)"
+					@mousedown="
+						if (isPrimaryMouseButton($event)) {
+							$event.preventDefault();
+							router.push(`/${orgName}/${repoName}/pull/${pr.number}`);
+						}
+					"
+				>
+					<div class="flex items-center gap-2">
+						<UIcon
+							:name="icons[pr.state].icon"
+							:class="icons[pr.state].class"
+							class="self-start"
+						/>
+						<div class="flex flex-col">
+							<h3 class="font-semibold text-default">{{ pr.title }}</h3>
+							<div class="flex gap-1 text-xs">
+								<span>
+									{{ getPrText(pr) }}
+								</span>
+								<span v-if="pr.state === 'draft'"> • Draft </span>
+							</div>
 						</div>
 					</div>
-				</div>
-			</router-link>
-		</template>
-	</UTable>
+				</router-link>
+			</template>
+		</UTable>
+	</AppContainer>
 </template>
+
+<style scoped>
+.prs-table tr:not([data-focused="focus"]) .row:focus-visible {
+	outline: none;
+}
+</style>

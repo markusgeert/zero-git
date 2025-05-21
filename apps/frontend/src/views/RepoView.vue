@@ -110,11 +110,9 @@ defineShortcuts({
 			</UTooltip>
 		</template>
 	</UNavigationMenu>
-	<AppContainer class="gap-2 py-2">
-		<router-view v-slot="{ Component }">
-			<keep-alive>
-				<component :is="Component" />
-			</keep-alive>
-		</router-view>
-	</AppContainer>
+	<router-view v-slot="{ Component }">
+		<keep-alive>
+			<component :is="Component" />
+		</keep-alive>
+	</router-view>
 </template>

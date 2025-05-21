@@ -133,6 +133,10 @@ export function useTableSelector<
 
 	watch(hoveredRow, (newVal) => {
 		if (!newVal) {
+			const activeElement = document.activeElement as HTMLElement;
+			if (activeElement && activeElement !== document.body) {
+				activeElement.blur();
+			}
 			return;
 		}
 
@@ -140,12 +144,7 @@ export function useTableSelector<
 			?.querySelector(`[data-list-key="${getOriginal(newVal.row).id}"]`)
 			?.querySelector("a");
 
-		if (!linkToFocus) {
-			// rowVirtualizer.value.scrollToIndex(newVal.row.index, {
-			// 	align: "center",
-			// 	behavior: "auto",
-			// });
-		} else {
+		if (linkToFocus) {
 			linkToFocus.focus();
 
 			if (newVal.kind === "focus") {

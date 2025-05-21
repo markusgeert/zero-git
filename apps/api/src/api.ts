@@ -174,7 +174,6 @@ export const api = new Hono()
 				}
 				authData = maybeAuthData;
 			} catch (e) {
-				console.log(e, authorization, jwk);
 				if (e instanceof Error) {
 					return c.text(e.message, 401);
 				}
