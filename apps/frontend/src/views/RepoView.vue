@@ -96,12 +96,16 @@ defineShortcuts({
 </script>
 
 <template>
-	<div class="max-w-7xl mx-auto px-3 md:px-4 lg:px-5">
-		<UNavigationMenu :items="items" variant="link" class="w-full" />
+	<UNavigationMenu
+		:items="items"
+		variant="link"
+		class="w-full border-b border-default px-3 md:px-4 lg:px-5"
+	/>
+	<AppContainer class="gap-2 py-2">
 		<router-view v-slot="{ Component }">
 			<keep-alive>
 				<component :is="Component" />
 			</keep-alive>
 		</router-view>
-	</div>
+	</AppContainer>
 </template>

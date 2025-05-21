@@ -46,7 +46,7 @@ const breadcrumbs = computed(() => {
 </script>
 
 <template>
-	<nav class="flex items-center justify-between w-full p-4">
+	<nav class="flex items-center justify-between w-full p-4 pb-0">
 		<div class="flex items-center gap-4">
 			<router-link :to="{ name: 'home' }">
 				<img

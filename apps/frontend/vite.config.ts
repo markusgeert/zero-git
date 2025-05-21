@@ -25,6 +25,15 @@ export default defineConfig({
 						},
 					},
 				},
+				breadcrumb: {
+					variants: {
+						active: {
+							false: {
+								link: "text-default",
+							},
+						},
+					},
+				},
 			},
 		}),
 		tailwindcss(),
