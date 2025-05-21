@@ -60,40 +60,47 @@ export default {
 						return;
 					}
 
-					const el: HTMLAnchorElement = this.$el;
+					let el = this.$el;
+
+					if (el.nextSibling instanceof HTMLAnchorElement) {
+						el = el.nextSibling;
+					}
 
 					// El can be a text node if using router-link as custom: https://router.vuejs.org/guide/advanced/extending-router-link.html
 					if (!el?.tagName || el.target === "_blank") {
 						return;
 					}
 
-					const components = useRouter()
+					const componentMaps = useRouter()
 						.resolve(this.$props.to)
 						.matched.map(({ components }) => components)
-						.find((component) => component !== undefined);
-					if (!components) {
+						.filter((component) => component !== undefined);
+					if (!componentMaps) {
 						return;
 					}
 
-					for (const component of Object.values(
-						components as Record<string, AsyncImport>,
-					)) {
-						// Component already imported becomes an object instead of a function
-						// Or if already imported, prevent the function execution
-						if (typeof component !== "function") {
+					for (const components of componentMaps) {
+						if (!components) {
 							continue;
 						}
+						for (const component of Object.values(
+							components as Record<string, AsyncImport>,
+						)) {
+							// Component already imported becomes an object instead of a function
+							// Or if already imported, prevent the function execution
+							if (typeof component !== "function") {
+								continue;
+							}
 
-						if (imported.has(component)) {
-							continue;
+							if (imported.has(component)) {
+								continue;
+							}
+
+							imported.add(component);
+							queue.value = [...queue.value, component];
+							importMap.set(el, component);
+							observer.observe(el);
 						}
-
-						console.log("asyncImport", component);
-
-						imported.add(component);
-						queue.value = [...queue.value, component];
-						importMap.set(el, component);
-						observer.observe(el);
 					}
 				},
 				unmounted() {
