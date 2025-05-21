@@ -100,7 +100,16 @@ defineShortcuts({
 		:items="items"
 		variant="link"
 		class="w-full border-b border-default px-3 md:px-4 lg:px-5"
-	/>
+	>
+		<template #item-leading="{ item }">
+			<UTooltip :text="item.label">
+				<UIcon
+					:name="item.icon || ''"
+					class="text-dimmed group-hover:text-default size-5 shrink-0 transition-colors"
+				/>
+			</UTooltip>
+		</template>
+	</UNavigationMenu>
 	<AppContainer class="gap-2 py-2">
 		<router-view v-slot="{ Component }">
 			<keep-alive>

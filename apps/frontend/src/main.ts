@@ -8,6 +8,7 @@ import App from "./App.vue";
 import router from "./router";
 
 import posthog from "posthog-js";
+import prefetch from "./plugins/prefetch";
 
 posthog.init(import.meta.env.VITE_POSTHOG_API_KEY, {
 	api_host: import.meta.env.VITE_POSTHOG_HOST,
@@ -24,5 +25,6 @@ const app = createApp(App);
 app.use(createPinia());
 app.use(router);
 app.use(ui);
+app.use(prefetch);
 
 app.mount("#app");
