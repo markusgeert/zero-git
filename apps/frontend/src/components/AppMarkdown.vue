@@ -17,7 +17,7 @@ const sanitizedHtml = computed(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .markdown-body {
 	font-family:
 		-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
