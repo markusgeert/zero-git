@@ -6,6 +6,7 @@ import type {
 	Issue,
 	PullRequest,
 	Repository,
+	User,
 	WebhookEvent,
 	WebhookEventMap,
 	WebhookEventName,
@@ -338,6 +339,45 @@ async function fetchPulls(repo: Repo, octokit: Octokit) {
 	});
 }
 
+async function fetchOrgMembers(org: User, octokit: Octokit) {
+	if (org.type !== "Organization") {
+		return [];
+	}
+
+	return await octokit.paginate("GET /orgs/{org}/members", {
+		org: org.login,
+		per_page: 100,
+	});
+}
+async function upsertOrgMembers(
+	members: components["schemas"]["simple-user"][],
+	db: DBType,
+) {
+	if (members.length === 0) {
+		return;
+	}
+
+	return db
+		.insert(githubUsersTable)
+		.values(
+			members.map((user) => ({
+				id: user.id.toString(),
+				githubId: user.id.toString(),
+				name: user.login,
+				avatarUrl: user.avatar_url,
+				type: user.type as "User" | "Bot" | "Organization",
+			})),
+		)
+		.onConflictDoUpdate({
+			target: githubUsersTable.id,
+			set: {
+				name: sql.raw(`excluded.${githubUsersTable.name.name}`),
+				avatarUrl: sql.raw(`excluded.${githubUsersTable.avatarUrl.name}`),
+				type: sql.raw(`excluded.${githubUsersTable.type.name}`),
+			},
+		});
+}
+
 const eventHandlers: EventHandlers = {
 	"installation.created": async (p, db) => {
 		const buffer = Buffer.from(getEnvOrThrow("GITHUB_PRIVATE_KEY"), "base64");
@@ -382,6 +422,9 @@ const eventHandlers: EventHandlers = {
 
 		const promisesToResolve = [
 			upsertUserFromInstallation(p.installation, db),
+			fetchOrgMembers(p.installation.account, octokit).then((members) =>
+				upsertOrgMembers(members, db),
+			),
 			...reposToFetch,
 		] satisfies Promise<unknown>[];
 
