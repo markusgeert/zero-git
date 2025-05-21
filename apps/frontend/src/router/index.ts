@@ -65,6 +65,7 @@ router.onError((error, to) => {
 		error.message.includes("Failed to fetch dynamically imported module") ||
 		error.message.includes("Importing a module script failed")
 	) {
+		// @ts-expect-error - for some reason we can't assign the new path to the window.location
 		window.location = to.fullPath;
 	}
 });

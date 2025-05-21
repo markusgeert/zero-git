@@ -4,6 +4,7 @@ import router from "./router";
 import { computed, ref, watch } from "vue";
 import { useQuery } from "zero-vue";
 import { useZero } from "./composables/useZero";
+import { useFavicon } from "@vueuse/core";
 
 async function goToHome() {
 	router.push({ name: "home" });
@@ -52,6 +53,11 @@ const groups = computed(() => {
 		},
 	];
 });
+
+if (import.meta.env.DEV) {
+	const icon = useFavicon();
+	icon.value = "/icon-dev.svg";
+}
 </script>
 
 <template>
