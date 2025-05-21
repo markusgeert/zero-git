@@ -1,3 +1,3 @@
 <template>
-	<div />
+	<div>Issues will be here</div>
 </template>

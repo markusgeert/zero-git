@@ -10,6 +10,21 @@ export function useTableSelector<
 	} | null>,
 	onSelect?: (row: Row<T>, e: Event) => void,
 ) {
+	function getOriginal(
+		// eslint-disable-next-line
+		row: Row<any>,
+	): T extends { item: unknown } ? T["item"] : T {
+		if (
+			row.original &&
+			typeof row.original === "object" &&
+			"item" in row.original
+		) {
+			return row.original.item;
+		}
+
+		return row.original;
+	}
+
 	const tableApi = computed(() => toValue(table)?.tableApi);
 	const tableRef = computed(() => toValue(table)?.tableRef);
 
@@ -47,10 +62,7 @@ export function useTableSelector<
 					handleRowSelect(row, e);
 				});
 
-				rowEl.setAttribute(
-					"data-list-key",
-					`${newRows[idx]?.original.id ?? newRows[idx]?.original.item.id}`,
-				);
+				rowEl.setAttribute("data-list-key", `${getOriginal(newRows[idx]).id}`);
 			});
 		},
 		{ immediate: true, deep: true },
@@ -97,6 +109,17 @@ export function useTableSelector<
 		ctrl_u: pageUp,
 		ctrl_d: pageDown,
 		"g-g": () => setSelection(0),
+		o: () => {
+			if (!hoveredRow.value) {
+				return;
+			}
+
+			const id = getOriginal(hoveredRow.value.row).id;
+			document
+				.querySelector(`[data-list-key="${id}"]`)
+				?.querySelector("a")
+				?.click();
+		},
 		shift_g: () => setSelection(rows.value.length - 1),
 		Escape: () => {
 			hoveredRow.value = null;
@@ -109,9 +132,7 @@ export function useTableSelector<
 		}
 
 		const linkToFocus = tableRef.value
-			?.querySelector(
-				`[data-list-key="${newVal.row.original.id ?? newVal.row.original.item.id}"]`,
-			)
+			?.querySelector(`[data-list-key="${getOriginal(newVal.row).id}"]`)
 			?.querySelector("a");
 
 		if (!linkToFocus) {

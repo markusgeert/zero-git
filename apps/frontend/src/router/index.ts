@@ -22,7 +22,7 @@ const router = createRouter({
 		{
 			path: "/:org",
 			name: "org",
-			component: () => import("../views/AuthCallbackView.vue"),
+			component: () => import("../views/OrgView.vue"),
 		},
 		{
 			path: "/:org/:repo",

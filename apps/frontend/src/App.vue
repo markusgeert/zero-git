@@ -5,13 +5,24 @@ import { computed, ref, watch } from "vue";
 import { useQuery } from "zero-vue";
 import { useZero } from "./composables/useZero";
 import { useFavicon } from "@vueuse/core";
+import { useRouteParams } from "@vueuse/router";
+
+const orgName = useRouteParams<string>("org");
 
 async function goToHome() {
 	router.push({ name: "home" });
 }
 
+async function goToOrg() {
+	if (orgName) {
+		router.push({ name: "org", params: { org: orgName.value } });
+		return;
+	}
+}
+
 defineShortcuts({
 	"g-d": goToHome,
+	"g-o": goToOrg,
 	meta_k: {
 		handler: () => {
 			open.value = !open.value;
