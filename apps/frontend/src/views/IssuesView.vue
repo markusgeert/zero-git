@@ -232,8 +232,6 @@ const availableFilters = ref([
 
 <template>
 	<AppContainer class="flex flex-col gap-4 pt-4">
-		{{ repo }}
-		{{ issues }}
 		<div class="flex">
 			<AppFilter
 				v-if="posthog.isFeatureEnabled('issue-filters')"
