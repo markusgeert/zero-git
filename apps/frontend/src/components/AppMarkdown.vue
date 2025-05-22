@@ -66,7 +66,7 @@ const sanitizedHtml = computed(() => {
 	margin-bottom: 0 !important;
 }
 .markdown-body a {
-	color: var(--ui-color-info-500);
+	color: var(--ui-info);
 	text-decoration: underline;
 }
 .markdown-body a:not([href]) {
