@@ -19,7 +19,7 @@
 		"@nuxt/schema": "^3.17.3",
 		"@nuxt/ui": "^3.1.2",
 		"@openauthjs/openauth": "^0.4.3",
-		"@rocicorp/zero": "^0.19.2025051702",
+		"@rocicorp/zero": "^0.20.0",
 		"@tanstack/table-core": "^8.21.3",
 		"@tanstack/vue-table": "^8.21.3",
 		"@tanstack/vue-virtual": "^3.13.9",
