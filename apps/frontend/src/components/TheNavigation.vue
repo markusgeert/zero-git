@@ -5,6 +5,7 @@ import { useColorMode } from "@vueuse/core";
 import { useRouteParams } from "@vueuse/router";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
+import AppLogo from "@/assets/logo.svg";
 
 const authStore = useAuthStore();
 const mode = useColorMode();
@@ -49,10 +50,9 @@ const breadcrumbs = computed(() => {
 	<nav class="flex items-center justify-between w-full p-4 pb-0">
 		<div class="flex items-center gap-4">
 			<router-link :to="{ name: 'home' }">
-				<img
-					:src="mode === 'dark' ? '/icon-light.svg' : '/icon.svg'"
-					alt="Logo"
-					class="h-8 w-8"
+				<AppLogo
+					class="logo"
+					:class="mode === 'dark' ? 'logo-dark' : 'logo-light'"
 				/>
 			</router-link>
 			<UBreadcrumb :items="breadcrumbs">
@@ -85,3 +85,20 @@ const breadcrumbs = computed(() => {
 		</div>
 	</nav>
 </template>
+
+<style>
+.logo path {
+	fill: var(--ui-text);
+}
+
+.logo {
+	transform: rotate(0deg);
+	transition: transform 0 ease-in-out 0;
+}
+
+.logo:hover {
+	transform: rotate(360deg);
+	transition-duration: 0.3s;
+	transition-delay: 2s;
+}
+</style>
