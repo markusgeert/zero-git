@@ -117,19 +117,40 @@ const icons = {
 	closed: { icon: "i-lucide-git-pull-request-closed", class: "text-red-500" },
 	merged: { icon: "i-proicons-branch", class: "text-violet-400" },
 	draft: { icon: "i-lucide-git-pull-request-draft", class: "text-zinc-400" },
+	default: { icon: "i-lucide-git-pull-request", class: "text-zinc-400" },
 };
+
+function getPRIcon(pr: PRRow) {
+	if (pr.mergedAt) {
+		return icons.merged;
+	}
+
+	if (pr.draft) {
+		return icons.draft;
+	}
+
+	if (pr.state === "open") {
+		return icons.open;
+	}
+
+	if (pr.state === "closed") {
+		return icons.closed;
+	}
+
+	return icons.default;
+}
 
 function getPrText(pr: PRRow & { creator?: GithubUsersRow }) {
 	if (pr.state === "open") {
 		return `#${pr.number} opened ${formatRelativeDate(pr.createdAt)} by ${pr.creator?.name}`;
 	}
 
-	if (pr.state === "closed") {
-		return `#${pr.number} by ${pr.creator?.name} was closed ${formatRelativeDate(pr.content?.closed_at)}`;
+	if (pr.mergedAt) {
+		return `#${pr.number} by ${pr.creator?.name} was merged ${formatRelativeDate(pr.content?.merged_at)}`;
 	}
 
-	if (pr.state === "merged") {
-		return `#${pr.number} by ${pr.creator?.name} was merged ${formatRelativeDate(pr.content?.merged_at)}`;
+	if (pr.state === "closed") {
+		return `#${pr.number} by ${pr.creator?.name} was closed ${formatRelativeDate(pr.content?.closed_at)}`;
 	}
 }
 
@@ -276,8 +297,8 @@ const availableFilters = ref([
 				>
 					<div class="flex items-center gap-2">
 						<UIcon
-							:name="icons[pr.state].icon"
-							:class="icons[pr.state].class"
+							:name="getPRIcon(pr).icon"
+							:class="getPRIcon(pr).class"
 							class="self-start"
 						/>
 						<div class="flex flex-col">
