@@ -53,9 +53,9 @@ const { data: pr, status: prStatus } = useQuery(
 				<span
 					class="px-2 py-1 text-xs rounded-full"
 					:class="{
-						'bg-green-100 text-green-800': pr.state === 'open',
+						'bg-green-100 text-green-800': !pr.draft && pr.state === 'open',
 						'bg-purple-100 text-purple-800': pr.mergedAt,
-						'bg-red-100 text-red-800': pr.closedAt,
+						'bg-red-100 text-red-800': !pr.mergedAt && pr.closedAt,
 						'bg-gray-100 text-gray-800': pr.draft,
 					}"
 				>
