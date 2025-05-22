@@ -6,14 +6,48 @@ import { useRouteParams } from "@vueuse/router";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import AppLogo from "@/assets/logo.svg";
+import { useZero } from "@/composables/useZero";
+import { useQuery } from "zero-vue";
+import { CACHE_AWHILE } from "@/query-cache-policy";
+import type { DropdownMenuItem } from "@nuxt/ui";
 
 const authStore = useAuthStore();
 const mode = useColorMode();
+const zero = useZero();
 
 const repoName = useRouteParams<string>("repo");
 const orgName = useRouteParams<string>("org");
 
 const route = useRoute();
+
+const { data: user } = useQuery(
+	() =>
+		zero.value.query.usersTable
+			.where("id", authStore.jwt?.properties.id ?? "")
+			.one(),
+	CACHE_AWHILE,
+);
+
+const dropdownItems = computed<DropdownMenuItem[][]>(() => [
+	[
+		{
+			label: user.value?.githubName || user.value?.email || "User",
+			avatar: user.value?.githubAvatarUrl
+				? {
+						src: user.value.githubAvatarUrl,
+					}
+				: undefined,
+			type: "label",
+		},
+	],
+	[
+		{
+			label: "Logout",
+			icon: "i-lucide-log-out",
+			onSelect: () => authStore.logout(),
+		},
+	],
+]);
 
 const breadcrumbs = computed(() => {
 	const items: BreadcrumbItem[] = [];
@@ -63,16 +97,23 @@ const breadcrumbs = computed(() => {
 		</div>
 		<div class="flex gap-4">
 			<ColorModeButton />
-			<UButton
-				v-if="authStore.jwt"
-				icon="mdi:logout"
-				color="neutral"
-				variant="outline"
-				class="self-end"
-				@click="authStore.logout"
-			>
-				Log out
-			</UButton>
+			<template v-if="authStore.jwt">
+				<UDropdownMenu
+					:items="dropdownItems"
+					:ui="{
+						content: 'w-48',
+					}"
+				>
+					<div>
+						<img
+							v-if="user?.githubAvatarUrl"
+							:src="user.githubAvatarUrl"
+							alt="Profile"
+							class="w-8 h-8 rounded-full cursor-pointer hover:ring-2 hover:ring-primary transition-all"
+						/>
+					</div>
+				</UDropdownMenu>
+			</template>
 			<UButton
 				v-else
 				icon="mdi:github"
