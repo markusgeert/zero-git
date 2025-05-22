@@ -29,6 +29,26 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
 				select: ANYONE_CAN,
 			},
 		},
+		reviewCommentsTable: {
+			row: {
+				select: ANYONE_CAN,
+			},
+		},
+		reviewsTable: {
+			row: {
+				select: ANYONE_CAN,
+			},
+		},
+		issuesTable: {
+			row: {
+				select: ANYONE_CAN,
+			},
+		},
+		issueCommentsTable: {
+			row: {
+				select: ANYONE_CAN,
+			},
+		},
 	} satisfies PermissionsConfig<AuthData, Schema>;
 });
 

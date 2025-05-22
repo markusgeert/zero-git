@@ -37,6 +37,7 @@ async function main() {
 			},
 			with: {
 				pullRequestsTable: 10,
+				issuesTable: 10,
 			},
 		},
 		pullRequestsTable: {
@@ -62,6 +63,11 @@ async function main() {
 				]),
 				modifiedAt: f.date({ maxDate: new Date() }),
 				createdAt: f.date({ maxDate: new Date() }),
+			},
+		},
+		issuesTable: {
+			with: {
+				issueCommentsTable: 10,
 			},
 		},
 	}));
