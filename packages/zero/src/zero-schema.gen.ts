@@ -115,6 +115,70 @@ export const schema = {
 			primaryKey: ["id"],
 			serverName: "github_users",
 		},
+		issueCommentsTable: {
+			name: "issueCommentsTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "id">,
+				},
+				githubId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "githubId">,
+					serverName: "github_id",
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "orgId">,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "repoId">,
+					serverName: "repo_id",
+				},
+				issueId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "issueId">,
+					serverName: "issue_id",
+				},
+				authorId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "authorId">,
+					serverName: "author_id",
+				},
+				body: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "body">,
+				},
+				content: {
+					type: "json",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "content">,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "createdAt">,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "modifiedAt">,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "issue_comments",
+		},
 		issuesTable: {
 			name: "issuesTable",
 			columns: {
@@ -140,6 +204,12 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "repoId">,
 					serverName: "repo_id",
+				},
+				authorId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "authorId">,
+					serverName: "author_id",
 				},
 				title: {
 					type: "string",
@@ -282,6 +352,11 @@ export const schema = {
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "locked">,
 				},
+				draft: {
+					type: "boolean",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "draft">,
+				},
 				body: {
 					type: "string",
 					optional: true,
@@ -291,6 +366,18 @@ export const schema = {
 					type: "json",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "content">,
+				},
+				mergedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "mergedAt">,
+					serverName: "merged_at",
+				},
+				closedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "closedAt">,
+					serverName: "closed_at",
 				},
 				createdAt: {
 					type: "number",
@@ -373,6 +460,169 @@ export const schema = {
 			},
 			primaryKey: ["id"],
 			serverName: "repos",
+		},
+		reviewCommentsTable: {
+			name: "reviewCommentsTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "id">,
+				},
+				githubId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "githubId">,
+					serverName: "github_id",
+				},
+				reviewId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "reviewId">,
+					serverName: "review_id",
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "orgId">,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "repoId">,
+					serverName: "repo_id",
+				},
+				authorId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "authorId">,
+					serverName: "author_id",
+				},
+				diffHunk: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "diffHunk">,
+					serverName: "diff_hunk",
+				},
+				path: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "path">,
+				},
+				body: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "body">,
+				},
+				inReplyToCommentId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "inReplyToCommentId">,
+					serverName: "in_reply_to_comment_id",
+				},
+				content: {
+					type: "json",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "content">,
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "createdAt">,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "modifiedAt">,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "review_comments",
+		},
+		reviewsTable: {
+			name: "reviewsTable",
+			columns: {
+				id: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "id">,
+				},
+				githubId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "githubId">,
+					serverName: "github_id",
+				},
+				orgId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "orgId">,
+					serverName: "org_id",
+				},
+				repoId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "repoId">,
+					serverName: "repo_id",
+				},
+				prId: {
+					type: "string",
+					optional: false,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "prId">,
+					serverName: "pr_id",
+				},
+				commitId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "commitId">,
+					serverName: "commit_id",
+				},
+				state: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "state">,
+				},
+				body: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "body">,
+				},
+				authorId: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "authorId">,
+					serverName: "author_id",
+				},
+				authorAssociation: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "authorAssociation">,
+					serverName: "author_association",
+				},
+				submittedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "submittedAt">,
+					serverName: "submitted_at",
+				},
+				createdAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "createdAt">,
+					serverName: "created_at",
+				},
+				modifiedAt: {
+					type: "number",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewsTable", "modifiedAt">,
+					serverName: "modified_at",
+				},
+			},
+			primaryKey: ["id"],
+			serverName: "reviews",
 		},
 		treeNodesTable: {
 			name: "treeNodesTable",
@@ -529,6 +779,17 @@ export const schema = {
 			repos: [{ sourceField: ["id"], destField: ["orgId"], destSchema: "reposTable", cardinality: "many" }],
 			createdPullRequests: [{ sourceField: ["id"], destField: ["ownerId"], destSchema: "pullRequestsTable", cardinality: "many" }],
 		},
+		issueCommentsTable: {
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			issue: [{ sourceField: ["issueId"], destField: ["id"], destSchema: "issuesTable", cardinality: "one" }],
+		},
+		issuesTable: {
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],
 			node: [{ sourceField: ["node_sha"], destField: ["sha"], destSchema: "treeNodesTable", cardinality: "one" }],
@@ -543,6 +804,21 @@ export const schema = {
 		reposTable: {
 			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			pulls: [{ sourceField: ["id"], destField: ["repoId"], destSchema: "pullRequestsTable", cardinality: "many" }],
+		},
+		reviewCommentsTable: {
+			pr: [{ sourceField: ["reviewId"], destField: ["id"], destSchema: "pullRequestsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			review: [{ sourceField: ["reviewId"], destField: ["id"], destSchema: "reviewsTable", cardinality: "one" }],
+			inReplyTo: [{ sourceField: ["inReplyToCommentId"], destField: ["id"], destSchema: "reviewCommentsTable", cardinality: "one" }],
+			replies: [{ sourceField: ["id"], destField: ["inReplyToCommentId"], destSchema: "reviewCommentsTable", cardinality: "many" }],
+		},
+		reviewsTable: {
+			pr: [{ sourceField: ["prId"], destField: ["id"], destSchema: "pullRequestsTable", cardinality: "one" }],
+			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 		},
 		treeNodesTable: {
 			nodesInTree: [{ sourceField: ["sha"], destField: ["node_sha"], destSchema: "nodesInTree", cardinality: "many" }],

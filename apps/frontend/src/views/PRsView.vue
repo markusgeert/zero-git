@@ -32,7 +32,7 @@ const { data: prs, status } = useQuery(
 	() =>
 		z.value.query.pullRequestsTable
 			.where("repoId", repo.value?.id ?? "")
-			.where(({ cmp, or }) => or(cmp("state", "open"), cmp("state", "draft")))
+			.where("state", "open")
 			.related("creator")
 			.orderBy("createdAt", "desc"),
 	CACHE_AWHILE,
@@ -119,7 +119,7 @@ const icons = {
 };
 
 function getPrText(pr: PRRow & { creator?: GithubUsersRow }) {
-	if (pr.state === "open" || pr.state === "draft") {
+	if (pr.state === "open") {
 		return `#${pr.number} opened ${formatRelativeDate(pr.createdAt)} by ${pr.creator?.name}`;
 	}
 
@@ -133,9 +133,7 @@ function getPrText(pr: PRRow & { creator?: GithubUsersRow }) {
 }
 
 const table = useTemplateRef("prsTable");
-const { handleRowHover } = useTableSelector(table, (row) => {
-	console.log("navigating to pr", row);
-});
+const { handleRowHover } = useTableSelector(table);
 
 const searchInput = ref("");
 const searchEl = useTemplateRef("search-el");
@@ -159,7 +157,10 @@ defineShortcuts({
 	enter: {
 		usingInput: "search-el",
 		handler: () => {
-			document.querySelector("tbody a")?.focus();
+			const firstLink = document.querySelector("tbody a");
+			if (firstLink instanceof HTMLAnchorElement) {
+				firstLink.focus();
+			}
 		},
 	},
 });

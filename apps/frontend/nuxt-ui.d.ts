@@ -5,6 +5,8 @@ declare module "#build/app.config" {
 	export { appConfig as default };
 }
 
+declare module "#build/ui/table" {}
+
 declare module "#imports" {
 	export * from "@nuxt/ui/runtime/vue/stubs.js";
 }

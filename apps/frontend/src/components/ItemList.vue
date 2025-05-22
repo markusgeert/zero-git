@@ -1,5 +1,6 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <!-- eslint-disable @typescript-eslint/no-empty-object-type -->
+<!-- eslint-disable @typescript-eslint/ban-ts-comment -->
 <script lang="ts">
 import type { AppConfig } from "@nuxt/schema";
 import { useLocale } from "@nuxt/ui/runtime/composables/useLocale.js";

@@ -1,13 +1,15 @@
-import { watch, ref, toValue, type MaybeRefOrGetter, computed } from "vue";
+import { watch, ref, toValue, computed, type ShallowRef } from "vue";
 import type { Table, Row } from "@tanstack/table-core";
 
 export function useTableSelector<
 	T extends { id: string } | { item: { id: string } },
 >(
-	table: MaybeRefOrGetter<{
-		tableRef?: HTMLTableElement;
-		tableApi?: Table<T>;
-	} | null>,
+	table: Readonly<
+		ShallowRef<{
+			tableRef?: HTMLTableElement;
+			tableApi?: Table<T>;
+		} | null>
+	>,
 	onSelect?: (row: Row<T>, e: Event) => void,
 ) {
 	function getOriginal(

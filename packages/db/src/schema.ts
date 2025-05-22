@@ -192,14 +192,15 @@ export const pullRequestsTable = pgTable("pull_requests", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
-	state: text("state")
-		.notNull()
-		.$type<"open" | "closed" | "draft" | "merged">(),
+	state: text("state").notNull().$type<"open" | "closed">(),
 	locked: boolean("locked").default(false).notNull(),
+	draft: boolean("draft"),
 	body: text("body"),
 
 	content: jsonb().$type<PR>(),
 
+	mergedAt: timestamp("merged_at", { withTimezone: true }),
+	closedAt: timestamp("closed_at", { withTimezone: true }),
 	createdAt: timestamp("created_at", { withTimezone: true })
 		.defaultNow()
 		.notNull(),
@@ -261,6 +262,7 @@ export const issuesTable = pgTable("issues", {
 
 	orgId: text("org_id").notNull(),
 	repoId: text("repo_id").notNull(),
+	authorId: text("author_id"),
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
@@ -277,3 +279,172 @@ export const issuesTable = pgTable("issues", {
 		.defaultNow()
 		.notNull(),
 });
+
+export const issuesRelations = relations(issuesTable, ({ one }) => ({
+	org: one(githubUsersTable, {
+		fields: [issuesTable.orgId],
+		references: [githubUsersTable.id],
+	}),
+	repo: one(reposTable, {
+		fields: [issuesTable.repoId],
+		references: [reposTable.id],
+	}),
+	author: one(githubUsersTable, {
+		fields: [issuesTable.authorId],
+		references: [githubUsersTable.id],
+	}),
+}));
+
+export const reviewsTable = pgTable("reviews", {
+	id: text().primaryKey(),
+	githubId: text("github_id").notNull(),
+
+	orgId: text("org_id").notNull(),
+	repoId: text("repo_id").notNull(),
+	prId: text("pr_id").notNull(),
+
+	commitId: text("commit_id"),
+	state: text("state"),
+
+	body: text("body"),
+
+	authorId: text("author_id"),
+	authorAssociation: text("author_association").$type<
+		| "COLLABORATOR"
+		| "CONTRIBUTOR"
+		| "FIRST_TIMER"
+		| "FIRST_TIME_CONTRIBUTOR"
+		| "MANNEQUIN"
+		| "MEMBER"
+		| "NONE"
+		| "OWNER"
+	>(),
+
+	submittedAt: timestamp("submitted_at", { withTimezone: true }),
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	modifiedAt: timestamp("modified_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
+
+export const reviewsRelations = relations(reviewsTable, ({ one }) => ({
+	pr: one(pullRequestsTable, {
+		fields: [reviewsTable.prId],
+		references: [pullRequestsTable.id],
+	}),
+	org: one(githubUsersTable, {
+		fields: [reviewsTable.orgId],
+		references: [githubUsersTable.id],
+	}),
+	repo: one(reposTable, {
+		fields: [reviewsTable.repoId],
+		references: [reposTable.id],
+	}),
+	author: one(githubUsersTable, {
+		fields: [reviewsTable.authorId],
+		references: [githubUsersTable.id],
+	}),
+}));
+
+export const reviewCommentsTable = pgTable("review_comments", {
+	id: text().primaryKey(),
+	githubId: text("github_id").notNull(),
+	reviewId: text("review_id"),
+	orgId: text("org_id").notNull(),
+	repoId: text("repo_id").notNull(),
+
+	authorId: text("author_id").notNull(),
+
+	diffHunk: text("diff_hunk"),
+	path: text("path").notNull(),
+
+	body: text("body").notNull(),
+	inReplyToCommentId: text("in_reply_to_comment_id"),
+
+	content:
+		jsonb().$type<components["schemas"]["pull-request-review-comment"][]>(),
+
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	modifiedAt: timestamp("modified_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
+
+export const reviewCommentsRelations = relations(
+	reviewCommentsTable,
+	({ one, many }) => ({
+		pr: one(pullRequestsTable, {
+			fields: [reviewCommentsTable.reviewId],
+			references: [pullRequestsTable.id],
+		}),
+		org: one(githubUsersTable, {
+			fields: [reviewCommentsTable.orgId],
+			references: [githubUsersTable.id],
+		}),
+		repo: one(reposTable, {
+			fields: [reviewCommentsTable.repoId],
+			references: [reposTable.id],
+		}),
+		author: one(githubUsersTable, {
+			fields: [reviewCommentsTable.authorId],
+			references: [githubUsersTable.id],
+		}),
+		review: one(reviewsTable, {
+			fields: [reviewCommentsTable.reviewId],
+			references: [reviewsTable.id],
+		}),
+		inReplyTo: one(reviewCommentsTable, {
+			fields: [reviewCommentsTable.inReplyToCommentId],
+			references: [reviewCommentsTable.id],
+		}),
+		replies: many(reviewCommentsTable),
+	}),
+);
+
+export const issueCommentsTable = pgTable("issue_comments", {
+	id: text().primaryKey(),
+	githubId: text("github_id").notNull(),
+
+	orgId: text("org_id").notNull(),
+	repoId: text("repo_id").notNull(),
+	issueId: text("issue_id").notNull(),
+
+	authorId: text("author_id"),
+
+	body: text("body"),
+
+	content: jsonb().$type<components["schemas"]["issue-comment"][]>(),
+
+	createdAt: timestamp("created_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+	modifiedAt: timestamp("modified_at", { withTimezone: true })
+		.defaultNow()
+		.notNull(),
+});
+
+export const issueCommentsRelations = relations(
+	issueCommentsTable,
+	({ one }) => ({
+		org: one(githubUsersTable, {
+			fields: [issueCommentsTable.orgId],
+			references: [githubUsersTable.id],
+		}),
+		repo: one(reposTable, {
+			fields: [issueCommentsTable.repoId],
+			references: [reposTable.id],
+		}),
+		author: one(githubUsersTable, {
+			fields: [issueCommentsTable.authorId],
+			references: [githubUsersTable.id],
+		}),
+		issue: one(issuesTable, {
+			fields: [issueCommentsTable.issueId],
+			references: [issuesTable.id],
+		}),
+	}),
+);

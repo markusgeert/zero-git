@@ -65,7 +65,10 @@ defineShortcuts({
 	enter: {
 		usingInput: "search-el",
 		handler: () => {
-			document.querySelector("tbody a")?.focus();
+			const firstLink = document.querySelector("tbody a");
+			if (firstLink instanceof HTMLAnchorElement) {
+				firstLink.focus();
+			}
 		},
 	},
 });

@@ -13,9 +13,12 @@ import type {
 } from "@octokit/webhooks-types";
 import {
 	githubUsersTable,
+	issueCommentsTable,
 	issuesTable,
 	pullRequestsTable,
 	reposTable,
+	reviewCommentsTable,
+	reviewsTable,
 	type schema,
 } from "@zero-git/db";
 import { type InferInsertModel, sql } from "drizzle-orm";
@@ -141,8 +144,11 @@ function mapPR(pr: PR): InferInsertModel<typeof pullRequestsTable> {
 		number: pr.number,
 		state: pr.state as "open" | "closed",
 		locked: pr.locked,
+		draft: pr.draft ?? false,
 		body: pr.body,
 		content: pr,
+		mergedAt: pr.merged_at ? new Date(pr.merged_at) : null,
+		closedAt: pr.closed_at ? new Date(pr.closed_at) : null,
 		createdAt: new Date(pr.created_at),
 		modifiedAt: new Date(pr.updated_at),
 	};
@@ -259,6 +265,7 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 			githubId: issue.id.toString(),
 			orgId: repository.owner.id.toString(),
 			repoId: repository.id.toString(),
+			authorId: issue.user?.id.toString(),
 			title: issue.title,
 			number: issue.number,
 			state: issue.state,
@@ -292,7 +299,43 @@ async function fetchIssueComments(repo: Repo, octokit: Octokit) {
 async function upsertIssueComments(
 	comments: components["schemas"]["issue-comment"][],
 	db: DBType,
-) {}
+) {
+	if (comments.length === 0) {
+		return;
+	}
+
+	return db
+		.insert(issueCommentsTable)
+		.values(
+			comments.map((comment) => {
+				const {
+					orgId,
+					repoId,
+					prId: issueId,
+				} = parsePullRequestUrl(comment.issue_url);
+
+				return {
+					id: comment.id.toString(),
+					githubId: comment.id.toString(),
+					orgId,
+					repoId,
+					issueId,
+					body: comment.body,
+					// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+					content: comment as any,
+					authorId: comment.user?.id.toString(),
+					submittedAt: comment.created_at ? new Date(comment.created_at) : null,
+				};
+			}),
+		)
+		.onConflictDoUpdate({
+			target: issuesTable.id,
+			set: {
+				body: sql.raw(`excluded.${issuesTable.body.name}`),
+				modifiedAt: sql.raw(`excluded.${issuesTable.modifiedAt.name}`),
+			},
+		});
+}
 
 async function fetchReviews(pulls: PR[], octokit: Octokit) {
 	const reviews = await Promise.all(
@@ -312,10 +355,60 @@ async function fetchReviews(pulls: PR[], octokit: Octokit) {
 	return reviews.flat();
 }
 
+function parsePullRequestUrl(url: string) {
+	const parts = url.split("/").filter(Boolean);
+
+	const orgId = parts[parts.length - 4];
+	const repoId = parts[parts.length - 3];
+	const prId = parts[parts.length - 1];
+
+	if (!orgId || !repoId || !prId) {
+		throw new Error(`Invalid pull request URL: ${url}`);
+	}
+
+	return { orgId, repoId, prId };
+}
+
 async function upsertReviews(
 	reviews: components["schemas"]["pull-request-review"][],
 	db: DBType,
-) {}
+) {
+	if (reviews.length === 0) {
+		return;
+	}
+
+	return await db
+		.insert(reviewsTable)
+		.values(
+			reviews.map((review) => {
+				const { orgId, repoId, prId } = parsePullRequestUrl(
+					review.pull_request_url,
+				);
+
+				return {
+					id: review.id.toString(),
+					githubId: review.id.toString(),
+					orgId,
+					repoId,
+					prId,
+					state: review.state,
+					body: review.body,
+					authorId: review.user?.id.toString(),
+					submittedAt: review.submitted_at
+						? new Date(review.submitted_at)
+						: null,
+				};
+			}),
+		)
+		.onConflictDoUpdate({
+			target: reviewsTable.id,
+			set: {
+				state: sql.raw(`excluded.${reviewsTable.state.name}`),
+				body: sql.raw(`excluded.${reviewsTable.body.name}`),
+				modifiedAt: sql.raw(`excluded.${reviewsTable.modifiedAt.name}`),
+			},
+		});
+}
 
 async function fetchReviewComments(repo: Repo, octokit: Octokit) {
 	return await octokit.paginate("GET /repos/{owner}/{repo}/pulls/comments", {
@@ -328,7 +421,47 @@ async function fetchReviewComments(repo: Repo, octokit: Octokit) {
 async function upsertReviewComments(
 	comments: components["schemas"]["pull-request-review-comment"][],
 	db: DBType,
-) {}
+) {
+	if (comments.length === 0) {
+		return;
+	}
+
+	return db
+		.insert(reviewCommentsTable)
+		.values(
+			comments.map((comment) => {
+				const { orgId, repoId, prId } = parsePullRequestUrl(
+					comment.pull_request_url,
+				);
+
+				return {
+					id: comment.id.toString(),
+					githubId: comment.id.toString(),
+					orgId,
+					repoId,
+					prId,
+					reviewId: comment.pull_request_review_id?.toString(),
+					diffHunk: comment.diff_hunk,
+					path: comment.path,
+					body: comment.body,
+					inReplyToCommentId: comment.in_reply_to_id?.toString(),
+					// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+					content: comment as any,
+					authorId: comment.user?.id.toString(),
+					submittedAt: comment.created_at ? new Date(comment.created_at) : null,
+				};
+			}),
+		)
+		.onConflictDoUpdate({
+			target: reviewCommentsTable.id,
+			set: {
+				path: sql.raw(`excluded.${reviewCommentsTable.path.name}`),
+				body: sql.raw(`excluded.${reviewCommentsTable.body.name}`),
+				modifiedAt: sql.raw(`excluded.${reviewCommentsTable.modifiedAt.name}`),
+				content: sql.raw(`excluded.${reviewCommentsTable.content.name}`),
+			},
+		});
+}
 
 async function fetchPulls(repo: Repo, octokit: Octokit) {
 	return await octokit.paginate("GET /repos/{owner}/{repo}/pulls", {
@@ -404,18 +537,18 @@ const eventHandlers: EventHandlers = {
 							Promise.allSettled([
 								upsertPulls(pulls.map(mapPR), db),
 								upsertUsersFromPullRequests(pulls, db),
-								// fetchReviews(pulls, octokit).then((reviews) =>
-								// 	upsertReviews(reviews, db),
-								// ),
+								fetchReviews(pulls, octokit).then((reviews) =>
+									upsertReviews(reviews, db),
+								),
 							]),
 						),
 						upsertRepo(repo, db),
-						// fetchReviewComments(repo, octokit).then((comments) =>
-						// 	upsertReviewComments(comments, db),
-						// ),
-						// fetchIssueComments(repo, octokit).then((comments) =>
-						// 	upsertIssueComments(comments, db),
-						// ),
+						fetchReviewComments(repo, octokit).then((comments) =>
+							upsertReviewComments(comments, db),
+						),
+						fetchIssueComments(repo, octokit).then((comments) =>
+							upsertIssueComments(comments, db),
+						),
 					]);
 				})
 			: [];

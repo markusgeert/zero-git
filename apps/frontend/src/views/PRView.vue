@@ -54,19 +54,19 @@ const { data: pr, status: prStatus } = useQuery(
 					class="px-2 py-1 text-xs rounded-full"
 					:class="{
 						'bg-green-100 text-green-800': pr.state === 'open',
-						'bg-purple-100 text-purple-800': pr.state === 'merged',
-						'bg-red-100 text-red-800': pr.state === 'closed',
-						'bg-gray-100 text-gray-800': pr.state === 'draft',
+						'bg-purple-100 text-purple-800': pr.mergedAt,
+						'bg-red-100 text-red-800': pr.closedAt,
+						'bg-gray-100 text-gray-800': pr.draft,
 					}"
 				>
 					{{ pr.state }}
 				</span>
 				<span class="text-sm">
-					<template v-if="pr.state === 'open' || pr.state === 'draft'">
-						{{ pr.creator?.name }} wants to merge 1 commit into
+					<template v-if="pr.mergedAt">
+						{{ pr.creator?.name }} merged 1 commit into
 					</template>
 					<template v-else>
-						{{ pr.creator?.name }} merged 1 commit into
+						{{ pr.creator?.name }} wants to merge 1 commit into
 					</template>
 				</span>
 			</div>

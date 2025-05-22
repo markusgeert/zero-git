@@ -71,6 +71,13 @@
 			"when": 1747667693351,
 			"tag": "0009_omniscient_colleen_wing",
 			"breakpoints": true
+		},
+		{
+			"idx": 10,
+			"version": "7",
+			"when": 1747947173578,
+			"tag": "0010_outgoing_the_twelve",
+			"breakpoints": true
 		}
 	]
 }
