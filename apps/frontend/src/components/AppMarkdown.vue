@@ -65,6 +65,10 @@ const sanitizedHtml = computed(() => {
 .markdown-body > *:last-child {
 	margin-bottom: 0 !important;
 }
+.markdown-body a {
+	color: var(--ui-color-info-500);
+	text-decoration: underline;
+}
 .markdown-body a:not([href]) {
 	color: inherit;
 	text-decoration: none;
@@ -186,6 +190,11 @@ const sanitizedHtml = computed(() => {
 	font-size: 0.85em;
 	color: var(--fgColor-muted, var(--color-fg-muted));
 }
+
+.markdown-body details summary {
+	cursor: pointer;
+}
+
 .markdown-body summary h1,
 .markdown-body summary h2,
 .markdown-body summary h3,
