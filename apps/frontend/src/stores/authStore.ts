@@ -2,7 +2,8 @@ import { createClient } from "@openauthjs/openauth/client";
 import { useCookies } from "@vueuse/integrations/useCookies";
 import type { AuthData } from "@zero-git/auth";
 import { defineStore } from "pinia";
-import { computed } from "vue";
+import { computed, watch } from "vue";
+import posthog from "posthog-js";
 
 const client = createClient({
 	clientID: import.meta.env.VITE_OPENAUTH_CLIENT_ID,
@@ -16,6 +17,18 @@ export const useAuthStore = defineStore("auth", () => {
 	});
 	const jwt = computed<AuthData | undefined>(() =>
 		rawJwt.value ? JSON.parse(atob(rawJwt.value.split(".")[1])) : undefined,
+	);
+
+	watch(
+		jwt,
+		(newJwt) => {
+			if (newJwt) {
+				posthog.identify(newJwt.properties.id, {
+					email: newJwt.properties.email,
+				});
+			}
+		},
+		{ immediate: true },
 	);
 
 	async function auth() {
@@ -73,7 +86,7 @@ export const useAuthStore = defineStore("auth", () => {
 		localStorage.removeItem("refresh");
 		cookies.remove("jwt");
 
-		// window.location.replace("/");
+		window.location.replace("/");
 	}
 
 	function $reset() {
