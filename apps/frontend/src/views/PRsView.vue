@@ -9,6 +9,7 @@ import { ref, useTemplateRef } from "vue";
 import { useQuery } from "zero-vue";
 import { useFuse } from "@vueuse/integrations/useFuse";
 import { useRouter } from "vue-router";
+import posthog from "posthog-js";
 
 type PRRow = Row<typeof schema.tables.pullRequestsTable>;
 type GithubUsersRow = Row<typeof schema.tables.githubUsersTable>;
@@ -132,8 +133,10 @@ function getPrText(pr: PRRow & { creator?: GithubUsersRow }) {
 	}
 }
 
-const table = useTemplateRef("prsTable");
-const { handleRowHover } = useTableSelector(table);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const table: any = useTemplateRef("prsTable");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const { handleRowHover }: any = useTableSelector(table);
 
 const searchInput = ref("");
 const searchEl = useTemplateRef("search-el");
@@ -173,19 +176,65 @@ const { results: filteredPRs } = useFuse(searchInput, prs, {
 function isPrimaryMouseButton(e: MouseEvent) {
 	return !(e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.button !== 0);
 }
+
+const availableFilters = ref([
+	{
+		label: "Author",
+		value: "author",
+		icon: "i-lucide-user",
+		options: [
+			{
+				label: "Kenda",
+				sublabel: "1 pr",
+				value: "1",
+			},
+			{
+				label: "Carrell",
+				sublabel: "5 prs",
+				value: "2",
+			},
+		],
+	},
+	{
+		label: "Labels",
+		value: "labels",
+		icon: "i-lucide-tags",
+		options: [
+			{
+				label: "bug",
+				sublabel: "3 prs",
+				value: "bug",
+			},
+			{
+				label: "dependencies",
+				value: "dependencies",
+			},
+			{
+				label: "chore",
+				value: "chore",
+			},
+		],
+	},
+]);
 </script>
 
 <template>
 	<AppContainer class="flex flex-col gap-4 pt-4">
-		<UInput
-			ref="search-el"
-			v-model="searchInput"
-			name="search-el"
-			icon="i-lucide-search"
-			size="md"
-			variant="outline"
-			class="self-start"
-		/>
+		<div class="flex">
+			<AppFilter
+				v-if="posthog.isFeatureEnabled('pr-filters')"
+				:available-filters
+			/>
+			<UInput
+				ref="search-el"
+				v-model="searchInput"
+				name="search-el"
+				icon="i-lucide-search"
+				size="md"
+				variant="outline"
+				class="self-start"
+			/>
+		</div>
 		<UTable
 			v-if="prs.length > 0 || status === 'complete'"
 			ref="prsTable"
@@ -237,7 +286,7 @@ function isPrimaryMouseButton(e: MouseEvent) {
 								<span>
 									{{ getPrText(pr) }}
 								</span>
-								<span v-if="pr.state === 'draft'"> • Draft </span>
+								<span v-if="pr.draft"> • Draft </span>
 							</div>
 						</div>
 					</div>

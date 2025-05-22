@@ -1,87 +1,75 @@
 <script setup lang="ts">
 import {
-	DropdownMenuArrow,
 	DropdownMenuCheckboxItem,
 	DropdownMenuContent,
-	DropdownMenuItem,
 	DropdownMenuItemIndicator,
-	DropdownMenuLabel,
 	DropdownMenuPortal,
-	DropdownMenuRadioGroup,
-	DropdownMenuRadioItem,
 	DropdownMenuRoot,
-	DropdownMenuSeparator,
 	DropdownMenuSub,
 	DropdownMenuSubContent,
 	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "reka-ui";
-import { ref } from "vue";
 
-const toggleState = ref(false);
-const availableFilters = ref([
-	{
-		label: "Author",
-		icon: "i-lucide-user",
-		options: [
-			{
-				label: "Kenda",
-				sublabel: "1 pr",
-				value: "1",
-			},
-			{
-				label: "Carrell",
-				sublabel: "5 prs",
-				value: "2",
-			},
-		],
-	},
-	{
-		label: "Labels",
-		icon: "i-lucide-tags",
-		options: [
-			{
-				label: "bug",
-				sublabel: "3 prs",
-				value: "bug",
-			},
-			{
-				label: "dependencies",
-				value: "dependencies",
-			},
-			{
-				label: "chore",
-				value: "chore",
-			},
-		],
-	},
-]);
+defineProps<{
+	availableFilters: {
+		label: string;
+		value: string;
+		icon: string;
+		options: {
+			label: string;
+			sublabel?: string;
+			value: string;
+		}[];
+	}[];
+}>();
 
-const filters = ref(false);
+const selectedFilters = defineModel<Map<string, boolean>>({
+	default: new Map<string, boolean>(),
+});
+
+const handleFilterChange = (
+	filterType: string,
+	value: string,
+	checked: boolean,
+) => {
+	const key = `${filterType}:${value}`;
+	selectedFilters.value.set(key, checked);
+};
+
+const isFilterSelected = (filterType: string, value: string) => {
+	const key = `${filterType}:${value}`;
+	return selectedFilters.value.get(key) || false;
+};
 </script>
 
 <template>
-	<DropdownMenuRoot v-model:open="toggleState">
+	<DropdownMenuRoot>
 		<DropdownMenuTrigger>
-			<UButton icon="i-lucide-list-filter" color="neutral" variant="ghost">
-				<span v-if="!filters"> Filter </span>
+			<UButton
+				icon="i-lucide-list-filter"
+				size="sm"
+				color="neutral"
+				variant="ghost"
+			>
+				<span v-if="selectedFilters.size === 0"> Filter </span>
 			</UButton>
 		</DropdownMenuTrigger>
 
 		<DropdownMenuPortal>
 			<DropdownMenuContent
-				class="w-50 bg-default border border-default rounded"
-                align="start"
+				class="w-50 bg-default border border-default rounded p-1"
+				align="start"
 			>
-				<DropdownMenuSub v-for="filter in availableFilters" :key="filter.label">
+				<DropdownMenuSub v-for="filter in availableFilters" :key="filter.value">
 					<DropdownMenuSubTrigger
-						class="flex items-center justify-between hover:bg-elevated rounded mx-1 my-1"
+						class="flex items-center justify-between hover:bg-elevated data-[state=open]:bg-elevated rounded px-2 py-1.5 text-sm cursor-default select-none"
 					>
-						<div class="flex items-center gap-1">
+						<div class="flex items-center gap-1 cursor-default select-none">
 							<UIcon :name="filter.icon" />
 							{{ filter.label }}
 						</div>
-						<div>
+						<div class="cursor-default select-none">
 							<UIcon name="radix-icons:chevron-right" />
 						</div>
 					</DropdownMenuSubTrigger>
@@ -89,18 +77,54 @@ const filters = ref(false);
 						<DropdownMenuSubContent
 							:side-offset="2"
 							:align-offset="-5"
-							class="bg-default border border-default rounded"
+							class="bg-default border border-default rounded p-1"
 						>
-							<DropdownMenuItem
+							<DropdownMenuCheckboxItem
 								v-for="option in filter.options"
 								:key="option.value"
-								class="flex items-baseline gap-4"
+								:model-value="isFilterSelected(filter.value, option.value)"
+								class="flex items-center group text-sm rounded hover:bg-elevated data-[state=open]:bg-elevated p-1.5 cursor-default select-none"
+								@update:model-value="
+									(checked) =>
+										handleFilterChange(filter.value, option.value, checked)
+								"
 							>
-								{{ option.label }}
-								<div class="text-muted text-sm">
-									{{ option.sublabel }}
+								<DropdownMenuItemIndicator
+									:force-mount="true"
+									class="w-4 h-4 flex items-center justify-center cursor-default select-none"
+								>
+									<UCheckbox
+										:model-value="isFilterSelected(filter.value, option.value)"
+										:class="[
+											isFilterSelected(filter.value, option.value)
+												? 'opacity-100'
+												: 'opacity-0 group-hover:opacity-100',
+										]"
+										class="transition-opacity cursor-default select-none"
+										:ui="{
+											base: 'hover:ring-primary',
+										}"
+										size="sm"
+										@click.stop
+										@update:model-value="
+											(value: boolean | 'indeterminate') =>
+												handleFilterChange(
+													filter.value,
+													option.value,
+													value === true,
+												)
+										"
+									/>
+								</DropdownMenuItemIndicator>
+								<div
+									class="flex items-baseline pl-1 gap-2 cursor-default select-none"
+								>
+									{{ option.label }}
+									<div class="text-muted text-xs cursor-default select-none">
+										{{ option.sublabel }}
+									</div>
 								</div>
-							</DropdownMenuItem>
+							</DropdownMenuCheckboxItem>
 						</DropdownMenuSubContent>
 					</DropdownMenuPortal>
 				</DropdownMenuSub>
