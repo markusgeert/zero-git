@@ -191,6 +191,9 @@ async function upsertPulls(
 				body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
 				content: sql.raw(`excluded.${pullRequestsTable.content.name}`),
 				modifiedAt: sql.raw(`excluded.${pullRequestsTable.modifiedAt.name}`),
+				draft: sql.raw(`excluded.${pullRequestsTable.draft.name}`),
+				mergedAt: sql.raw(`excluded.${pullRequestsTable.mergedAt.name}`),
+				closedAt: sql.raw(`excluded.${pullRequestsTable.closedAt.name}`),
 			},
 		});
 }
@@ -283,6 +286,7 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 				locked: issue.locked,
 				body: issue.body,
 				content: issue,
+				authorId: issue.user?.id.toString(),
 				modifiedAt: new Date(issue.updated_at),
 			},
 		});
@@ -511,6 +515,61 @@ async function upsertOrgMembers(
 		});
 }
 
+async function fetchIssues(repo: Repo, octokit: Octokit) {
+	return await octokit.paginate("GET /repos/{owner}/{repo}/issues", {
+		owner: repo.owner.login,
+		repo: repo.name,
+		per_page: 100,
+	});
+}
+
+async function upsertIssues(
+	issues: components["schemas"]["issue"][],
+	db: DBType,
+) {
+	if (issues.length === 0) {
+		return;
+	}
+
+	return db
+		.insert(issuesTable)
+		.values(
+			issues.map((issue) => {
+				const { orgId, repoId } = parsePullRequestUrl(issue.url);
+
+				return {
+					id: issue.id.toString(),
+					githubId: issue.id.toString(),
+					orgId,
+					repoId,
+
+					title: issue.title,
+					number: issue.number,
+					state: issue.state as "open" | "closed",
+					locked: issue.locked,
+					body: issue.body,
+					authorId: issue.user?.id.toString(),
+
+					// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
+					content: issue as any,
+					createdAt: new Date(issue.created_at),
+					modifiedAt: new Date(issue.updated_at),
+				};
+			}),
+		)
+		.onConflictDoUpdate({
+			target: issuesTable.id,
+			set: {
+				title: sql.raw(`excluded.${issuesTable.title.name}`),
+				state: sql.raw(`excluded.${issuesTable.state.name}`),
+				locked: sql.raw(`excluded.${issuesTable.locked.name}`),
+				body: sql.raw(`excluded.${issuesTable.body.name}`),
+				content: sql.raw(`excluded.${issuesTable.content.name}`),
+				modifiedAt: sql.raw(`excluded.${issuesTable.modifiedAt.name}`),
+			},
+		});
+}
+
 const eventHandlers: EventHandlers = {
 	"installation.created": async (p, db) => {
 		const buffer = Buffer.from(getEnvOrThrow("GITHUB_PRIVATE_KEY"), "base64");
@@ -543,6 +602,9 @@ const eventHandlers: EventHandlers = {
 							]),
 						),
 						upsertRepo(repo, db),
+						fetchIssues(repo, octokit).then((issues) =>
+							upsertIssues(issues, db),
+						),
 						fetchReviewComments(repo, octokit).then((comments) =>
 							upsertReviewComments(comments, db),
 						),
