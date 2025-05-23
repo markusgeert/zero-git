@@ -75,9 +75,11 @@ const { data: comments } = useQuery(
 				<span class="text-sm">
 					<template v-if="pr.mergedAt">
 						{{ pr.creator?.name }} merged 1 commit into
+						{{ pr.content?.base.ref }} from {{ pr.content?.head.ref }}
 					</template>
 					<template v-else>
 						{{ pr.creator?.name }} wants to merge 1 commit into
+						{{ pr.content?.base.ref }} from {{ pr.content?.head.ref }}
 					</template>
 				</span>
 			</div>
