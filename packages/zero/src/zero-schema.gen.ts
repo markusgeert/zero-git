@@ -826,7 +826,6 @@ export const schema = {
 			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
-			pr: [{ sourceField: ["repoId", "prNumber"], destField: ["repoId", "numberText"], destSchema: "pullRequestsTable", cardinality: "one" }],
 			comments: [{ sourceField: ["repoId", "numberText"], destField: ["repoId", "issueNumber"], destSchema: "issueCommentsTable", cardinality: "many" }],
 		},
 		nodesInTree: {

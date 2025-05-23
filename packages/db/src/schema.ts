@@ -304,10 +304,6 @@ export const issuesRelations = relations(issuesTable, ({ one, many }) => ({
 		fields: [issuesTable.authorId],
 		references: [githubUsersTable.id],
 	}),
-	pr: one(pullRequestsTable, {
-		fields: [issuesTable.repoId, issuesTable.prNumber],
-		references: [pullRequestsTable.repoId, pullRequestsTable.numberText],
-	}),
 	comments: many(issueCommentsTable),
 }));
 

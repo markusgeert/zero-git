@@ -17,6 +17,7 @@ export function useTableSelector<
 		row: Row<any>,
 	): T extends { item: unknown } ? T["item"] : T {
 		if (
+			row &&
 			row.original &&
 			typeof row.original === "object" &&
 			"item" in row.original
@@ -24,7 +25,7 @@ export function useTableSelector<
 			return row.original.item;
 		}
 
-		return row.original;
+		return row?.original;
 	}
 
 	const tableApi = computed(() => toValue(table)?.tableApi);

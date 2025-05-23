@@ -39,8 +39,19 @@ async function main() {
 				stars: f.int({ minValue: 0, maxValue: 100_000 }),
 			},
 			with: {
-				pullRequestsTable: 10,
-				issuesTable: 10,
+				issuesTable: 100,
+			},
+		},
+		issuesTable: {
+			columns: {
+				id: f.intPrimaryKey(),
+				githubId: f.intPrimaryKey(),
+				number: f.intPrimaryKey(),
+				prNumber: f.intPrimaryKey(),
+			},
+			with: {
+				pullRequestsTable: 1,
+				issueCommentsTable: 10,
 			},
 		},
 		pullRequestsTable: {
@@ -51,6 +62,7 @@ async function main() {
 				creatorId: f.valuesFromArray({ values: userIds }),
 				ownerId: f.valuesFromArray({ values: userIds }),
 				number: f.intPrimaryKey(),
+				issueNumber: f.intPrimaryKey(),
 				state: f.valuesFromArray({
 					values: ["open", "closed", "merged", "draft"],
 				}),
@@ -64,6 +76,7 @@ async function main() {
 						value: f.default({ defaultValue: true }),
 					},
 				]),
+				body: f.loremIpsum({ sentencesCount: 8 }),
 				modifiedAt: f.date({ maxDate: new Date() }),
 				createdAt: f.date({ maxDate: new Date() }),
 			},
