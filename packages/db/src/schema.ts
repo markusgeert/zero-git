@@ -192,9 +192,7 @@ export const pullRequestsTable = pgTable("pull_requests", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
-	numberText: text("number_text").generatedAlwaysAs(
-		(): SQL => sql`CAST(${pullRequestsTable.number} AS TEXT)`,
-	),
+	numberText: text("number_text"),
 	state: text("state").notNull().$type<"open" | "closed">(),
 	locked: boolean("locked").default(false).notNull(),
 	draft: boolean("draft"),
@@ -278,9 +276,7 @@ export const issuesTable = pgTable("issues", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
-	numberText: text("number_text").generatedAlwaysAs(
-		(): SQL => sql`CAST(${issuesTable.number} AS TEXT)`,
-	),
+	numberText: text("number_text"),
 	state: text("state").$type<"closed" | "open" | null>(),
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
