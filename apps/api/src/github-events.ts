@@ -293,18 +293,26 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 }
 
 async function fetchIssueComments(repo: Repo, octokit: Octokit) {
-	return await octokit.paginate("GET /repos/{owner}/{repo}/issues/comments", {
-		owner: repo.owner.login,
-		repo: repo.name,
-		per_page: 100,
-	});
+	return await octokit
+		.paginate("GET /repos/{owner}/{repo}/issues/comments", {
+			owner: repo.owner.login,
+			repo: repo.name,
+			per_page: 100,
+		})
+		.then((comments) =>
+			comments.map((issueComment) => ({
+				...issueComment,
+				orgId: repo.owner.id.toString(),
+				repoId: repo.id.toString(),
+			})),
+		);
 }
 
 async function upsertIssueComments(
 	comments: (components["schemas"]["issue-comment"] & {
 		orgId: string;
 		repoId: string;
-		issueId: string;
+		// issueId: string;
 	})[],
 	db: DBType,
 ) {
@@ -322,7 +330,8 @@ async function upsertIssueComments(
 
 					orgId: comment.orgId,
 					repoId: comment.repoId,
-					issueId: comment.issueId,
+					// issueId: comment.issueId,
+					issueNumber: comment.issue_url.split("/").slice(-1)[0],
 
 					body: comment.body,
 					// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
@@ -413,18 +422,26 @@ async function upsertReviews(
 }
 
 async function fetchReviewComments(repo: Repo, octokit: Octokit) {
-	return await octokit.paginate("GET /repos/{owner}/{repo}/pulls/comments", {
-		owner: repo.owner.login,
-		repo: repo.name,
-		per_page: 100,
-	});
+	return await octokit
+		.paginate("GET /repos/{owner}/{repo}/pulls/comments", {
+			owner: repo.owner.login,
+			repo: repo.name,
+			per_page: 100,
+		})
+		.then((comments) =>
+			comments.map((comment) => ({
+				...comment,
+				orgId: repo.owner.id.toString(),
+				repoId: repo.id.toString(),
+			})),
+		);
 }
 
 async function upsertReviewComments(
 	comments: (components["schemas"]["pull-request-review-comment"] & {
 		orgId: string;
 		repoId: string;
-		prId: string;
+		// prId: string;
 	})[],
 	db: DBType,
 ) {
@@ -441,7 +458,8 @@ async function upsertReviewComments(
 					githubId: comment.id.toString(),
 					orgId: comment.orgId,
 					repoId: comment.repoId,
-					prId: comment.prId,
+					// prId: comment.prId,
+					prNumber: comment.pull_request_url.split("/").slice(-1)[0],
 					reviewId: comment.pull_request_review_id?.toString(),
 					diffHunk: comment.diff_hunk,
 					path: comment.path,
@@ -461,6 +479,11 @@ async function upsertReviewComments(
 				body: sql.raw(`excluded.${reviewCommentsTable.body.name}`),
 				modifiedAt: sql.raw(`excluded.${reviewCommentsTable.modifiedAt.name}`),
 				content: sql.raw(`excluded.${reviewCommentsTable.content.name}`),
+				diffHunk: sql.raw(`excluded.${reviewCommentsTable.diffHunk.name}`),
+				inReplyToCommentId: sql.raw(
+					`excluded.${reviewCommentsTable.inReplyToCommentId.name}`,
+				),
+				authorId: sql.raw(`excluded.${reviewCommentsTable.authorId.name}`),
 			},
 		});
 }
@@ -613,12 +636,12 @@ const eventHandlers: EventHandlers = {
 						fetchIssues(repo, octokit).then((issues) =>
 							upsertIssues(issues, db),
 						),
-						// fetchReviewComments(repo, octokit).then((comments) =>
-						// 	upsertReviewComments(comments, db),
-						// ),
-						// fetchIssueComments(repo, octokit).then((comments) =>
-						// 	upsertIssueComments(comments, db),
-						// ),
+						fetchReviewComments(repo, octokit).then((comments) =>
+							upsertReviewComments(comments, db),
+						),
+						fetchIssueComments(repo, octokit).then((comments) =>
+							upsertIssueComments(comments, db),
+						),
 					]);
 				})
 			: [];

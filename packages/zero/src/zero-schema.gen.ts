@@ -143,9 +143,15 @@ export const schema = {
 				},
 				issueId: {
 					type: "string",
-					optional: false,
+					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "issueId">,
 					serverName: "issue_id",
+				},
+				issueNumber: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issueCommentsTable", "issueNumber">,
+					serverName: "issue_number",
 				},
 				authorId: {
 					type: "string",
@@ -354,7 +360,7 @@ export const schema = {
 				},
 				draft: {
 					type: "boolean",
-					optional: false,
+					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "draft">,
 				},
 				body: {
@@ -492,6 +498,12 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "repoId">,
 					serverName: "repo_id",
+				},
+				prNumber: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "reviewCommentsTable", "prNumber">,
+					serverName: "pr_number",
 				},
 				authorId: {
 					type: "string",

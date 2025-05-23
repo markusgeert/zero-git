@@ -354,6 +354,7 @@ export const reviewCommentsTable = pgTable("review_comments", {
 	reviewId: text("review_id"),
 	orgId: text("org_id").notNull(),
 	repoId: text("repo_id").notNull(),
+	prNumber: text("pr_number"),
 
 	authorId: text("author_id").notNull(),
 
@@ -411,7 +412,8 @@ export const issueCommentsTable = pgTable("issue_comments", {
 
 	orgId: text("org_id").notNull(),
 	repoId: text("repo_id").notNull(),
-	issueId: text("issue_id").notNull(),
+	issueId: text("issue_id"),
+	issueNumber: text("issue_number"),
 
 	authorId: text("author_id"),
 
