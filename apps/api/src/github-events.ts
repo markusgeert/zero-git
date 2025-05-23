@@ -272,6 +272,7 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 			orgId: repository.owner.id.toString(),
 			repoId: repository.id.toString(),
 			authorId: issue.user?.id.toString(),
+			prNumber: issue.pull_request?.url?.split("/").slice(-1)[0],
 			title: issue.title,
 			number: issue.number,
 			state: issue.state,
@@ -285,6 +286,7 @@ async function upsertIssue(issue: Issue, repository: Repository, db: DBType) {
 			target: issuesTable.id,
 			set: {
 				title: issue.title,
+				prNumber: issue.pull_request?.url?.split("/").slice(-1)[0],
 				state: issue.state,
 				locked: issue.locked,
 				body: issue.body,
@@ -596,6 +598,8 @@ async function upsertIssues(
 		.onConflictDoUpdate({
 			target: issuesTable.id,
 			set: {
+				prNumber: sql.raw(`excluded.${issuesTable.prNumber.name}`),
+
 				title: sql.raw(`excluded.${issuesTable.title.name}`),
 				state: sql.raw(`excluded.${issuesTable.state.name}`),
 				locked: sql.raw(`excluded.${issuesTable.locked.name}`),
