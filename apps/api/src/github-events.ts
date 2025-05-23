@@ -301,7 +301,11 @@ async function fetchIssueComments(repo: Repo, octokit: Octokit) {
 }
 
 async function upsertIssueComments(
-	comments: components["schemas"]["issue-comment"][],
+	comments: (components["schemas"]["issue-comment"] & {
+		orgId: string;
+		repoId: string;
+		issueId: string;
+	})[],
 	db: DBType,
 ) {
 	if (comments.length === 0) {
@@ -312,18 +316,14 @@ async function upsertIssueComments(
 		.insert(issueCommentsTable)
 		.values(
 			comments.map((comment) => {
-				const {
-					orgId,
-					repoId,
-					prId: issueId,
-				} = parsePullRequestUrl(comment.issue_url);
-
 				return {
 					id: comment.id.toString(),
 					githubId: comment.id.toString(),
-					orgId,
-					repoId,
-					issueId,
+
+					orgId: comment.orgId,
+					repoId: comment.repoId,
+					issueId: comment.issueId,
+
 					body: comment.body,
 					// biome-ignore lint/suspicious/noExplicitAny: This is a workaround for the type system
 					content: comment as any,
@@ -344,37 +344,33 @@ async function upsertIssueComments(
 async function fetchReviews(pulls: PR[], octokit: Octokit) {
 	const reviews = await Promise.all(
 		pulls.map((pr) =>
-			octokit.paginate(
-				"GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews",
-				{
+			octokit
+				.paginate("GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews", {
 					owner: pr.base.repo.owner.login,
 					repo: pr.base.repo.name,
 					pull_number: pr.number,
 					per_page: 100,
-				},
-			),
+				})
+				.then((res) =>
+					res.map((review) => ({
+						...review,
+						orgId: pr.base.repo.owner.id.toString(),
+						repoId: pr.base.repo.id.toString(),
+						prId: pr.id.toString(),
+					})),
+				),
 		),
 	);
 
 	return reviews.flat();
 }
 
-function parsePullRequestUrl(url: string) {
-	const parts = url.split("/").filter(Boolean);
-
-	const orgId = parts[parts.length - 4];
-	const repoId = parts[parts.length - 3];
-	const prId = parts[parts.length - 1];
-
-	if (!orgId || !repoId || !prId) {
-		throw new Error(`Invalid pull request URL: ${url}`);
-	}
-
-	return { orgId, repoId, prId };
-}
-
 async function upsertReviews(
-	reviews: components["schemas"]["pull-request-review"][],
+	reviews: (components["schemas"]["pull-request-review"] & {
+		orgId: string;
+		repoId: string;
+		prId: string;
+	})[],
 	db: DBType,
 ) {
 	if (reviews.length === 0) {
@@ -385,16 +381,14 @@ async function upsertReviews(
 		.insert(reviewsTable)
 		.values(
 			reviews.map((review) => {
-				const { orgId, repoId, prId } = parsePullRequestUrl(
-					review.pull_request_url,
-				);
-
 				return {
 					id: review.id.toString(),
 					githubId: review.id.toString(),
-					orgId,
-					repoId,
-					prId,
+
+					orgId: review.orgId,
+					repoId: review.repoId,
+					prId: review.prId,
+
 					state: review.state,
 					body: review.body,
 					authorId: review.user?.id.toString(),
@@ -407,7 +401,11 @@ async function upsertReviews(
 		.onConflictDoUpdate({
 			target: reviewsTable.id,
 			set: {
+				orgId: sql.raw(`excluded.${reviewsTable.orgId.name}`),
+				repoId: sql.raw(`excluded.${reviewsTable.repoId.name}`),
+				prId: sql.raw(`excluded.${reviewsTable.prId.name}`),
 				state: sql.raw(`excluded.${reviewsTable.state.name}`),
+				authorId: sql.raw(`excluded.${reviewsTable.authorId.name}`),
 				body: sql.raw(`excluded.${reviewsTable.body.name}`),
 				modifiedAt: sql.raw(`excluded.${reviewsTable.modifiedAt.name}`),
 			},
@@ -423,7 +421,11 @@ async function fetchReviewComments(repo: Repo, octokit: Octokit) {
 }
 
 async function upsertReviewComments(
-	comments: components["schemas"]["pull-request-review-comment"][],
+	comments: (components["schemas"]["pull-request-review-comment"] & {
+		orgId: string;
+		repoId: string;
+		prId: string;
+	})[],
 	db: DBType,
 ) {
 	if (comments.length === 0) {
@@ -434,16 +436,12 @@ async function upsertReviewComments(
 		.insert(reviewCommentsTable)
 		.values(
 			comments.map((comment) => {
-				const { orgId, repoId, prId } = parsePullRequestUrl(
-					comment.pull_request_url,
-				);
-
 				return {
 					id: comment.id.toString(),
 					githubId: comment.id.toString(),
-					orgId,
-					repoId,
-					prId,
+					orgId: comment.orgId,
+					repoId: comment.repoId,
+					prId: comment.prId,
 					reviewId: comment.pull_request_review_id?.toString(),
 					diffHunk: comment.diff_hunk,
 					path: comment.path,
@@ -516,15 +514,26 @@ async function upsertOrgMembers(
 }
 
 async function fetchIssues(repo: Repo, octokit: Octokit) {
-	return await octokit.paginate("GET /repos/{owner}/{repo}/issues", {
-		owner: repo.owner.login,
-		repo: repo.name,
-		per_page: 100,
-	});
+	return await octokit
+		.paginate("GET /repos/{owner}/{repo}/issues", {
+			owner: repo.owner.login,
+			repo: repo.name,
+			per_page: 100,
+		})
+		.then((issues) =>
+			issues.map((issue) => ({
+				...issue,
+				orgId: repo.owner.id.toString(),
+				repoId: repo.id.toString(),
+			})),
+		);
 }
 
 async function upsertIssues(
-	issues: components["schemas"]["issue"][],
+	issues: (components["schemas"]["issue"] & {
+		orgId: string;
+		repoId: string;
+	})[],
 	db: DBType,
 ) {
 	if (issues.length === 0) {
@@ -535,13 +544,12 @@ async function upsertIssues(
 		.insert(issuesTable)
 		.values(
 			issues.map((issue) => {
-				const { orgId, repoId } = parsePullRequestUrl(issue.url);
-
 				return {
 					id: issue.id.toString(),
 					githubId: issue.id.toString(),
-					orgId,
-					repoId,
+
+					orgId: issue.orgId,
+					repoId: issue.repoId,
 
 					title: issue.title,
 					number: issue.number,
@@ -605,12 +613,12 @@ const eventHandlers: EventHandlers = {
 						fetchIssues(repo, octokit).then((issues) =>
 							upsertIssues(issues, db),
 						),
-						fetchReviewComments(repo, octokit).then((comments) =>
-							upsertReviewComments(comments, db),
-						),
-						fetchIssueComments(repo, octokit).then((comments) =>
-							upsertIssueComments(comments, db),
-						),
+						// fetchReviewComments(repo, octokit).then((comments) =>
+						// 	upsertReviewComments(comments, db),
+						// ),
+						// fetchIssueComments(repo, octokit).then((comments) =>
+						// 	upsertIssueComments(comments, db),
+						// ),
 					]);
 				})
 			: [];
