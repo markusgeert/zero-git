@@ -83,8 +83,13 @@ const { data: comments } = useQuery(
 			</div>
 			<AppMarkdown v-if="pr.body" :md="pr.body" />
 		</div>
-        <div v-for="comment in comments" :key="comment.id" class="flex flex-col gap-4">
-            {{ comment }}
-        </div>
+		<div
+			v-for="comment in comments"
+			:key="comment.id"
+			class="flex flex-col gap-4"
+		>
+			{{ comment.authorId }}
+			<AppMarkdown v-if="comment.body" :md="comment.body" />
+		</div>
 	</AppContainer>
 </template>
