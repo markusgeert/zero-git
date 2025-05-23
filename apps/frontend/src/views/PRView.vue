@@ -43,7 +43,9 @@ const { data: comments } = useQuery(
 	() =>
 		z.value.query.issueCommentsTable
 			.where("repoId", repo.value?.id ?? "")
-			.where("issueNumber", pr.value?.issueNumber ?? ""),
+			.where("issueNumber", pr.value?.issueNumber ?? "")
+			.orderBy("createdAt", "asc")
+			.related("author"),
 	CACHE_AWHILE,
 );
 </script>
@@ -81,6 +83,8 @@ const { data: comments } = useQuery(
 			</div>
 			<AppMarkdown v-if="pr.body" :md="pr.body" />
 		</div>
-		{{ comments }}
+        <div v-for="comment in comments" :key="comment.id" class="flex flex-col gap-4">
+            {{ comment }}
+        </div>
 	</AppContainer>
 </template>

@@ -11,7 +11,10 @@ async function main() {
 		userIds.push(i);
 	}
 
-	const db = drizzle(process.env.DATABASE_URL as string);
+	const db = drizzle({
+		connection: process.env.DATABASE_URL as string,
+		schema,
+	});
 	await migrate(db, { migrationsFolder: "./drizzle" });
 	await seed(db, schema).refine((f) => ({
 		githubUsersTable: {
@@ -63,11 +66,6 @@ async function main() {
 				]),
 				modifiedAt: f.date({ maxDate: new Date() }),
 				createdAt: f.date({ maxDate: new Date() }),
-			},
-		},
-		issuesTable: {
-			with: {
-				issueCommentsTable: 10,
 			},
 		},
 	}));
