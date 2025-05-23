@@ -196,6 +196,7 @@ export const pullRequestsTable = pgTable("pull_requests", {
 	locked: boolean("locked").default(false).notNull(),
 	draft: boolean("draft"),
 	body: text("body"),
+	issueNumber: text("issue_number"),
 
 	content: jsonb().$type<PR>(),
 
@@ -263,6 +264,8 @@ export const issuesTable = pgTable("issues", {
 	orgId: text("org_id").notNull(),
 	repoId: text("repo_id").notNull(),
 	authorId: text("author_id"),
+
+	prNumber: text("pr_number"),
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),

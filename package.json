@@ -12,7 +12,9 @@
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "bun run fix",
 		"fix": "biome check . --write & cd apps/frontend && bun run fix",
-		"db:gen": "cd packages/db && bun run db:gen && cd ../.. && bun run fix"
+		"db:regen": "cd packages/db && bun run db:regen && cd ../.. && bun run fix",
+		"db:gen": "cd packages/db && bun run db:gen && cd ../.. && bun run fix",
+		"generate-schema": "turbo run generate-schema"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",

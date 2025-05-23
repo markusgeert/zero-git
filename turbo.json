@@ -7,17 +7,17 @@
 			"cache": true,
 			"persistent": true
 		},
-		"generate-schema": {
-			"inputs": [
-				"packages/db/src/**/*.ts",
-				"packages/zero/src/drizzle-zero.config.ts",
-				"packages/zero/scripts/fix-zero.ts"
-			],
-			"outputs": ["packages/zero/src/zero-schema.gen.ts"],
+		"@zero-git/zero#generate-schema": {
+			"dependsOn": ["^build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["src/zero-schema.gen.ts"],
 			"cache": true
 		},
+		"@zero-git/zero#build": {
+			"dependsOn": ["generate-schema", "^build"]
+		},
 		"build": {
-			"dependsOn": ["generate-schema", "^build"],
+			"dependsOn": ["^build"],
 			"cache": true,
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"outputs": [".next/**", "!.next/cache/**", "dist/**"]

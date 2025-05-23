@@ -142,6 +142,7 @@ function mapPR(pr: PR): InferInsertModel<typeof pullRequestsTable> {
 		creatorId: pr.user?.id.toString() ?? "",
 		title: pr.title,
 		number: pr.number,
+		issueNumber: pr.issue_url.split("/").slice(-1)[0],
 		state: pr.state as "open" | "closed",
 		locked: pr.locked,
 		draft: pr.draft ?? false,
@@ -573,6 +574,8 @@ async function upsertIssues(
 
 					orgId: issue.orgId,
 					repoId: issue.repoId,
+
+					prNumber: issue.pull_request?.url?.split("/").slice(-1)[0],
 
 					title: issue.title,
 					number: issue.number,

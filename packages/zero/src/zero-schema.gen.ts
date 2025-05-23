@@ -217,6 +217,12 @@ export const schema = {
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "authorId">,
 					serverName: "author_id",
 				},
+				prNumber: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "prNumber">,
+					serverName: "pr_number",
+				},
 				title: {
 					type: "string",
 					optional: false,
@@ -367,6 +373,12 @@ export const schema = {
 					type: "string",
 					optional: true,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "body">,
+				},
+				issueNumber: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "issueNumber">,
+					serverName: "issue_number",
 				},
 				content: {
 					type: "json",
