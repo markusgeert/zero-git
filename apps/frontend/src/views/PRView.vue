@@ -37,6 +37,15 @@ const { data: pr, status: prStatus } = useQuery(
 			.one(),
 	CACHE_AWHILE,
 );
+
+// Then get the PR using the repo ID and PR number
+const { data: comments } = useQuery(
+	() =>
+		z.value.query.issueCommentsTable
+			.where("repoId", repo.value?.id ?? "")
+			.where("issueNumber", pr.value?.issueNumber ?? ""),
+	CACHE_AWHILE,
+);
 </script>
 
 <template>
@@ -72,5 +81,6 @@ const { data: pr, status: prStatus } = useQuery(
 			</div>
 			<AppMarkdown v-if="pr.body" :md="pr.body" />
 		</div>
+		{{ comments }}
 	</AppContainer>
 </template>

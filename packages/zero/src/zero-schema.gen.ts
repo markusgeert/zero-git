@@ -234,6 +234,12 @@ export const schema = {
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "number">,
 				},
+				numberText: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "issuesTable", "numberText">,
+					serverName: "number_text",
+				},
 				state: {
 					type: "string",
 					optional: true,
@@ -353,6 +359,12 @@ export const schema = {
 					type: "number",
 					optional: false,
 					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "number">,
+				},
+				numberText: {
+					type: "string",
+					optional: true,
+					customType: null as unknown as ZeroCustomType<typeof zeroSchema, "pullRequestsTable", "numberText">,
+					serverName: "number_text",
 				},
 				state: {
 					type: "string",
@@ -807,12 +819,15 @@ export const schema = {
 			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
-			issue: [{ sourceField: ["issueId"], destField: ["id"], destSchema: "issuesTable", cardinality: "one" }],
+			issue: [{ sourceField: ["repoId", "issueNumber"], destField: ["repoId", "numberText"], destSchema: "issuesTable", cardinality: "one" }],
+			pr: [{ sourceField: ["repoId", "issueNumber"], destField: ["repoId", "issueNumber"], destSchema: "pullRequestsTable", cardinality: "one" }],
 		},
 		issuesTable: {
 			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
 			author: [{ sourceField: ["authorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
+			pr: [{ sourceField: ["repoId", "prNumber"], destField: ["repoId", "numberText"], destSchema: "pullRequestsTable", cardinality: "one" }],
+			comments: [{ sourceField: ["repoId", "numberText"], destField: ["repoId", "issueNumber"], destSchema: "issueCommentsTable", cardinality: "many" }],
 		},
 		nodesInTree: {
 			tree: [{ sourceField: ["tree_sha"], destField: ["sha"], destSchema: "treesTable", cardinality: "one" }],
@@ -824,6 +839,9 @@ export const schema = {
 			owner: [{ sourceField: ["ownerId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			creator: [{ sourceField: ["creatorId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],
 			repo: [{ sourceField: ["repoId"], destField: ["id"], destSchema: "reposTable", cardinality: "one" }],
+			issue: [{ sourceField: ["repoId", "issueNumber"], destField: ["repoId", "numberText"], destSchema: "issuesTable", cardinality: "one" }],
+			comments: [{ sourceField: ["repoId", "issueNumber"], destField: ["repoId", "issueNumber"], destSchema: "issueCommentsTable", cardinality: "many" }],
+			reviews: [{ sourceField: ["id"], destField: ["prId"], destSchema: "reviewsTable", cardinality: "many" }],
 		},
 		reposTable: {
 			org: [{ sourceField: ["orgId"], destField: ["id"], destSchema: "githubUsersTable", cardinality: "one" }],

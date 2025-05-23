@@ -6,7 +6,7 @@ import type {
 	Repository,
 	WebhookEvent,
 } from "@octokit/webhooks-types";
-import { relations } from "drizzle-orm";
+import { type SQL, relations, sql } from "drizzle-orm";
 import {
 	boolean,
 	integer,
@@ -192,6 +192,9 @@ export const pullRequestsTable = pgTable("pull_requests", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
+	numberText: text("number_text").generatedAlwaysAs(
+		(): SQL => sql`CAST(${pullRequestsTable.number} AS TEXT)`,
+	),
 	state: text("state").notNull().$type<"open" | "closed">(),
 	locked: boolean("locked").default(false).notNull(),
 	draft: boolean("draft"),
@@ -212,7 +215,7 @@ export const pullRequestsTable = pgTable("pull_requests", {
 
 export const pullRequestsRelations = relations(
 	pullRequestsTable,
-	({ one }) => ({
+	({ one, many }) => ({
 		owner: one(githubUsersTable, {
 			fields: [pullRequestsTable.ownerId],
 			references: [githubUsersTable.id],
@@ -225,6 +228,12 @@ export const pullRequestsRelations = relations(
 			fields: [pullRequestsTable.repoId],
 			references: [reposTable.id],
 		}),
+		issue: one(issuesTable, {
+			fields: [pullRequestsTable.repoId, pullRequestsTable.issueNumber],
+			references: [issuesTable.repoId, issuesTable.numberText],
+		}),
+		comments: many(issueCommentsTable),
+		reviews: many(reviewsTable),
 	}),
 );
 
@@ -269,6 +278,9 @@ export const issuesTable = pgTable("issues", {
 
 	title: text("name").notNull(),
 	number: integer("number").notNull(),
+	numberText: text("number_text").generatedAlwaysAs(
+		(): SQL => sql`CAST(${issuesTable.number} AS TEXT)`,
+	),
 	state: text("state").$type<"closed" | "open" | null>(),
 	locked: boolean("locked").default(false).notNull(),
 	body: text("body"),
@@ -283,7 +295,7 @@ export const issuesTable = pgTable("issues", {
 		.notNull(),
 });
 
-export const issuesRelations = relations(issuesTable, ({ one }) => ({
+export const issuesRelations = relations(issuesTable, ({ one, many }) => ({
 	org: one(githubUsersTable, {
 		fields: [issuesTable.orgId],
 		references: [githubUsersTable.id],
@@ -296,6 +308,11 @@ export const issuesRelations = relations(issuesTable, ({ one }) => ({
 		fields: [issuesTable.authorId],
 		references: [githubUsersTable.id],
 	}),
+	pr: one(pullRequestsTable, {
+		fields: [issuesTable.repoId, issuesTable.prNumber],
+		references: [pullRequestsTable.repoId, pullRequestsTable.numberText],
+	}),
+	comments: many(issueCommentsTable),
 }));
 
 export const reviewsTable = pgTable("reviews", {
@@ -448,8 +465,12 @@ export const issueCommentsRelations = relations(
 			references: [githubUsersTable.id],
 		}),
 		issue: one(issuesTable, {
-			fields: [issueCommentsTable.issueId],
-			references: [issuesTable.id],
+			fields: [issueCommentsTable.repoId, issueCommentsTable.issueNumber],
+			references: [issuesTable.repoId, issuesTable.numberText],
+		}),
+		pr: one(pullRequestsTable, {
+			fields: [issueCommentsTable.repoId, issueCommentsTable.issueNumber],
+			references: [pullRequestsTable.repoId, pullRequestsTable.issueNumber],
 		}),
 	}),
 );

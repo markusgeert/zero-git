@@ -1,0 +1,2 @@
+ALTER TABLE "issues" ADD COLUMN "number_text" text GENERATED ALWAYS AS (CAST("issues"."number" AS TEXT)) STORED;--> statement-breakpoint
+ALTER TABLE "pull_requests" ADD COLUMN "number_text" text GENERATED ALWAYS AS (CAST("pull_requests"."number" AS TEXT)) STORED;
