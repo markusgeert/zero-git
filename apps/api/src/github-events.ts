@@ -187,6 +187,8 @@ async function upsertPulls(
 			target: pullRequestsTable.id,
 			set: {
 				title: sql.raw(`excluded.${pullRequestsTable.title.name}`),
+				number: sql.raw(`excluded.${pullRequestsTable.number.name}`),
+				issueNumber: sql.raw(`excluded.${pullRequestsTable.issueNumber.name}`),
 				state: sql.raw(`excluded.${pullRequestsTable.state.name}`),
 				locked: sql.raw(`excluded.${pullRequestsTable.locked.name}`),
 				body: sql.raw(`excluded.${pullRequestsTable.body.name}`),
