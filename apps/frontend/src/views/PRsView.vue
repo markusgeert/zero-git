@@ -271,8 +271,8 @@ const availableFilters = ref([
 				base: 'overflow-auto',
 				tbody: '[&>tr]:data-[selectable=true]:hover:bg-unset',
 				thead: 'hidden',
-				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50',
-				td: 'data-[selectable=true]:hover:bg-unset focus-visible:outline-none text-base p-0',
+				tr: 'data-[selected=true]:bg-unset data-[focused=hover]:bg-(--ui-bg-elevated)/50 data-[focused=focus]:bg-(--ui-bg-elevated)/50 group',
+				td: 'data-[selectable=true]:hover:bg-unset text-base p-0 max-w-px',
 			}"
 		>
 			<template
@@ -285,7 +285,7 @@ const availableFilters = ref([
 			>
 				<router-link
 					:to="`/${orgName}/${repoName}/pull/${pr.number}`"
-					class="row flex p-2"
+					class="row flex p-2 inset-ring-neutral-200 focus-visible:outline-none group-data-[focused=focus]:focus-visible:inset-ring"
 					:tabindex="0"
 					@focus="handleRowHover(row, $event)"
 					@mousedown="
@@ -295,14 +295,16 @@ const availableFilters = ref([
 						}
 					"
 				>
-					<div class="flex items-center gap-2">
+					<div class="flex items-center gap-2 min-w-0">
 						<UIcon
 							:name="getPRIcon(pr).icon"
 							:class="getPRIcon(pr).class"
-							class="self-start"
+							class="self-start flex-shrink-0"
 						/>
-						<div class="flex flex-col">
-							<h3 class="font-semibold text-default">{{ pr.title }}</h3>
+						<div class="flex flex-col min-w-0">
+							<h3 class="font-semibold text-default truncate">
+								{{ pr.title }}
+							</h3>
 							<div class="flex gap-1 text-xs">
 								<span>
 									{{ getPrText(pr) }}
