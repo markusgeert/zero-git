@@ -35,7 +35,7 @@ const { data: issues, status } = useQuery(
 	() =>
 		z.value.query.issuesTable
 			.where("repoId", repo.value?.id ?? "")
-			.where("prNumber", "!=", true)
+			.where("prNumber", "IS", null)
 			.where("state", "open")
 			.related("author")
 			.orderBy("createdAt", "desc"),
