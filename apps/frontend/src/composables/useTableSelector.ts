@@ -135,7 +135,7 @@ export function useTableSelector<
 	});
 
 	watch(hoveredRow, (newVal) => {
-		if (!newVal) {
+		if (!newVal || !newVal.row || !tableRef.value) {
 			const activeElement = document.activeElement as HTMLElement;
 			if (activeElement && activeElement !== document.body) {
 				activeElement.blur();

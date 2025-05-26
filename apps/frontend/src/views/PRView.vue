@@ -2,6 +2,7 @@
 import { useZero } from "@/composables/useZero";
 import { CACHE_AWHILE } from "@/query-cache-policy";
 import { useRouteParams } from "@vueuse/router";
+import { computed } from "vue";
 import { useQuery } from "zero-vue";
 
 // import type { Row } from "@rocicorp/zero";
@@ -48,50 +49,60 @@ const { data: comments } = useQuery(
 			.related("author"),
 	CACHE_AWHILE,
 );
+
+const prState = computed(() => {
+	if (pr.value?.mergedAt) return "merged";
+	if (pr.value?.closedAt) return "closed";
+	return pr.value?.draft ? "draft" : "open";
+});
 </script>
 
 <template>
 	<AppContainer v-if="pr || prStatus === 'complete'">
-		<div v-if="!pr">
-			<p class="text-sm text-gray-500">No PR found</p>
-		</div>
-		<div v-else class="flex flex-col gap-4">
-			<h1 class="text-3xl font-semibold">
-				{{ pr.title }}
-				<span class="text-dimmed font-normal">#{{ pr.number }}</span>
-			</h1>
-			<div class="flex items-center gap-2">
-				<span
-					class="px-2 py-1 text-xs rounded-full"
-					:class="{
-						'bg-green-100 text-green-800': !pr.draft && pr.state === 'open',
-						'bg-purple-100 text-purple-800': pr.mergedAt,
-						'bg-red-100 text-red-800': !pr.mergedAt && pr.closedAt,
-						'bg-gray-100 text-gray-800': pr.draft,
-					}"
+		<div class="grid-cols-[1fr_200px] md:grid">
+			<div>
+				<div v-if="!pr">
+					<p class="text-sm text-gray-500">No PR found</p>
+				</div>
+				<div v-else class="flex flex-col gap-4">
+					<h1 class="text-3xl font-semibold">
+						{{ pr.title }}
+						<span class="text-dimmed font-normal">#{{ pr.number }}</span>
+					</h1>
+					<div class="flex items-center gap-2">
+						<span
+							class="px-2 py-1 text-xs rounded-full"
+							:class="{
+								'bg-green-500 text-white': prState === 'open',
+								'bg-violet-500 text-white': prState === 'merged',
+								'bg-red-500 text-white': prState === 'closed',
+								'bg-zinc-400 text-white': prState === 'draft',
+							}"
+						>
+							{{ prState }}
+						</span>
+						<span class="text-sm">
+							<template v-if="pr.mergedAt">
+								{{ pr.creator?.name }} merged 1 commit into
+								{{ pr.content?.base?.ref }} from {{ pr.content?.head?.ref }}
+							</template>
+							<template v-else>
+								{{ pr.creator?.name }} wants to merge 1 commit into
+								{{ pr.content?.base?.ref }} from {{ pr.content?.head?.ref }}
+							</template>
+						</span>
+					</div>
+					<AppMarkdown v-if="pr.body" :md="pr.body" />
+				</div>
+				<div
+					v-for="comment in comments"
+					:key="comment.id"
+					class="flex flex-col gap-4"
 				>
-					{{ pr.state }}
-				</span>
-				<span class="text-sm">
-					<template v-if="pr.mergedAt">
-						{{ pr.creator?.name }} merged 1 commit into
-						{{ pr.content?.base.ref }} from {{ pr.content?.head.ref }}
-					</template>
-					<template v-else>
-						{{ pr.creator?.name }} wants to merge 1 commit into
-						{{ pr.content?.base.ref }} from {{ pr.content?.head.ref }}
-					</template>
-				</span>
+					{{ comment.authorId }}
+					<AppMarkdown v-if="comment.body" :md="comment.body" />
+				</div>
 			</div>
-			<AppMarkdown v-if="pr.body" :md="pr.body" />
-		</div>
-		<div
-			v-for="comment in comments"
-			:key="comment.id"
-			class="flex flex-col gap-4"
-		>
-			{{ comment.authorId }}
-			<AppMarkdown v-if="comment.body" :md="comment.body" />
 		</div>
 	</AppContainer>
 </template>

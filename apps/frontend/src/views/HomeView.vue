@@ -3,11 +3,14 @@ import type { TableColumn } from "@nuxt/ui";
 import type { Repo } from "@/stores/repoStore";
 import { useZero } from "@/composables/useZero";
 import { useQuery } from "zero-vue";
-import { computed, ref, useTemplateRef, watch } from "vue";
+import { resolveComponent, computed, h, ref, useTemplateRef, watch } from "vue";
 import { recordPageLoad } from "@/page-load-stats";
 import { CACHE_FOREVER } from "@/query-cache-policy";
 import { useFuse } from "@vueuse/integrations/useFuse";
 import AppContainer from "@/components/AppContainer.vue";
+import type { Column } from "@tanstack/table-core";
+
+const UButton = resolveComponent("UButton");
 
 const columns: TableColumn<Repo>[] = [
 	{
@@ -16,13 +19,14 @@ const columns: TableColumn<Repo>[] = [
 		size: 250,
 	},
 	{
-		accessorFn: (row) => row.org?.name,
-		header: "Org",
+		// accessorFn: (row) => row.org?.name,
+		header: ({ column }) => getHeader(column, "Org"),
+		accessorKey: "org.name",
 		size: 250,
 	},
 	{
 		accessorKey: "name",
-		header: "Repo",
+		header: ({ column }) => getHeader(column, "Repo"),
 		size: 200,
 	},
 	{
@@ -73,12 +77,31 @@ defineShortcuts({
 	},
 });
 
+function getHeader(column: Column<Repo>, label: string) {
+	const isSorted = column.getIsSorted();
+
+	return h(UButton, {
+		color: "neutral",
+		variant: "ghost",
+		label,
+		icon: isSorted
+			? isSorted === "asc"
+				? "i-lucide-arrow-up-narrow-wide"
+				: "i-lucide-arrow-down-wide-narrow"
+			: "i-lucide-arrow-up-down",
+		class: "-mx-2.5",
+		onClick: () => column.toggleSorting(column.getIsSorted() === "asc"),
+	});
+}
+
 const { results } = useFuse(searchInput, repos, {
 	matchAllWhenSearchEmpty: true,
 	fuseOptions: { keys: ["org.name", "name"] },
 });
 
 const filteredRepos = computed(() => results.value.map((r) => r.item));
+
+const sorting = ref([]);
 </script>
 
 <template>
@@ -94,6 +117,7 @@ const filteredRepos = computed(() => results.value.map((r) => r.item));
 		/>
 		<ItemList
 			v-if="repos.length > 0 || status === 'complete'"
+			v-model:sorting="sorting"
 			:data="filteredRepos"
 			:columns="columns"
 			:get-link="(r) => `/${r.original.org?.name}/${r.original.name}`"
