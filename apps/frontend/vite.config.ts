@@ -44,4 +44,20 @@ export default defineConfig({
 			"@": fileURLToPath(new URL("./src", import.meta.url)),
 		},
 	},
+	build: {
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					"@rocicorp/zero": ["@rocicorp/zero"],
+					"reka-ui": ["reka-ui"],
+					"main-deps": [
+						"fuse.js",
+						"posthog-js",
+						"vue-router",
+						"@tanstack/table-core",
+					],
+				},
+			},
+		},
+	},
 });
