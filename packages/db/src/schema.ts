@@ -6,7 +6,7 @@ import type {
 	Repository,
 	WebhookEvent,
 } from "@octokit/webhooks-types";
-import { type SQL, relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
 	boolean,
 	integer,

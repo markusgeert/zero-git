@@ -1,0 +1,11 @@
+{
+	"extends": "@zero-git/typescript-config/base.json",
+	"compilerOptions": {
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "./dist",
+		"composite": true,
+		"rootDir": "./src"
+	},
+	"include": ["./src/drizzle-zero.config.ts"]
+}
