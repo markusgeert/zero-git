@@ -3,7 +3,6 @@
 	"ui": "tui",
 	"tasks": {
 		"start": {
-			"dependsOn": ["build"],
 			"cache": true,
 			"persistent": true
 		},

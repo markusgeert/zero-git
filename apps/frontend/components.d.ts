@@ -26,7 +26,6 @@ declare module 'vue' {
     Row: typeof import('./src/components/Row.vue')['default']
     TheNavigation: typeof import('./src/components/TheNavigation.vue')['default']
     UApp: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/components/App.vue')['default']
-    UBadge: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/components/Badge.vue')['default']
     UBreadcrumb: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/components/Breadcrumb.vue')['default']
     UButton: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/components/Button.vue')['default']
     UCheckbox: typeof import('./../../node_modules/.pnpm/@nuxt+ui@3.1.2_@babel+parser@7.27.2_aws4fetch@1.0.20_embla-carousel@8.6.0_typescript@5._6a1293d1be0acfb39a04032b21923ce3/node_modules/@nuxt/ui/dist/runtime/components/Checkbox.vue')['default']
