@@ -4,7 +4,10 @@ import { Octokit, type RestEndpointMethodTypes } from "@octokit/rest";
 import type {
 	Installation,
 	Issue,
+	IssueComment,
 	PullRequest,
+	PullRequestReview,
+	PullRequestReviewComment,
 	Repository,
 	User,
 	WebhookEvent,
@@ -21,7 +24,7 @@ import {
 	reviewsTable,
 	type schema,
 } from "@zero-git/db";
-import { type InferInsertModel, sql } from "drizzle-orm";
+import { type InferInsertModel, eq, sql } from "drizzle-orm";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { getEnvOrThrow } from "./get-env";
 
@@ -314,11 +317,13 @@ async function fetchIssueComments(repo: Repo, octokit: Octokit) {
 }
 
 async function upsertIssueComments(
-	comments: (components["schemas"]["issue-comment"] & {
-		orgId: string;
-		repoId: string;
-		// issueId: string;
-	})[],
+	comments:
+		| (components["schemas"]["issue-comment"] & {
+				orgId: string;
+				repoId: string;
+				// issueId: string;
+		  })[]
+		| IssueComment[],
 	db: DBType,
 ) {
 	if (comments.length === 0) {
@@ -380,11 +385,13 @@ async function fetchReviews(pulls: PR[], octokit: Octokit) {
 }
 
 async function upsertReviews(
-	reviews: (components["schemas"]["pull-request-review"] & {
-		orgId: string;
-		repoId: string;
-		prId: string;
-	})[],
+	reviews:
+		| (components["schemas"]["pull-request-review"] & {
+				orgId: string;
+				repoId: string;
+				prId: string;
+		  })[]
+		| PullRequestReview[],
 	db: DBType,
 ) {
 	if (reviews.length === 0) {
@@ -443,11 +450,13 @@ async function fetchReviewComments(repo: Repo, octokit: Octokit) {
 }
 
 async function upsertReviewComments(
-	comments: (components["schemas"]["pull-request-review-comment"] & {
-		orgId: string;
-		repoId: string;
-		// prId: string;
-	})[],
+	comments:
+		| (components["schemas"]["pull-request-review-comment"] & {
+				orgId: string;
+				repoId: string;
+				// prId: string;
+		  })[]
+		| PullRequestReviewComment[],
 	db: DBType,
 ) {
 	if (comments.length === 0) {
@@ -675,11 +684,32 @@ const eventHandlers: EventHandlers = {
 
 		await upsertIssue(issue, repository, db);
 	},
+	issue_comment: async (p, db) => {
+		await upsertIssueComments([p.comment], db);
+	},
+	"issue_comment.deleted": async (p, db) => {
+		await db
+			.delete(issueCommentsTable)
+			.where(eq(issueCommentsTable.id, p.comment.id.toString()));
+	},
 	pull_request: async (p, db) => {
 		const pr = p.pull_request;
-
 		await upsertPr(pr, db);
 	},
+	pull_request_review: async (p, db) => {
+		const review = p.review;
+		await upsertReviews([review], db);
+	},
+	pull_request_review_comment: async (p, db) => {
+		const comment = p.comment;
+		await upsertReviewComments([comment], db);
+	},
+	"pull_request_review_comment.deleted": async (p, db) => {
+		await db
+			.delete(reviewCommentsTable)
+			.where(eq(reviewCommentsTable.id, p.comment.id.toString()));
+	},
+	ping: async () => {},
 };
 
 export async function handleEvent(
