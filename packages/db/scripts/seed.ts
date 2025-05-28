@@ -40,6 +40,9 @@ async function main() {
 				createdAt: f.date({ maxDate: new Date() }),
 				stars: f.int({ minValue: 0, maxValue: 100_000 }),
 			},
+			with: {
+				issuesTable: 10,
+			},
 		},
 		issuesTable: {
 			columns: {
@@ -47,7 +50,7 @@ async function main() {
 				githubId: f.intPrimaryKey(),
 				number: f.intPrimaryKey(),
 				prNumber: f.intPrimaryKey(),
-				repoId: f.intPrimaryKey(),
+				// repoId: f.intPrimaryKey(),
 			},
 			with: {
 				pullRequestsTable: 1,
@@ -68,10 +71,10 @@ async function main() {
 				id: f.intPrimaryKey(),
 				githubId: f.intPrimaryKey(),
 				creatorId: f.valuesFromArray({ values: userIds }),
-				ownerId: f.valuesFromArray({ values: userIds }),
 				number: f.intPrimaryKey(),
-				repoId: f.intPrimaryKey(),
-				issueNumber: f.intPrimaryKey(),
+				//             ownerId: f.valuesFromArray({ values: userIds }),
+				// repoId: f.intPrimaryKey(),
+				// issueNumber: f.intPrimaryKey(),
 				state: f.valuesFromArray({
 					values: ["open", "closed", "merged", "draft"],
 				}),

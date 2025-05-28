@@ -11,6 +11,7 @@ declare module 'vue' {
     AppContainer: typeof import('./src/components/AppContainer.vue')['default']
     AppFilter: typeof import('./src/components/AppFilter.vue')['default']
     AppMarkdown: typeof import('./src/components/AppMarkdown.vue')['default']
+    AppReposList: typeof import('./src/components/AppReposList.vue')['default']
     Col: typeof import('./src/components/Col.vue')['default']
     ColorModeButton: typeof import('./src/components/ColorModeButton.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']

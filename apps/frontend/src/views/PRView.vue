@@ -60,7 +60,7 @@ const prState = computed(() => {
 <template>
 	<AppContainer v-if="pr || prStatus === 'complete'">
 		<div class="grid-cols-[1fr_200px] md:grid">
-			<div>
+			<div class="overflow-hidden">
 				<div v-if="!pr">
 					<p class="text-sm text-gray-500">No PR found</p>
 				</div>
@@ -94,15 +94,25 @@ const prState = computed(() => {
 					</div>
 					<AppMarkdown v-if="pr.body" :md="pr.body" />
 				</div>
+				<div>
+					<span> Comments </span>
+				</div>
 				<div
 					v-for="comment in comments"
 					:key="comment.id"
-					class="flex flex-col gap-4"
+					class="flex flex-col gap-4 p-4 border rounded"
 				>
-					{{ comment.authorId }}
+					<div class="flex">
+						<img
+							:src="comment.author?.avatarUrl ?? ''"
+							class="w-8 h-8 rounded-full mr-2"
+						/>
+						{{ comment.author?.name }}
+					</div>
 					<AppMarkdown v-if="comment.body" :md="comment.body" />
 				</div>
 			</div>
+			<div />
 		</div>
 	</AppContainer>
 </template>
