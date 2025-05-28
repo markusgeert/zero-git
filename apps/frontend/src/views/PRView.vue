@@ -65,7 +65,7 @@ const prState = computed(() => {
 					<p class="text-sm text-gray-500">No PR found</p>
 				</div>
 				<div v-else class="flex flex-col gap-4">
-					<h1 class="text-3xl font-semibold">
+					<h1 class="text-3xl mt-8 font-semibold">
 						{{ pr.title }}
 						<span class="text-dimmed font-normal">#{{ pr.number }}</span>
 					</h1>
