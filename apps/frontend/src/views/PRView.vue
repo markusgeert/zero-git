@@ -92,7 +92,7 @@ const prState = computed(() => {
 							</template>
 						</span>
 					</div>
-					<AppMarkdown v-if="pr.body" :md="pr.body" />
+					<AppMarkdown v-if="pr.body" class="pb-4" :md="pr.body" />
 				</div>
 				<div>
 					<span> Comments </span>
@@ -100,7 +100,7 @@ const prState = computed(() => {
 				<div
 					v-for="comment in comments"
 					:key="comment.id"
-					class="flex flex-col gap-4 p-4 border rounded"
+					class="flex flex-col gap-4 p-4 border border-default rounded-lg"
 				>
 					<div class="flex">
 						<img

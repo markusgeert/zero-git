@@ -121,7 +121,7 @@ const sanitizedHtml = computed(() => {
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-	margin-top: var(--base-size-24);
+	margin-top: var(--base-size-16);
 	margin-bottom: var(--base-size-16);
 	font-weight: var(--base-text-weight-semibold, 600);
 	line-height: 1.25;
@@ -168,19 +168,23 @@ const sanitizedHtml = computed(() => {
 	font-size: inherit;
 }
 .markdown-body h1 {
+	margin-top: calc(var(--base-size-16) * 2);
 	padding-bottom: 0.3em;
 	font-size: 2em;
 	border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));
 }
 .markdown-body h2 {
+	margin-top: calc(var(--base-size-16) * 2);
 	padding-bottom: 0.3em;
 	font-size: 1.5em;
 	border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));
 }
 .markdown-body h3 {
+	margin-top: calc(var(--base-size-16) * 1.5);
 	font-size: 1.25em;
 }
 .markdown-body h4 {
+	margin-top: calc(var(--base-size-16) * 1.375);
 	font-size: 1em;
 }
 .markdown-body h5 {
@@ -219,6 +223,7 @@ const sanitizedHtml = computed(() => {
 .markdown-body ul,
 .markdown-body ol {
 	padding-left: 2em;
+	list-style-type: disc;
 }
 .markdown-body ul.no-list,
 .markdown-body ol.no-list {
